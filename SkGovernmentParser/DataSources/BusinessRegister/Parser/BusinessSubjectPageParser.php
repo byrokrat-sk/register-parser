@@ -157,7 +157,8 @@ class BusinessSubjectPageParser
                 case 'Management body': {
                     $management = [];
                     foreach ($infoTable->subTables as $subTable) {
-                        if (trim($subTable->table->textContent) === 'konatelia') {
+                        $nodeText = trim($subTable->table->textContent);
+                        if ($nodeText === 'konatelia' || $nodeText === "Managing board") {
                             continue; // Skip header table cell
                         }
 

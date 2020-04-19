@@ -20,8 +20,8 @@ class BusinessSubject
     public SubjectCapital $Capital;
 
     public array $CompanyObjects;
-    public array $Partners;
-    public array $MembersContribution;
+    public ?array $Partners;
+    public ?array $MembersContribution;
     public array $ManagementBody;
     public array $OtherLegalFacts;
 
@@ -42,8 +42,8 @@ class BusinessSubject
         TextDatePair $ActingInTheName,
         SubjectCapital $Capital,
         array $CompanyObjects,
-        array $Partners,
-        array $MembersContribution,
+        ?array $Partners,
+        ?array $MembersContribution,
         array $ManagementBody,
         array $OtherLegalFacts,
         \DateTime $EntryDate,
