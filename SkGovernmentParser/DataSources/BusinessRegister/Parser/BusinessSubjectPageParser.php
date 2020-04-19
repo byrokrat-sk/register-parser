@@ -18,6 +18,7 @@ use SkGovernmentParser\Helper\StringHelper;
 class BusinessSubjectPageParser
 {
 
+    // TODO: Refactor parsing from raw objects to classes
     public static function parseHtml(string $rawHtml): BusinessSubject
     {
         $doc = new \DOMDocument();
@@ -34,7 +35,7 @@ class BusinessSubjectPageParser
         }
 
         $subjectInfo = [
-            'business_register_id' => null, // TODO: From <a> link to slovak version
+            'business_register_id' => null,
             'business_name' => null,
             'district_court' => null,
             'section' => null,
@@ -116,8 +117,14 @@ class BusinessSubjectPageParser
                             }
                         }
 
+                        $parsedLines = self::parseInfoTable($subTable->table);
+                        $parsedName = self::parseNameFromLine($parsedLines[0]);
+
                         $partners[] = (object)[
-                            'name' => trim($textElements[0]->textContent),
+                            'degree_before' => $parsedName->degree_before,
+                            'first_name' => $parsedName->first_name,
+                            'last_name' => $parsedName->last_name,
+                            'degree_after' => $parsedName->degree_after,
                             'address' => (object)[
                                 'street_name' => trim($textElements[1]->textContent),
                                 'street_number' => trim($textElements[2]->textContent),
@@ -134,11 +141,19 @@ class BusinessSubjectPageParser
                 case 'Contribution of each member': {
                     $contributions = [];
                     foreach ($infoTable->subTables as $subTable) {
+
+                        $parsedLines = self::parseInfoTable($subTable->table);
+                        $parsedName = self::parseNameFromLine($parsedLines[0]);
+
                         $contributions[] = (object)[
-                            'contributor_name' => trim($subTable->table->childNodes[1]->textContent),
-                            'amount' => (float)StringHelper::removeWhitespaces(str_replace('Amount of investment: ', '', $subTable->table->childNodes[3]->textContent)),
-                            'paid' => (float)StringHelper::removeWhitespaces(str_replace('Paid up: ', '', $subTable->table->childNodes[7]->textContent)),
-                            'currency' => trim($subTable->table->childNodes[5]->textContent),
+                            'degree_before' => $parsedName->degree_before,
+                            'first_name' => $parsedName->first_name,
+                            'last_name' => $parsedName->last_name,
+                            'degree_after' => $parsedName->degree_after,
+                            'business_name' => $parsedName->business_name,
+                            'amount' => (float)StringHelper::removeWhitespaces(str_replace('Amount of investment: ', '', $parsedLines[1][0])),
+                            'paid' => (float)StringHelper::removeWhitespaces(str_replace('Paid up: ', '', $parsedLines[1][2])),
+                            'currency' => trim($parsedLines[1][1]),
                             'date' => $subTable->date,
                         ];
                     }
@@ -152,14 +167,19 @@ class BusinessSubjectPageParser
                             continue; // Skip header table cell
                         }
 
+                        $parsedLines = self::parseInfoTable($subTable->table);
+                        $parsedName = self::parseNameFromLine($parsedLines[0]);
+
                         $management[] = (object)[
-                            'first_name' => trim($subTable->table->childNodes[0]->childNodes[1]->textContent),
-                            'last_name' => trim($subTable->table->childNodes[0]->childNodes[3]->textContent),
+                            'degree_before' => $parsedName->degree_before,
+                            'first_name' => $parsedName->first_name,
+                            'last_name' => $parsedName->last_name,
+                            'degree_after' => $parsedName->degree_after,
                             'address' => (object)[
-                                'street_name' => trim($subTable->table->childNodes[2]->textContent),
-                                'street_number' => trim($subTable->table->childNodes[4]->textContent),
-                                'city' => trim($subTable->table->childNodes[6]->textContent),
-                                'zip_code' => StringHelper::removeWhitespaces($subTable->table->childNodes[8]->textContent),
+                                'street_name' => $parsedLines[1][0],
+                                'street_number' => $parsedLines[1][1],
+                                'city' => $parsedLines[2][0],
+                                'zip_code' => StringHelper::removeWhitespaces($parsedLines[2][1])
                             ],
                             'date' => $subTable->date,
                         ];
@@ -234,7 +254,11 @@ class BusinessSubjectPageParser
             }, $subjectInfo['company_objects']),
             array_map(function ($rawPartner) {
                 return new SubjectPartner(
-                    $rawPartner->name,
+                    $rawPartner->degree_before,
+                    $rawPartner->first_name,
+                    $rawPartner->last_name,
+                    $rawPartner->degree_after,
+                    $rawPartner->business_name,
                     new Address(
                         $rawPartner->address->street_name,
                         $rawPartner->address->street_number,
@@ -246,7 +270,11 @@ class BusinessSubjectPageParser
             }, $subjectInfo['partners']),
             array_map(function ($rawContributor) {
                 return new SubjectContributor(
-                    $rawContributor->contributor_name,
+                    $rawContributor->degree_before,
+                    $rawContributor->first_name,
+                    $rawContributor->last_name,
+                    $rawContributor->degree_after,
+                    $rawContributor->business_name,
                     $rawContributor->amount,
                     $rawContributor->paid,
                     $rawContributor->currency,
@@ -255,8 +283,10 @@ class BusinessSubjectPageParser
             }, $subjectInfo['members_contribution']),
             array_map(function ($rawManager) {
                 return new SubjectManager(
+                    $rawManager->degree_before,
                     $rawManager->first_name,
                     $rawManager->last_name,
+                    $rawManager->degree_after,
                     new Address(
                         $rawManager->address->street_name,
                         $rawManager->address->street_number,
@@ -309,5 +339,105 @@ class BusinessSubjectPageParser
     private static function trimInfoTableText(string $text): string
     {
         return trim($text, ": ".StringHelper::NON_BREAKING_SPACE);
+    }
+
+    // TODO: Refactor to less retarded code
+    private static function parseNameFromLine(array $line): object
+    {
+        /*
+         * "Fuck me."
+         *      ~ Gordon Ramsay
+         */
+
+        $businessName = null;
+
+        $degreeBefore = null;
+        $firstName = null;
+        $lastName = null;
+        $degreeAfter = null;
+
+        switch(count($line)) {
+            case 1: {
+                $businessName = $line[0];
+                break;
+            }
+            case 2: {
+                $firstName = $line[0];
+                $lastName = $line[1];
+                break;
+            }
+            case 3: {
+                $degreeBefore = $line[0];
+                $firstName = $line[1];
+
+                // Edge-case in website HTML structure
+                if (StringHelper::str_contains($line[2], ' ')) {
+                    $fuckMe = explode(' ', $line[2]);
+                    $lastName = trim($fuckMe[0], ", ");
+                    $degreeAfter = trim($fuckMe[1], ", ");
+                } else {
+                    $lastName = $line[2];
+                    $degreeAfter = $line[3];
+                }
+                break;
+            }
+            case 4: {
+                $degreeBefore = $line[0];
+                $firstName = $line[1];
+
+                // Edge-case in website HTML structure
+                if (StringHelper::str_contains($line[2], ' ')) {
+                    $fuckMe = explode(' ', $line[2]);
+                    $lastName = trim($fuckMe[0], ", ");
+                    $degreeAfter = trim($fuckMe[1], ", ");
+                } else {
+                    $lastName = $line[2];
+                    $degreeAfter = trim($line[3], ", ");
+                }
+                break;
+            }
+        }
+
+        return (object)[
+            'degree_before' => $degreeBefore,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'degree_after' => $degreeAfter,
+            'business_name' => $businessName,
+        ];
+    }
+
+    // TODO: Refactor to less retarded code
+    private static function parseInfoTable(\DOMElement $infoTable): array
+    {
+        $lineIndex = 0;
+        $lines = [];
+
+        /*
+         * "Useless fucking pieces of shit!"
+         *      ~ Gordon Ramsay
+         */
+
+        /** @var \DOMElement $node */
+        foreach ($infoTable->childNodes as $node) {
+            if ($node->nodeName === 'br') {
+                $lineIndex += 1;
+                continue;
+            }
+
+            if ($node->nodeName === 'a') {
+                foreach ($node->childNodes as $node_2) {
+                    if ($node_2->nodeName === 'span' && $node_2->getAttribute('class') === 'ra') {
+                        $lines[$lineIndex][] = trim($node_2->textContent);
+                    } // esle -> ignore
+                }
+            } elseif ($node->nodeName === 'span' && $node->getAttribute('class') === 'ra') {
+                $lines[$lineIndex][] = trim($node->textContent);
+            }
+
+            // ignore anything else
+        }
+
+        return $lines;
     }
 }

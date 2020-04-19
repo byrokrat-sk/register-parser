@@ -22,4 +22,9 @@ class StringHelper
     {
         return trim(preg_replace('/(\s+|'.self::NON_BREAKING_SPACE.')/', '', $text));
     }
+
+    public static function str_contains(string $haystack , string $needle): bool
+    {
+        return strpos($haystack, $needle) !== false;
+    }
 }
