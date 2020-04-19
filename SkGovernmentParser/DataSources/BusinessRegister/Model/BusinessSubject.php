@@ -7,17 +7,17 @@ class BusinessSubject
 {
     public int $BusinessRegisterId;
 
-    public string $BusinessName;
+    public TextDatePair $BusinessName;
+    public string $InsertNumber;
+    public SubjectSeat $RegisteredSeat;
+    public TextDatePair $IdentificationNumber;
+    public TextDatePair $LegalForm;
+    public TextDatePair $ActingInTheName;
+
     public string $DistrictCourt;
     public string $Section;
-    public string $InsertNumber;
-    public string $RegisteredSeat;
-    public string $IdentificationNumber;
-    public string $LegalForm;
-    public string $ActingInTheName;
 
-    public string $Capital;
-    public float $CapitalAmount;
+    public SubjectCapital $Capital;
 
     public array $CompanyObjects;
     public array $Partners;
@@ -31,25 +31,24 @@ class BusinessSubject
 
 
     public function __construct(
-        $BusinessRegisterId,
-        $BusinessName,
-        $DistrictCourt,
-        $Section,
-        $InsertNumber,
-        $RegisteredSeat,
-        $IdentificationNumber,
-        $LegalForm,
-        $ActingInTheName,
-        $Capital,
-        $CapitalAmount,
-        $CompanyObjects,
-        $Partners,
-        $MembersContribution,
-        $ManagementBody,
-        $OtherLegalFacts,
-        $EntryDate,
-        $UpdatedAt,
-        $ExtractedAt
+        int $BusinessRegisterId,
+        TextDatePair $BusinessName,
+        string $DistrictCourt,
+        string $Section,
+        string $InsertNumber,
+        SubjectSeat $RegisteredSeat,
+        TextDatePair $IdentificationNumber,
+        TextDatePair $LegalForm,
+        TextDatePair $ActingInTheName,
+        SubjectCapital $Capital,
+        array $CompanyObjects,
+        array $Partners,
+        array $MembersContribution,
+        array $ManagementBody,
+        array $OtherLegalFacts,
+        \DateTime $EntryDate,
+        \DateTime $UpdatedAt,
+        \DateTime $ExtractedAt
     ) {
         $this->BusinessRegisterId = $BusinessRegisterId;
         $this->BusinessName = $BusinessName;
@@ -61,7 +60,6 @@ class BusinessSubject
         $this->LegalForm = $LegalForm;
         $this->ActingInTheName = $ActingInTheName;
         $this->Capital = $Capital;
-        $this->CapitalAmount = $CapitalAmount;
         $this->CompanyObjects = $CompanyObjects;
         $this->Partners = $Partners;
         $this->MembersContribution = $MembersContribution;

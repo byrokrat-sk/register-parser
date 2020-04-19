@@ -10,8 +10,11 @@ use \SkGovernmentParser\DataSources\BusinessRegister\Parser\BusinessSubjectPageP
 use \SkGovernmentParser\DataSources\BusinessRegister\Model\BusinessSubject;
 use \SkGovernmentParser\Exceptions\InconclusiveSearchException;
 use \SkGovernmentParser\Exceptions\EmptySearchResultException;
+use SkGovernmentParser\Exceptions\InvalidQueryException;
+use SkGovernmentParser\Helper\StringHelper;
 use \SkGovernmentParser\Interfaces\Queriable;
 use SkGovernmentParser\ParserConfiguration;
+use SkGovernmentParser\Validator\CompanyIdentificator;
 
 
 class IdentificatorQuery extends Queriable {
@@ -20,11 +23,14 @@ class IdentificatorQuery extends Queriable {
 
     public static function queryBy(string $query): BusinessSubject
     {
-        // TODO: Validate ID (IČO)
+        $sanetisedIdentificator = StringHelper::removeWhitespaces($query);
 
-        $searchPageUrl = self::getUrlByQuery($query);
+        if (!CompanyIdentificator::isValid($sanetisedIdentificator)) {
+            throw new InvalidQueryException("Passed identificator [$query]->[$sanetisedIdentificator] is not valid identificator number!");
+        }
+
+        $searchPageUrl = self::getUrlByQuery($sanetisedIdentificator);
         $searchPageHtml = SearchByIdentificatorDownloader::downloadSearchPage($searchPageUrl);
-        // $searchPageHtml = file_get_contents(__DIR__."/orsr.html");
 
         # ~
 
@@ -46,7 +52,6 @@ class IdentificatorQuery extends Queriable {
 
     public static function getUrlByQuery($query): string
     {
-        $sanetizedQuery = trim(preg_replace('/\s+/', '', $query));
-        return str_replace('{query}', $sanetizedQuery, self::SEARCH_URL);
+        return str_replace('{query}', $query, self::SEARCH_URL);
     }
 }

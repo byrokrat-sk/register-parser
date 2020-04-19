@@ -5,6 +5,7 @@ namespace SkGovernmentParser\DataSources\BusinessRegister\Parser;
 
 use SkGovernmentParser\DataSources\BusinessRegister\Model\IdentificatorSearch\Item;
 use \SkGovernmentParser\DataSources\BusinessRegister\Model\IdentificatorSearch\Result;
+use SkGovernmentParser\Helper\DomHelper;
 use SkGovernmentParser\Helper\StringHelper;
 use SkGovernmentParser\ParserConfiguration;
 
@@ -21,7 +22,7 @@ class SearchByIdentificatorParser
         $parsedItems = [];
 
         $resultTable = $doc->childNodes[1]->childNodes[1]->childNodes[7];
-        $resultRows = self::nodeListToArray($resultTable->childNodes);
+        $resultRows = DomHelper::nodeListToArray($resultTable->childNodes);
         unset($resultRows[0]); // Remove table header for easier iteration
 
         foreach ($resultRows as $row) {
@@ -30,20 +31,11 @@ class SearchByIdentificatorParser
             $listingsCell = $row->childNodes[4];
             $actualListingHref = ParserConfiguration::$BusinessRegisterUrlRoot.'/'.trim($listingsCell->childNodes[0]->childNodes[1]->getAttribute("href"));
             $fullListingHref = ParserConfiguration::$BusinessRegisterUrlRoot.'/'.trim($listingsCell->childNodes[0]->childNodes[3]->getAttribute("href"));
-            $subjectId = StringHelper::stringBetween($actualListingHref, 'ID=', '&SID=');
+            $subjectId = StringHelper::stringBetween($actualListingHref, 'ID=', '&');
 
             $parsedItems[] = new Item($subjectId, $subjectName, $actualListingHref, $fullListingHref);
         }
 
         return new Result($parsedItems);
-    }
-
-    private static function nodeListToArray(\DOMNodeList $nodeList): array
-    {
-        $nodes = [];
-        foreach($nodeList as $node){
-            $nodes[] = $node;
-        }
-        return $nodes;
     }
 }
