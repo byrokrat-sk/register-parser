@@ -72,6 +72,7 @@ class BusinessSubjectPageParser
                     break;
                 }
                 case 'Registered seat': {
+                    // TODO: Support foreign addresses (Google)
                     $subjectInfo["registered_seat"] = (object)[
                         'address' => (object)[
                             'city' => trim($infoTable->subTables[0]->table->childNodes[5]->textContent),
@@ -110,13 +111,6 @@ class BusinessSubjectPageParser
                 case 'Partners': {
                     $partners = [];
                     foreach ($infoTable->subTables as $subTable) {
-                        $textElements = [];
-                        foreach (DomHelper::nodeListToArray($subTable->table->childNodes) as $subTableNode) {
-                            if ($subTableNode->nodeName === "span" && $subTableNode->getAttribute("class") === "ra") {
-                                $textElements[] = $subTableNode;
-                            }
-                        }
-
                         $parsedLines = self::parseInfoTable($subTable->table);
                         $parsedName = self::parseNameFromLine($parsedLines[0]);
 
@@ -126,10 +120,10 @@ class BusinessSubjectPageParser
                             'last_name' => $parsedName->last_name,
                             'degree_after' => $parsedName->degree_after,
                             'address' => (object)[
-                                'street_name' => trim($textElements[1]->textContent),
-                                'street_number' => trim($textElements[2]->textContent),
-                                'city' => trim($textElements[3]->textContent),
-                                'zip_code' => StringHelper::removeWhitespaces($textElements[4]->textContent),
+                                'street_name' => $parsedLines[1][0],
+                                'street_number' => $parsedLines[1][1],
+                                'city' => $parsedLines[2][0],
+                                'zip_code' => StringHelper::removeWhitespaces($parsedLines[2][1]),
                             ],
                             'date' => $subTable->date
                         ];
@@ -370,7 +364,7 @@ class BusinessSubjectPageParser
                 $degreeBefore = $line[0];
                 $firstName = $line[1];
 
-                // Edge-case in website HTML structure
+                // Edge-case in website HTML structure when 'last name' and 'degree after' are merged in the same element
                 if (StringHelper::str_contains($line[2], ' ')) {
                     $fuckMe = explode(' ', $line[2]);
                     $lastName = trim($fuckMe[0], ", ");
@@ -385,7 +379,7 @@ class BusinessSubjectPageParser
                 $degreeBefore = $line[0];
                 $firstName = $line[1];
 
-                // Edge-case in website HTML structure
+                // Edge-case in website HTML structure when 'last name' and 'degree after' are merged in the same element
                 if (StringHelper::str_contains($line[2], ' ')) {
                     $fuckMe = explode(' ', $line[2]);
                     $lastName = trim($fuckMe[0], ", ");
