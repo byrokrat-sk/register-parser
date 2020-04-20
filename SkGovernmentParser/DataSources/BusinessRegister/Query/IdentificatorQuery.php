@@ -5,7 +5,7 @@ namespace SkGovernmentParser\DataSources\BusinessRegister\Query;
 
 use \SkGovernmentParser\DataSources\BusinessRegister\Downloader\SearchByIdentificatorDownloader;
 use \SkGovernmentParser\DataSources\BusinessRegister\Downloader\BusinessSubjectPageDownloader;
-use \SkGovernmentParser\DataSources\BusinessRegister\Parser\SearchByIdentificatorParser;
+use \SkGovernmentParser\DataSources\BusinessRegister\Parser\SearchByIdentificatorResultParser;
 use \SkGovernmentParser\DataSources\BusinessRegister\Parser\BusinessSubjectPageParser;
 use \SkGovernmentParser\DataSources\BusinessRegister\Model\BusinessSubject;
 use \SkGovernmentParser\Exceptions\InconclusiveSearchException;
@@ -34,7 +34,7 @@ class IdentificatorQuery extends Queriable {
 
         # ~
 
-        $searchResult = SearchByIdentificatorParser::parseHtml($searchPageHtml);
+        $searchResult = SearchByIdentificatorResultParser::parseHtml($searchPageHtml);
 
         if ($searchResult->isEmpty()) {
             throw new EmptySearchResultException("Business register returned empty result for query [$query]!");

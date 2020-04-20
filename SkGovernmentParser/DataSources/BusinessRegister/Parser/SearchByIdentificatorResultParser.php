@@ -10,7 +10,7 @@ use SkGovernmentParser\Helper\StringHelper;
 use SkGovernmentParser\ParserConfiguration;
 
 
-class SearchByIdentificatorParser
+class SearchByIdentificatorResultParser
 {
     public static function parseHtml(string $rawHtml): Result
     {
