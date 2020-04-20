@@ -48,6 +48,7 @@ class BusinessSubjectPageParser
             'partners' => null,
             'members_contribution' => null,
             'management_body' => null,
+            'supervisory_board' => null,
             'acting_in_the_name' => null,
             'capital' => null,
             'other_legal_facts' => null,
@@ -182,6 +183,34 @@ class BusinessSubjectPageParser
                     $subjectInfo['management_body'] = $management;
                     break;
                 }
+                case 'Supervisory board': {
+                    $management = [];
+                    foreach ($infoTable->subTables as $subTable) {
+                        $nodeText = trim($subTable->table->textContent);
+                        if ($nodeText === 'konatelia' || $nodeText === "Managing board") {
+                            continue; // Skip header table cell
+                        }
+
+                        $parsedLines = self::parseInfoTable($subTable->table);
+                        $parsedName = self::parseNameFromLine($parsedLines[0]);
+
+                        $management[] = (object)[
+                            'degree_before' => $parsedName->degree_before,
+                            'first_name' => $parsedName->first_name,
+                            'last_name' => $parsedName->last_name,
+                            'degree_after' => $parsedName->degree_after,
+                            'address' => (object)[
+                                'street_name' => $parsedLines[1][0],
+                                'street_number' => $parsedLines[1][1],
+                                'city' => $parsedLines[2][0],
+                                'zip_code' => StringHelper::removeWhitespaces($parsedLines[2][1])
+                            ],
+                            'date' => $subTable->date,
+                        ];
+                    }
+                    $subjectInfo['supervisory_board'] = $management;
+                    break;
+                }
                 case 'Acting in the name of the company': {
                     $subjectInfo["acting_in_the_name"] = self::parseSimpleInfoTable($infoTable);
                     break;
@@ -247,7 +276,7 @@ class BusinessSubjectPageParser
             array_map(function ($rawObject) {
                 return new TextDatePair($rawObject->text, $rawObject->date);
             }, $subjectInfo['company_objects']),
-            array_map(function ($rawPartner) {
+            is_null($subjectInfo['partners']) ? null : array_map(function ($rawPartner) {
                 return new SubjectPartner(
                     $rawPartner->degree_before,
                     $rawPartner->first_name,
@@ -263,7 +292,7 @@ class BusinessSubjectPageParser
                     $rawPartner->date
                 );
             }, $subjectInfo['partners']),
-            array_map(function ($rawContributor) {
+            is_null($subjectInfo['members_contribution']) ? null : array_map(function ($rawContributor) {
                 return new SubjectContributor(
                     $rawContributor->degree_before,
                     $rawContributor->first_name,
@@ -287,10 +316,25 @@ class BusinessSubjectPageParser
                         $rawManager->address->street_number,
                         $rawManager->address->city,
                         $rawManager->address->zip_code,
-                    ),
+                        ),
                     $rawManager->date
                 );
             }, $subjectInfo['management_body']),
+            array_map(function ($rawManager) {
+                return new SubjectManager(
+                    $rawManager->degree_before,
+                    $rawManager->first_name,
+                    $rawManager->last_name,
+                    $rawManager->degree_after,
+                    new Address(
+                        $rawManager->address->street_name,
+                        $rawManager->address->street_number,
+                        $rawManager->address->city,
+                        $rawManager->address->zip_code,
+                        ),
+                    $rawManager->date
+                );
+            }, $subjectInfo['supervisory_board']),
             array_map(function ($rawFact) {
                 return new TextDatePair($rawFact->text, $rawFact->date);
             }, $subjectInfo['other_legal_facts']),
@@ -350,6 +394,11 @@ class BusinessSubjectPageParser
         $firstName = null;
         $lastName = null;
         $degreeAfter = null;
+
+        // HTML edge-case fix (Joint-stock company / Managing board - edgecase)
+        $line = array_filter($line, function ($item) {
+            return $item !== "- predseda";
+        });
 
         switch(count($line)) {
             case 1: {

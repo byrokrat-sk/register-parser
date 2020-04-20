@@ -23,6 +23,7 @@ class BusinessSubject
     public ?array $Partners;
     public ?array $MembersContribution;
     public array $ManagementBody;
+    public array $SupervisoryBoard;
     public array $OtherLegalFacts;
 
     public \DateTime $EntryDate;
@@ -45,6 +46,7 @@ class BusinessSubject
         ?array $Partners,
         ?array $MembersContribution,
         array $ManagementBody,
+        array $SupervisoryBoard,
         array $OtherLegalFacts,
         \DateTime $EntryDate,
         \DateTime $UpdatedAt,
@@ -64,6 +66,7 @@ class BusinessSubject
         $this->Partners = $Partners;
         $this->MembersContribution = $MembersContribution;
         $this->ManagementBody = $ManagementBody;
+        $this->SupervisoryBoard = $SupervisoryBoard;
         $this->OtherLegalFacts = $OtherLegalFacts;
         $this->EntryDate = $EntryDate;
         $this->UpdatedAt = $UpdatedAt;
