@@ -11,7 +11,6 @@ use SkGovernmentParser\DataSources\BusinessRegister\Model\SubjectManager;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\SubjectPartner;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\SubjectSeat;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\TextDatePair;
-use SkGovernmentParser\Helper\DomHelper;
 use SkGovernmentParser\Helper\StringHelper;
 
 
@@ -445,7 +444,7 @@ class BusinessSubjectPageParser
                 if (StringHelper::str_contains($line[2], ' ')) {
                     $fuckMe = explode(' ', $line[2]);
                     $lastName = trim($fuckMe[0], ", ");
-                    $degreeAfter = trim($fuckMe[1], ", ");
+                    $degreeAfter = trim($fuckMe[1].' '.$line[3], ", ");
                 } else {
                     $lastName = $line[2];
                     $degreeAfter = trim($line[3], ", ");
