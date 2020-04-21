@@ -13,15 +13,15 @@ class SubjectManager
 
     public Address $Address;
 
-    public \DateTime $date;
+    public \DateTime $Date;
 
-    public function __construct(?string $DegreeBefore, string $FirstName, string $LastName, ?string $DegreeAfter, Address $Address, \DateTime $date)
+    public function __construct(?string $DegreeBefore, string $FirstName, string $LastName, ?string $DegreeAfter, Address $Address, \DateTime $Date)
     {
         $this->DegreeBefore = $DegreeBefore;
         $this->FirstName = $FirstName;
         $this->LastName = $LastName;
         $this->DegreeAfter = $DegreeAfter;
         $this->Address = $Address;
-        $this->date = $date;
+        $this->Date = $Date;
     }
 }
