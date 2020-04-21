@@ -7,12 +7,12 @@ namespace SkGovernmentParser\DataSources\BusinessRegister\Model;
 class TextDatePair
 {
     public string $Text;
-    public \DateTime $date;
+    public \DateTime $Date;
 
-    public function __construct($Text, $date)
+    public function __construct($Text, $Date)
     {
         $this->Text = $Text;
-        $this->date = $date;
+        $this->Date = $Date;
     }
 
     public static function fromObject(object $object): TextDatePair

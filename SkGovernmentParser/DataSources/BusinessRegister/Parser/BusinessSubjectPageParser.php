@@ -50,6 +50,8 @@ class BusinessSubjectPageParser
             'management_body' => null,
             'supervisory_board' => null,
             'acting_in_the_name' => null,
+            'procuration' => null,
+            'merger_or_division' => null,
             'capital' => null,
             'other_legal_facts' => null,
             'updated_at' => null,
@@ -212,7 +214,15 @@ class BusinessSubjectPageParser
                     break;
                 }
                 case 'Acting in the name of the company': {
-                    $subjectInfo["acting_in_the_name"] = self::parseSimpleInfoTable($infoTable);
+                    $subjectInfo['acting_in_the_name'] = self::parseSimpleInfoTable($infoTable);
+                    break;
+                }
+                case 'Procuration': {
+                    $subjectInfo['procuration'] = self::parseSimpleInfoTable($infoTable);
+                    break;
+                }
+                case 'Merger or division': {
+                    $subjectInfo['merger_or_division'] = self::parseSimpleInfoTable($infoTable);
                     break;
                 }
                 case 'Capital': {
@@ -267,6 +277,8 @@ class BusinessSubjectPageParser
             TextDatePair::fromObject($subjectInfo['identification_number']),
             TextDatePair::fromObject($subjectInfo['legal_form']),
             TextDatePair::fromObject($subjectInfo['acting_in_the_name']),
+            is_null($subjectInfo['procuration']) ? null : TextDatePair::fromObject($subjectInfo['procuration']),
+            is_null($subjectInfo['merger_or_division']) ? null : TextDatePair::fromObject($subjectInfo['merger_or_division']),
             new SubjectCapital(
                 $subjectInfo['capital']->total,
                 $subjectInfo['capital']->paid,
@@ -320,7 +332,7 @@ class BusinessSubjectPageParser
                     $rawManager->date
                 );
             }, $subjectInfo['management_body']),
-            array_map(function ($rawManager) {
+            is_null($subjectInfo['supervisory_board']) ? null : array_map(function ($rawManager) {
                 return new SubjectManager(
                     $rawManager->degree_before,
                     $rawManager->first_name,

@@ -13,6 +13,8 @@ class BusinessSubject
     public TextDatePair $IdentificationNumber;
     public TextDatePair $LegalForm;
     public TextDatePair $ActingInTheName;
+    public ?TextDatePair $Procuration;
+    public ?TextDatePair $MergerOrDivision;
 
     public string $DistrictCourt;
     public string $Section;
@@ -23,7 +25,7 @@ class BusinessSubject
     public ?array $Partners;
     public ?array $MembersContribution;
     public array $ManagementBody;
-    public array $SupervisoryBoard;
+    public ?array $SupervisoryBoard;
     public array $OtherLegalFacts;
 
     public \DateTime $EntryDate;
@@ -41,12 +43,14 @@ class BusinessSubject
         TextDatePair $IdentificationNumber,
         TextDatePair $LegalForm,
         TextDatePair $ActingInTheName,
+        ?TextDatePair $Procuration,
+        ?TextDatePair $MergerOrDivision,
         SubjectCapital $Capital,
         array $CompanyObjects,
         ?array $Partners,
         ?array $MembersContribution,
         array $ManagementBody,
-        array $SupervisoryBoard,
+        ?array $SupervisoryBoard,
         array $OtherLegalFacts,
         \DateTime $EntryDate,
         \DateTime $UpdatedAt,
@@ -61,6 +65,8 @@ class BusinessSubject
         $this->IdentificationNumber = $IdentificationNumber;
         $this->LegalForm = $LegalForm;
         $this->ActingInTheName = $ActingInTheName;
+        $this->Procuration = $Procuration;
+        $this->MergerOrDivision = $MergerOrDivision;
         $this->Capital = $Capital;
         $this->CompanyObjects = $CompanyObjects;
         $this->Partners = $Partners;
