@@ -23,9 +23,9 @@ class StringHelper
         return trim(preg_replace('/(\s+|'.self::NON_BREAKING_SPACE.')/', '', $text));
     }
 
-    public static function str_contains(string $haystack , string $needle): bool
+    public static function str_contains(string $text, string $search): bool
     {
-        return strpos($haystack, $needle) !== false;
+        return strpos($text, $search) !== false;
     }
 
     public static function paragraphText(?string $text): ?string

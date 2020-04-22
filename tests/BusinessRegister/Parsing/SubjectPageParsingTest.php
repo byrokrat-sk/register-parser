@@ -4,6 +4,7 @@ namespace BusinessRegister\Parsing;
 
 
 use PHPUnit\Framework\TestCase;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Address;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\SubjectContributor;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\SubjectManager;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\SubjectPartner;
@@ -297,10 +298,68 @@ class SubjectPageParsingTest extends TestCase
 
     }*/
 
-    /*public function testGoogleParsing()
+    public function testGoogleParsing()
     {
+        $pageHtml = self::loadPageById(self::GOOGLE);
+        $subject = BusinessSubjectPageParser::parseHtml($pageHtml);
 
-    }*/
+        // Business name
+        $this->assertSame('Google Slovakia, s. r. o.', $subject->BusinessName->Text);
+
+        $this->assertSame('Sro', $subject->Section);
+        $this->assertSame('69098/B', $subject->InsertNumber);
+
+        // Registered Seat
+        $this->assertSame('Bratislava', $subject->RegisteredSeat->Address->CityName);
+        $this->assertSame('Karadžičova', $subject->RegisteredSeat->Address->StreetName);
+        $this->assertSame('8/A', $subject->RegisteredSeat->Address->StreetNumber);
+        $this->assertSame('82108', $subject->RegisteredSeat->Address->Zip);
+        $this->assertSame('2011-09-06', $subject->RegisteredSeat->Date->format('Y-m-d'));
+
+        // Text Values
+        $this->assertTextDatePair($subject->IdentificationNumber, '45947597', '2010-12-07');
+        $this->assertTextDatePair($subject->LegalForm, 'Private limited liability company', '2010-12-07');
+        $this->assertTextDatePair($subject->ActingInTheName, 'V mene spoločnosti koná a spoločnosť zaväzuje každý z konateľov samostatne. Podpisovanie v mene spoločnosti konateľ vykoná tak, že k vytlačenému alebo napísanému obchodnému menu spoločnosti, svojmu menu a funkcii podpisujúci konateľ pripojí svoj podpis.', '2010-12-07');
+
+        // Capital
+        $this->assertSame(100000.0, $subject->Capital->Amount);
+        $this->assertSame(100000.0, $subject->Capital->Paid);
+        $this->assertSame('EUR', $subject->Capital->Currency);
+        $this->assertSame('2010-12-07', $subject->Capital->Date->format('Y-m-d'));
+
+        // Objects Of The Company
+        $this->assertTextDatePair($subject->CompanyObjects[0],'reklamné a marketingové služby', '2010-12-07');
+        $this->assertTextDatePair($subject->CompanyObjects[1],'kúpa tovaru na účely jeho predaja konečnému spotrebiteľovi (maloobchod) alebo iným prevádzkovateľom živnosti (veľkoobchod)', '2010-12-07');
+        $this->assertTextDatePair($subject->CompanyObjects[2],'sprostredkovateľská činnosť v oblasti obchodu', '2010-12-07');
+        $this->assertTextDatePair($subject->CompanyObjects[3],'sprostredkovateľská činnosť v oblasti služieb', '2010-12-07');
+        $this->assertTextDatePair($subject->CompanyObjects[4],'prieskum trhu a verejnej mienky', '2010-12-07');
+
+        // Partners
+        $this->assertPartner($subject->Partners[0], null, null, null, null, 'Google International LLC',
+            'Little Falls Drive', '251', 'Wilmington', 'DE19808', '2018-11-09', 'Spojené štáty americké');
+
+        // Contributors
+        $this->assertContributor($subject->MembersContribution[0], null, null, null, null, 'Google International LLC',
+            100000.0, 100000.0, 'EUR', '2018-11-09');
+
+        // Management Body
+        $this->assertManager($subject->ManagementBody[0], null, 'Kenneth Hohee', 'Yi', null,
+            'Sand Hill Circle', '620', 'Menlo Park, Kalifornia', '94025', '2015-05-12', 'Spojené štáty americké');
+        $this->assertManager($subject->ManagementBody[1], null, 'Paul Terence', 'Manicle', null,
+            'Balally Park, Dundrum', '97', 'Dublin 16', null, '2015-11-06', 'Írsko');
+
+        // Other Legal Facts
+        $this->assertTextDatePair($subject->OtherLegalFacts[0], 'Obchodná spoločnosť bola založená zakladateľskou listinou zo dňa 28.10.2010 v zmysle §§ 105 - 153 Zák. č. 513/1991 Zb. v znení neskorších predpisov.', '2010-12-07');
+        $this->assertTextDatePair($subject->OtherLegalFacts[1], 'Rozhodnutie jediného spoločníka zo dňa 20.12.2010.', '2011-02-09');
+        $this->assertTextDatePair($subject->OtherLegalFacts[2], 'Rozhodnutie jediného spoločníka zo dňa 06.02.2012.', '2012-02-24');
+        $this->assertTextDatePair($subject->OtherLegalFacts[3], 'Rozhodnutie jediného spoločníka zo dňa 16.04.2015', '2015-05-12');
+        $this->assertTextDatePair($subject->OtherLegalFacts[4], 'Rozhodnutie jediného spoločníka zo dňa 23.10.2015.', '2015-11-06');
+
+        // Standalone Dates
+        $this->assertSame($subject->EntryDate->format('Y-m-d'), '2010-12-07');
+        $this->assertSame($subject->ExtractedAt->format('Y-m-d'), '2020-04-22');
+        $this->assertSame($subject->UpdatedAt->format('Y-m-d'), '2020-04-20');
+    }
 
 
     #
@@ -319,7 +378,7 @@ class SubjectPageParsingTest extends TestCase
         $this->assertSame($date, $pair->Date->format('Y-m-d'));
     }
 
-    private function assertPartner(SubjectPartner $partner, $db, $fn, $ln, $da, $bn, $sna, $snu, $cn, $zip, $date): void
+    private function assertPartner(SubjectPartner $partner, $db, $fn, $ln, $da, $bn, $sna, $snu, $cn, $zip, $date, $country = null): void
     {
         $this->assertSame($db, $partner->DegreeBefore);
         $this->assertSame($fn, $partner->FirstName);
@@ -331,11 +390,12 @@ class SubjectPageParsingTest extends TestCase
         $this->assertSame($snu, $partner->Address->StreetNumber);
         $this->assertSame($cn, $partner->Address->CityName);
         $this->assertSame($zip, $partner->Address->Zip);
+        $this->assertSame(is_null($country) ? Address::SLOVAKIA_NAME : $country, $partner->Address->Country);
 
         $this->assertSame($date, $partner->Date->format('Y-m-d'));
     }
 
-    private function assertManager(SubjectManager $manager, $db, $fn, $ln, $da, $sna, $snu, $cn, $zip, $date): void
+    private function assertManager(SubjectManager $manager, $db, $fn, $ln, $da, $sna, $snu, $cn, $zip, $date, $country = null): void
     {
         $this->assertSame($db, $manager->DegreeBefore);
         $this->assertSame($fn, $manager->FirstName);
@@ -346,6 +406,7 @@ class SubjectPageParsingTest extends TestCase
         $this->assertSame($snu, $manager->Address->StreetNumber);
         $this->assertSame($cn, $manager->Address->CityName);
         $this->assertSame($zip, $manager->Address->Zip);
+        $this->assertSame(is_null($country) ? Address::SLOVAKIA_NAME : $country, $manager->Address->Country);
 
         $this->assertSame($date, $manager->Date->format('Y-m-d'));
     }

@@ -74,7 +74,6 @@ class BusinessSubjectPageParser
                     break;
                 }
                 case 'Registered seat': {
-                    // TODO: Support foreign addresses (Google)
                     $subjectInfo["registered_seat"] = (object)[
                         'address' => (object)[
                             'city' => trim($infoTable->subTables[0]->table->childNodes[5]->textContent),
@@ -115,6 +114,7 @@ class BusinessSubjectPageParser
                     foreach ($infoTable->subTables as $subTable) {
                         $parsedLines = self::parseInfoTable($subTable->table);
                         $parsedName = self::parseNameFromLine($parsedLines[0]);
+                        $parsedAddress = self::parseAddressFromLines($parsedLines);
 
                         $partners[] = (object)[
                             'degree_before' => $parsedName->degree_before,
@@ -122,12 +122,7 @@ class BusinessSubjectPageParser
                             'last_name' => $parsedName->last_name,
                             'degree_after' => $parsedName->degree_after,
                             'business_name' => $parsedName->business_name,
-                            'address' => (object)[
-                                'street_name' => $parsedLines[1][0],
-                                'street_number' => $parsedLines[1][1],
-                                'city' => $parsedLines[2][0],
-                                'zip_code' => StringHelper::removeWhitespaces($parsedLines[2][1]),
-                            ],
+                            'address' => $parsedAddress,
                             'date' => $subTable->date
                         ];
                     }
@@ -167,18 +162,14 @@ class BusinessSubjectPageParser
 
                         $parsedLines = self::parseInfoTable($subTable->table);
                         $parsedName = self::parseNameFromLine($parsedLines[0]);
+                        $parsedAddress = self::parseAddressFromLines($parsedLines);
 
                         $management[] = (object)[
                             'degree_before' => $parsedName->degree_before,
                             'first_name' => $parsedName->first_name,
                             'last_name' => $parsedName->last_name,
                             'degree_after' => $parsedName->degree_after,
-                            'address' => (object)[
-                                'street_name' => $parsedLines[1][0],
-                                'street_number' => $parsedLines[1][1],
-                                'city' => $parsedLines[2][0],
-                                'zip_code' => StringHelper::removeWhitespaces($parsedLines[2][1])
-                            ],
+                            'address' => $parsedAddress,
                             'date' => $subTable->date,
                         ];
                     }
@@ -195,18 +186,14 @@ class BusinessSubjectPageParser
 
                         $parsedLines = self::parseInfoTable($subTable->table);
                         $parsedName = self::parseNameFromLine($parsedLines[0]);
+                        $parsedAddress = self::parseAddressFromLines($parsedLines);
 
                         $management[] = (object)[
                             'degree_before' => $parsedName->degree_before,
                             'first_name' => $parsedName->first_name,
                             'last_name' => $parsedName->last_name,
                             'degree_after' => $parsedName->degree_after,
-                            'address' => (object)[
-                                'street_name' => $parsedLines[1][0],
-                                'street_number' => $parsedLines[1][1],
-                                'city' => $parsedLines[2][0],
-                                'zip_code' => StringHelper::removeWhitespaces($parsedLines[2][1])
-                            ],
+                            'address' => $parsedAddress,
                             'date' => $subTable->date,
                         ];
                     }
@@ -305,12 +292,7 @@ class BusinessSubjectPageParser
                     $rawPartner->last_name,
                     $rawPartner->degree_after,
                     $rawPartner->business_name,
-                    new Address(
-                        $rawPartner->address->street_name,
-                        $rawPartner->address->street_number,
-                        $rawPartner->address->city,
-                        $rawPartner->address->zip_code
-                    ),
+                    $rawPartner->address,
                     $rawPartner->date
                 );
             }, $subjectInfo['partners']),
@@ -333,12 +315,7 @@ class BusinessSubjectPageParser
                     $rawManager->first_name,
                     $rawManager->last_name,
                     $rawManager->degree_after,
-                    new Address(
-                        $rawManager->address->street_name,
-                        $rawManager->address->street_number,
-                        $rawManager->address->city,
-                        $rawManager->address->zip_code,
-                        ),
+                    $rawManager->address,
                     $rawManager->date
                 );
             }, $subjectInfo['management_body']),
@@ -348,12 +325,7 @@ class BusinessSubjectPageParser
                     $rawManager->first_name,
                     $rawManager->last_name,
                     $rawManager->degree_after,
-                    new Address(
-                        $rawManager->address->street_name,
-                        $rawManager->address->street_number,
-                        $rawManager->address->city,
-                        $rawManager->address->zip_code,
-                        ),
+                    $rawManager->address,
                     $rawManager->date
                 );
             }, $subjectInfo['supervisory_board']),
@@ -507,5 +479,28 @@ class BusinessSubjectPageParser
         }
 
         return $lines;
+    }
+
+    private static function parseAddressFromLines(array $lines): Address
+    {
+        // Note: First line is name of subject/person
+
+        // TODO: Is 'DE 19808' relevant ZIP code?
+        /*$zip = null;
+        if (isset($lines[2][1])) {
+            // Fixing HTML edgecase in foreign addresses: "Wilmington DE 19808" -> "DE 19808" -> "19808"
+            $zip = array_filter(explode(' ', $lines[2][1]), function($zipComponent) {
+                return is_numeric($zipComponent);
+            });
+            $zip = StringHelper::removeWhitespaces(implode(' ', $zip));
+        }*/
+
+        return new Address(
+            $lines[1][0], // street_name
+            $lines[1][1], // street_number
+            $lines[2][0], // city_name
+            isset($lines[2][1]) ? StringHelper::removeWhitespaces($lines[2][1]) : null, //$zip, // zip_code
+            isset($lines[3][0]) && !StringHelper::str_contains($lines[3][0], 'From:') ? $lines[3][0] : null
+        );
     }
 }
