@@ -205,6 +205,68 @@ class SubjectPageParsingTest extends TestCase
         $this->assertSame($subject->UpdatedAt->format('Y-m-d'), '2020-04-20');
     }
 
+    public function testFingoAsParsing()
+    {
+        $this->assertSame(0, 0);
+        $pageHtml = self::loadPageById(self::FINGO_AS);
+        $subject = BusinessSubjectPageParser::parseHtml($pageHtml);
+
+        // Business name
+        $this->assertSame($subject->BusinessName->Text, 'FINGO a. s.');
+
+        $this->assertSame($subject->Section, 'Sa');
+        $this->assertSame($subject->InsertNumber, '6621/B');
+
+        // Registered Seat
+        $this->assertSame($subject->RegisteredSeat->Address->CityName, 'Bratislava - mestská časť Nové Mesto');
+        $this->assertSame($subject->RegisteredSeat->Address->StreetName, 'Vajnorská');
+        $this->assertSame($subject->RegisteredSeat->Address->StreetNumber, '100/B');
+        $this->assertSame($subject->RegisteredSeat->Address->Zip, '83104');
+        $this->assertSame($subject->RegisteredSeat->Date->format('Y-m-d'), '2018-05-04');
+
+        // Text Values
+        $this->assertTextDatePair($subject->IdentificationNumber, '51015625', '2017-07-13');
+        $this->assertTextDatePair($subject->LegalForm, 'Joint-stock company', '2017-07-13');
+        $this->assertTextDatePair($subject->ActingInTheName, 'V mene spoločnosti je vo všetkých veciach oprávnený konať a podpisovať predseda predstavenstva samostatne alebo dvaja členovia predstavenstva spoločne. Podpisovanie za spoločnosť sa vykoná tak, že k vytlačenému alebo napísanému obchodnému menu spoločnosti, menu a funkcii pripojí podpisujúci svoj podpis.', '2017-07-13');
+
+        // Capital
+        $this->assertSame($subject->Capital->Amount, 30000.0);
+        $this->assertSame($subject->Capital->Paid, 30000.0);
+        $this->assertSame($subject->Capital->Currency, 'EUR');
+        $this->assertSame($subject->Capital->Date->format('Y-m-d'), '2017-07-13');
+
+        // Shares
+        // $this->assertShares($subject->Shares, 300, 100.0, 'kmeňové', 'listinné akcie na meno');
+
+        // Objects Of The Company
+        $this->assertTextDatePair($subject->CompanyObjects[0], 'prenájom nehnuteľností, bytových a nebytových priestorov bez poskytovania iných než základných služieb spojených s prenájmom', '2017-07-13');
+        $this->assertTextDatePair($subject->CompanyObjects[1], 'Vykonávanie mimoškolskej vzdelávacej činnosti', '2017-09-12');
+        $this->assertTextDatePair($subject->CompanyObjects[2], 'Sprostredkovateľská činnosť v oblasti obchodu, služieb,výroby', '2017-09-12');
+        $this->assertTextDatePair($subject->CompanyObjects[3], 'Reklamné a marketingové služby', '2017-09-12');
+        $this->assertTextDatePair($subject->CompanyObjects[4], 'Prieskum trhu a verejnej mienky', '2017-09-12');
+        $this->assertTextDatePair($subject->CompanyObjects[5], 'Kúpa tovaru na účely jeho predaja konečnému spotrebiteľovi (maloobchod) alebo iným prevádzkovateľom živnosti (veľkoobchod)', '2017-09-12');
+        $this->assertTextDatePair($subject->CompanyObjects[6], 'Činnosť podnikateľských, organizačných a ekonomických poradcov', '2017-09-12');
+        $this->assertTextDatePair($subject->CompanyObjects[7], 'Činnosť podriadeného finančného agenta v sektore poistenia alebo zaistenia', '2017-09-12');
+        $this->assertTextDatePair($subject->CompanyObjects[8], 'Činnosť podriadeného finančného agenta v sektore kapitálového trhu', '2017-09-12');
+        $this->assertTextDatePair($subject->CompanyObjects[9], 'Činnosť podriadeného finančného agenta v sektore prijímania vkladov', '2017-09-12');
+        $this->assertTextDatePair($subject->CompanyObjects[10], 'Činnosť podriadeného finančného agenta v sektore poskytovania úverov a spotrebiteľských úverov', '2017-09-12');
+        $this->assertTextDatePair($subject->CompanyObjects[11], 'Činnosť podriadeného finančného agenta v sektore doplnkového dôchodkového sporenia', '2017-09-12');
+        $this->assertTextDatePair($subject->CompanyObjects[12], 'Činnosť podriadeného finančného agenta v sektore starobného dôchodkového sporenia', '2017-09-12');
+
+        // Management Body
+        $this->assertManager($subject->ManagementBody[0], null, 'Lívia', 'Palásthyová', null,
+            'Tupolevova', '1040/4', 'Bratislava - mestská časť Petržalka', '85101', '2019-07-12');
+
+        // Other Legal Facts
+        $this->assertTextDatePair($subject->OtherLegalFacts[0], 'Akciová spoločnosť bola založená bez výzvy na upisovanie akcií zakladateľskou zmluvou vo forme notárskej zápisnice č. N 501/2017, Nz 22455/2017, NCRls 22942/2017 zo dňa 28.06.2017 podľa §§ 154-220a Obchodného zákonníka č. 513/1991 Zb. v znení neskorších predpisov.', '2017-07-13');
+        $this->assertTextDatePair($subject->OtherLegalFacts[1], 'Zápisnica z valného zhromaždenia konaného dňa 11.08.2017. Notárska zápisnica č. N 667/2017, Nz 29301/2017, NCRls 30008/2017 zo dňa 24.08.2017.', '2017-09-12');
+
+        // Standalone Dates
+        $this->assertSame($subject->EntryDate->format('Y-m-d'), '2017-07-13');
+        $this->assertSame($subject->ExtractedAt->format('Y-m-d'), '2020-04-22');
+        $this->assertSame($subject->UpdatedAt->format('Y-m-d'), '2020-04-20');
+    }
+
 
     #
     # Test Helpers
