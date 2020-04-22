@@ -225,6 +225,14 @@ class BusinessSubjectPageParser
                     $subjectInfo['merger_or_division'] = self::parseSimpleInfoTable($infoTable);
                     break;
                 }
+                /*case 'Company ceased to exist by (way of) a merger or a division': {
+                    // TODO: Implement as array of MergedSubject-s (-> http://orsr.sk/vypis.asp?lan=en&ID=19616&SID=2&P=0)
+                    break;
+                }*/
+                /*case 'Legal successor': {
+                    // TODO: Implement as array of LegalPredecessor-s (-> http://orsr.sk/vypis.asp?lan=en&ID=19616&SID=2&P=0)
+                    break;
+                }*/
                 case 'Capital': {
                     $subjectInfo["capital"] = (object)[
                         'total' => (float)StringHelper::removeWhitespaces($infoTable->subTables[0]->table->childNodes[1]->textContent),
@@ -240,6 +248,8 @@ class BusinessSubjectPageParser
                     $facts = [];
                     foreach ($infoTable->subTables as $subTable) {
                         $facts[] = (object)[
+                            // TODO: This can contain multiple paragraphs splitted by multiple spaces.
+                            //   -> Would it be useful to support this?
                             'text' => StringHelper::paragraphText($subTable->table->textContent),
                             'date' => $subTable->date
                         ];
@@ -408,6 +418,8 @@ class BusinessSubjectPageParser
         $degreeAfter = null;
 
         // HTML edge-case fix (Joint-stock company / Managing board - edgecase)
+        // TODO: This should be saved to data-structure as relevant information
+        //   -> only small amount of cases have this field provided
         $line = array_filter($line, function ($item) {
             return $item !== "- predseda" && $item !== '- člen dozornej rady';
         });
@@ -485,7 +497,7 @@ class BusinessSubjectPageParser
                 foreach ($node->childNodes as $node_2) {
                     if ($node_2->nodeName === 'span' && $node_2->getAttribute('class') === 'ra') {
                         $lines[$lineIndex][] = trim($node_2->textContent);
-                    } // esle -> ignore
+                    } // else -> ignore
                 }
             } elseif ($node->nodeName === 'span' && $node->getAttribute('class') === 'ra') {
                 $lines[$lineIndex][] = trim($node->textContent);
