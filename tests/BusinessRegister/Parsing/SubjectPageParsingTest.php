@@ -118,18 +118,18 @@ class SubjectPageParsingTest extends TestCase
 
         // Other Legal Facts
         // TODO: Fix bad line-endings so this can be fully tested
-        $this->assertTextDatePair($subject->OtherLegalFacts[0], 'Spoločnosť s ručením obmedzeným bola založená spoločenskou zmluvou zo dňa 29.08.1990 podľa § 106a ods. 1 a § 106n ods. 1 Zák.č. 103/1990 Zb., ktorým sa mení a dopľňa Hospodársky zákonník.                       Stary spis: S.r.o.    208', '1990-08-29');
-        $this->assertTextDatePair($subject->OtherLegalFacts[1], 'Dodatok č. 4 k spoločenskej zmluve zo dňa  16.8.1995 v súlade s príslušnými ustanoveniami obchodného zákonníka.                                                                          Stary spis: S.r.o.    208', '1995-09-20');
-        $this->assertTextDatePair($subject->OtherLegalFacts[2], 'Dodatok č. 5 k spoločenskej zmluve zo dňa 23.04.1997. Zápisnica z valného zhromaždenia zo dňa 23.04.1997. Stary spis: S.r.o.    208', '1997-10-09');
+        $this->assertTextDatePair($subject->OtherLegalFacts[0], 'Spoločnosť s ručením obmedzeným bola založená spoločenskou zmluvou zo dňa 29.08.1990 podľa § 106a ods. 1 a § 106n ods. 1 Zák.č. 103/1990 Zb., ktorým sa mení a dopľňa Hospodársky zákonník. Stary spis: S.r.o. 208', '1990-08-29');
+        $this->assertTextDatePair($subject->OtherLegalFacts[1], 'Dodatok č. 4 k spoločenskej zmluve zo dňa 16.8.1995 v súlade s príslušnými ustanoveniami obchodného zákonníka. Stary spis: S.r.o. 208', '1995-09-20');
+        $this->assertTextDatePair($subject->OtherLegalFacts[2], 'Dodatok č. 5 k spoločenskej zmluve zo dňa 23.04.1997. Zápisnica z valného zhromaždenia zo dňa 23.04.1997. Stary spis: S.r.o. 208', '1997-10-09');
         $this->assertTextDatePair($subject->OtherLegalFacts[3], 'Na valnom zhromaždení konanom dňa 9.6.2000 schválené rozdelenie a prevod obchodných podielov. Dodatok č. 7 k spoločenskej zmluve zo dňa 17.7.2000.', '2000-09-18');
-        // $this->assertTextDatePair($subject->OtherLegalFacts[4], 'Zápisnica z valného zhromaždenia zo dňa 1. 3. 2004. Spoločenská zmluva zo dňa 18. 3. 2004.', '2004-04-14');
+        $this->assertTextDatePair($subject->OtherLegalFacts[4], 'Zápisnica z valného zhromaždenia zo dňa 1. 3. 2004. Spoločenská zmluva zo dňa 18. 3. 2004.', '2004-04-14');
         $this->assertTextDatePair($subject->OtherLegalFacts[5], 'Zápisnica z valného zhromaždenia spoločnosti zo dňa 13.09.2004.', '2004-10-22');
         $this->assertTextDatePair($subject->OtherLegalFacts[6], 'Zápisnica z valného zhromaždenia zo dňa 01.06.2009.', '2009-06-30');
         $this->assertTextDatePair($subject->OtherLegalFacts[7], 'Zápisnica z valného zhromaždenia zo dňa 03.03.2011.', '2011-03-23');
         $this->assertTextDatePair($subject->OtherLegalFacts[8], 'Zápisnica z mimoriadneho valného zhromaždenia zo dňa 25.03.2011', '2011-04-01');
         $this->assertTextDatePair($subject->OtherLegalFacts[9], 'Zápisnica z valného zhromaždenia spoločnosti zo dňa 26.03. 2012.', '2012-04-04');
         $this->assertTextDatePair($subject->OtherLegalFacts[10], 'Zápisnica z valného zhromaždenia zo dňa 01.03.2013.', '2013-03-14');
-        // $this->assertTextDatePair($subject->OtherLegalFacts[11], 'Zápisnica z valného zhromaždenia konaného dňa 08.01.2014.', '2014-02-07');
+        $this->assertTextDatePair($subject->OtherLegalFacts[11], 'Zápisnica z valného zhromaždenia konaného dňa 08.01.2014.', '2014-02-07');
         $this->assertTextDatePair($subject->OtherLegalFacts[12], 'Zápisnica z valného zhromaždenia zo dňa 15.07.2014.', '2014-07-22');
         $this->assertTextDatePair($subject->OtherLegalFacts[13], 'Zápisnica zo zasadnutia mimoriadneho valného zhromaždenia zo dňa 18.12.2014', '2015-01-13');
         $this->assertTextDatePair($subject->OtherLegalFacts[14], 'Zápisnica z mimoriadneho valného zhromaždenia konaného dňa 01.02.2018. Zmluva o zlúčení zo dňa 01.02.2018 vo forme notárskej zápisnice č. N 83/2018, Nz 3446/2018, NCRls 3497/2018.', '2018-03-27');

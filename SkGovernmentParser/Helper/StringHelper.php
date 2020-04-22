@@ -27,4 +27,19 @@ class StringHelper
     {
         return strpos($haystack, $needle) !== false;
     }
+
+    public static function paragraphText(?string $text): ?string
+    {
+        if (empty($text)) {
+            return null;
+        }
+
+        $text = str_replace(self::NON_BREAKING_SPACE, ' ', $text);
+
+        // Trim around string
+        return trim(
+            // Replace multiple whitespaces to single space
+            preg_replace('/\s+/', ' ', $text)
+        );
+    }
 }

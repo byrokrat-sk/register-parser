@@ -240,7 +240,7 @@ class BusinessSubjectPageParser
                     $facts = [];
                     foreach ($infoTable->subTables as $subTable) {
                         $facts[] = (object)[
-                            'text' => trim($subTable->table->textContent),
+                            'text' => StringHelper::paragraphText($subTable->table->textContent),
                             'date' => $subTable->date
                         ];
                     }
