@@ -409,7 +409,7 @@ class BusinessSubjectPageParser
 
         // HTML edge-case fix (Joint-stock company / Managing board - edgecase)
         $line = array_filter($line, function ($item) {
-            return $item !== "- predseda";
+            return $item !== "- predseda" && $item !== '- člen dozornej rady';
         });
 
         switch(count($line)) {
