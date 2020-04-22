@@ -26,7 +26,6 @@ class SubjectPageParsingTest extends TestCase
 
     public function testSoftecParsing()
     {
-        $this->assertSame(0, 0);
         $pageHtml = self::loadPageById(self::SOFTEC);
         $subject = BusinessSubjectPageParser::parseHtml($pageHtml);
 
@@ -142,7 +141,6 @@ class SubjectPageParsingTest extends TestCase
 
     public function testFingoSroParsing()
     {
-        $this->assertSame(0, 0);
         $pageHtml = self::loadPageById(self::FINGO_SRO);
         $subject = BusinessSubjectPageParser::parseHtml($pageHtml);
 
@@ -209,7 +207,6 @@ class SubjectPageParsingTest extends TestCase
 
     public function testFingoAsParsing()
     {
-        $this->assertSame(0, 0);
         $pageHtml = self::loadPageById(self::FINGO_AS);
         $subject = BusinessSubjectPageParser::parseHtml($pageHtml);
 
