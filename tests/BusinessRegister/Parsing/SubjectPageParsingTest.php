@@ -138,6 +138,73 @@ class SubjectPageParsingTest extends TestCase
         $this->assertSame($subject->UpdatedAt->format('Y-m-d'), '2020-04-20');
     }
 
+    public function testFingoSroParsing()
+    {
+        $this->assertSame(0, 0);
+        $pageHtml = self::loadPageById(self::FINGO_SRO);
+        $subject = BusinessSubjectPageParser::parseHtml($pageHtml);
+
+        // Business name
+        $this->assertSame($subject->BusinessName->Text, 'FINGO.SK s. r. o.');
+
+        $this->assertSame($subject->Section, 'Sro');
+        $this->assertSame($subject->InsertNumber, '123762/B');
+
+        // Registered Seat
+        $this->assertSame($subject->RegisteredSeat->Address->CityName, 'Bratislava - mestská časť Nové Mesto');
+        $this->assertSame($subject->RegisteredSeat->Address->StreetName, 'Vajnorská');
+        $this->assertSame($subject->RegisteredSeat->Address->StreetNumber, '100/B');
+        $this->assertSame($subject->RegisteredSeat->Address->Zip, '83104');
+        $this->assertSame($subject->RegisteredSeat->Date->format('Y-m-d'), '2018-05-03');
+
+        // Text Values
+        $this->assertTextDatePair($subject->IdentificationNumber, '50230859', '2016-03-24');
+        $this->assertTextDatePair($subject->LegalForm, 'Private limited liability company', '2016-03-24');
+        $this->assertTextDatePair($subject->ActingInTheName, 'V mene spoločnosti konajú vždy dvaja konatelia spoločne s tým, že jedným z nich musí byť vždy Lívia Palásthyová, pričom každý konateľ k písanému alebo tlačenému obchodnému menu spoločnosti alebo k odtlačku pečiatky spoločnosti a k podpisu druhého konateľa pripojí svoj vlastnoručný podpis.', '2018-02-15');
+
+        // Capital
+        $this->assertSame($subject->Capital->Amount, 5000.0);
+        $this->assertSame($subject->Capital->Paid, 5000.0);
+        $this->assertSame($subject->Capital->Currency, 'EUR');
+        $this->assertSame($subject->Capital->Date->format('Y-m-d'), '2016-03-24');
+
+        // Objects Of The Company
+        $this->assertTextDatePair($subject->CompanyObjects[0], 'Kúpa tovaru na účely jeho predaja konečnému spotrebiteľovi (maloobchod) alebo iným prevádzkovateľom živnosti (veľkoobchod)', '2016-03-24');
+        $this->assertTextDatePair($subject->CompanyObjects[1], 'Sprostredkovateľská činnosť v oblasti obchodu', '2016-03-24');
+        $this->assertTextDatePair($subject->CompanyObjects[2], 'Sprostredkovateľská činnosť v oblasti služieb', '2016-03-24');
+        $this->assertTextDatePair($subject->CompanyObjects[3], 'Počítačové služby', '2016-03-24');
+        $this->assertTextDatePair($subject->CompanyObjects[4], 'Služby súvisiace s počítačovým spracovaním údajov', '2016-03-24');
+        $this->assertTextDatePair($subject->CompanyObjects[5], 'Administratívne služby', '2016-03-24');
+        $this->assertTextDatePair($subject->CompanyObjects[6], 'Činnosť podnikateľských, organizačných a ekonomických poradcov', '2016-03-24');
+        $this->assertTextDatePair($subject->CompanyObjects[7], 'Reklamné a marketingové služby', '2016-03-24');
+        $this->assertTextDatePair($subject->CompanyObjects[8], 'Činnosť samostatného finančného agenta v sektore poistenia alebo zaistenia, v sektore kapitálového trhu, v sektore prijímania vkladov, v sektore poskytovania úverov a spotrebiteľských úverov, v sektore doplnkového dôchodkového sporenia a v sektore starobného dôchodkového sporenia', '2016-05-14');
+
+        // Partners
+        $this->assertPartner($subject->Partners[0], null, null, null, null, 'FINGO a.s.',
+            'Turčianska', '19', 'Bratislava - mestská časť Ružinov', '82109', '2017-05-12');
+
+        // Contributors
+        $this->assertContributor($subject->MembersContribution[0], null, null, null, null, 'FINGO a.s.',
+            5000.0, 5000.0, 'EUR', '2017-12-05');
+
+        // Management Body
+        $this->assertManager($subject->ManagementBody[0], null, 'Roland', 'Dvořák', null,
+            'Letná', '166/62', 'Malá Ida', '04420', '2018-02-15');
+        $this->assertManager($subject->ManagementBody[1], null, 'Ondrej', 'Matvija', null,
+            'Attidova', '1462/11', 'Bratislava - mestská časť Rusovce', '85110', '2017-12-05');
+        $this->assertManager($subject->ManagementBody[2], null, 'Lívia', 'Palásthyová', null,
+            'Tupolevova', '1040/4', 'Bratislava - mestská časť Petržalka', '85101', '2018-02-15');
+
+        // Other Legal Facts
+        $this->assertTextDatePair($subject->OtherLegalFacts[0], 'Rozhodnutie jediného spoločníka zo dňa 7.11.2017. Zmena obchodného mena z VIA FINANCE s.r.o. na FINGO.SK s.r.o.', '2017-12-05');
+        $this->assertTextDatePair($subject->OtherLegalFacts[1], 'Rozhodnutie jediného spoločníka zo dňa 31.01.2018.', '2018-02-15');
+
+        // Standalone Dates
+        $this->assertSame($subject->EntryDate->format('Y-m-d'), '2016-03-24');
+        $this->assertSame($subject->ExtractedAt->format('Y-m-d'), '2020-04-22');
+        $this->assertSame($subject->UpdatedAt->format('Y-m-d'), '2020-04-20');
+    }
+
 
     #
     # Test Helpers
