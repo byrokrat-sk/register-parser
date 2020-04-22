@@ -2,6 +2,8 @@
     "name": "srsen/sk-government-parser",
     "description": "Package for requesting structured data about business subjects from pages of slovak government without API.",
     "type": "library",
+    "version": "0.1.0",
+    "minimum-stability": "dev",
     "require": {
         "php": "^7.4",
         "ext-json": "^7.4",
