@@ -156,7 +156,7 @@ class BusinessSubjectPageParser
                     $management = [];
                     foreach ($infoTable->subTables as $subTable) {
                         $nodeText = trim($subTable->table->textContent);
-                        if ($nodeText === 'konatelia' || $nodeText === "Managing board") {
+                        if ($nodeText === 'konatelia' || $nodeText === 'Managing board' || $nodeText === 'spoločníci') {
                             continue; // Skip header table cell
                         }
 
@@ -174,6 +174,7 @@ class BusinessSubjectPageParser
                             'first_name' => $parsedName->first_name,
                             'last_name' => $parsedName->last_name,
                             'degree_after' => $parsedName->degree_after,
+                            'business_name' => $parsedName->business_name,
                             'address' => $parsedAddress,
                             'date' => $subTable->date,
                         ];
@@ -199,6 +200,7 @@ class BusinessSubjectPageParser
                             'first_name' => $parsedName->first_name,
                             'last_name' => $parsedName->last_name,
                             'degree_after' => $parsedName->degree_after,
+                            'business_name' => $parsedName->business_name,
                             'address' => $parsedAddress,
                             'date' => $subTable->date,
                         ];
@@ -321,6 +323,7 @@ class BusinessSubjectPageParser
                     $rawManager->first_name,
                     $rawManager->last_name,
                     $rawManager->degree_after,
+                    $rawManager->business_name,
                     $rawManager->address,
                     $rawManager->date
                 );
@@ -331,6 +334,7 @@ class BusinessSubjectPageParser
                     $rawManager->first_name,
                     $rawManager->last_name,
                     $rawManager->degree_after,
+                    $rawManager->business_name,
                     $rawManager->address,
                     $rawManager->date
                 );

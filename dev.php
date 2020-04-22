@@ -20,4 +20,4 @@ const FINGO_AS_ICO = "51015625";
 const SOFTEC_ICO = "00683540";
 const PPC_ICO = "31561802";
 
-echo(json_encode(IdentificatorQuery::queryBy('31333532'), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+echo(json_encode(IdentificatorQuery::queryBy('35793783'), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));

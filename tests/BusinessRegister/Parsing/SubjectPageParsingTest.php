@@ -101,19 +101,19 @@ class SubjectPageParsingTest extends TestCase
             7320.0, 7320.0, 'EUR', '2018-03-27');
 
         // Management Body
-        $this->assertManager($subject->ManagementBody[0], 'Ing.', 'Karol', 'Fischer', null,
+        $this->assertManager($subject->ManagementBody[0], 'Ing.', 'Karol', 'Fischer', null, null,
             'Bellova', '23', 'Bratislava  - Nové Mesto', '83101', '2000-09-18');
-        $this->assertManager($subject->ManagementBody[1], 'Ing.', 'Martin', 'Melišek', null,
+        $this->assertManager($subject->ManagementBody[1], 'Ing.', 'Martin', 'Melišek', null, null,
             'Žltá', '3897/2B', 'Bratislava', '85107', '2011-03-23');
-        $this->assertManager($subject->ManagementBody[2], 'RNDr.', 'Aleš', 'Mičovský', null,
+        $this->assertManager($subject->ManagementBody[2], 'RNDr.', 'Aleš', 'Mičovský', null, null,
             'Medená', '10/K', 'Bratislava', '81102', '2011-03-23');
-        $this->assertManager($subject->ManagementBody[3], 'Ing.', 'Peter', 'Morávek', null,
+        $this->assertManager($subject->ManagementBody[3], 'Ing.', 'Peter', 'Morávek', null, null,
             'Čerešňová', '76', 'Chorvátsky Grob', '90025', '2013-03-14');
-        $this->assertManager($subject->ManagementBody[4], 'Ing.', 'Alexander', 'Rehorovský', null,
+        $this->assertManager($subject->ManagementBody[4], 'Ing.', 'Alexander', 'Rehorovský', null, null,
             'Slovienska', '1045/6', 'Bratislava - Devín', '84110', '2016-03-09');
-        $this->assertManager($subject->ManagementBody[5], 'Ing.', 'Anton', 'Scheber', 'CSc.',
+        $this->assertManager($subject->ManagementBody[5], 'Ing.', 'Anton', 'Scheber', 'CSc.', null,
             'Na kopci', '8', 'Bratislava', '81102', '2000-09-18');
-        $this->assertManager($subject->ManagementBody[6], 'Ing.', 'Daniel', 'Scheber', null,
+        $this->assertManager($subject->ManagementBody[6], 'Ing.', 'Daniel', 'Scheber', null, null,
             'Dlhé diely I', '5046/8', 'Bratislava - mestská časť Karlova Ves', '84104', '2016-03-09');
 
         // Other Legal Facts
@@ -189,11 +189,11 @@ class SubjectPageParsingTest extends TestCase
             5000.0, 5000.0, 'EUR', '2017-12-05');
 
         // Management Body
-        $this->assertManager($subject->ManagementBody[0], null, 'Roland', 'Dvořák', null,
+        $this->assertManager($subject->ManagementBody[0], null, 'Roland', 'Dvořák', null, null,
             'Letná', '166/62', 'Malá Ida', '04420', '2018-02-15');
-        $this->assertManager($subject->ManagementBody[1], null, 'Ondrej', 'Matvija', null,
+        $this->assertManager($subject->ManagementBody[1], null, 'Ondrej', 'Matvija', null, null,
             'Attidova', '1462/11', 'Bratislava - mestská časť Rusovce', '85110', '2017-12-05');
-        $this->assertManager($subject->ManagementBody[2], null, 'Lívia', 'Palásthyová', null,
+        $this->assertManager($subject->ManagementBody[2], null, 'Lívia', 'Palásthyová', null, null,
             'Tupolevova', '1040/4', 'Bratislava - mestská časť Petržalka', '85101', '2018-02-15');
 
         // Other Legal Facts
@@ -255,7 +255,7 @@ class SubjectPageParsingTest extends TestCase
         $this->assertTextDatePair($subject->CompanyObjects[12], 'Činnosť podriadeného finančného agenta v sektore starobného dôchodkového sporenia', '2017-09-12');
 
         // Management Body
-        $this->assertManager($subject->ManagementBody[0], null, 'Lívia', 'Palásthyová', null,
+        $this->assertManager($subject->ManagementBody[0], null, 'Lívia', 'Palásthyová', null, null,
             'Tupolevova', '1040/4', 'Bratislava - mestská časť Petržalka', '85101', '2019-07-12');
 
         // Other Legal Facts
@@ -343,9 +343,9 @@ class SubjectPageParsingTest extends TestCase
             100000.0, 100000.0, 'EUR', '2018-11-09');
 
         // Management Body
-        $this->assertManager($subject->ManagementBody[0], null, 'Kenneth Hohee', 'Yi', null,
+        $this->assertManager($subject->ManagementBody[0], null, 'Kenneth Hohee', 'Yi', null, null,
             'Sand Hill Circle', '620', 'Menlo Park, Kalifornia', '94025', '2015-05-12', 'Spojené štáty americké');
-        $this->assertManager($subject->ManagementBody[1], null, 'Paul Terence', 'Manicle', null,
+        $this->assertManager($subject->ManagementBody[1], null, 'Paul Terence', 'Manicle', null, null,
             'Balally Park, Dundrum', '97', 'Dublin 16', null, '2015-11-06', 'Írsko');
 
         // Other Legal Facts
@@ -395,12 +395,13 @@ class SubjectPageParsingTest extends TestCase
         $this->assertSame($date, $partner->Date->format('Y-m-d'));
     }
 
-    private function assertManager(SubjectManager $manager, $db, $fn, $ln, $da, $sna, $snu, $cn, $zip, $date, $country = null): void
+    private function assertManager(SubjectManager $manager, $db, $fn, $ln, $da, $bn, $sna, $snu, $cn, $zip, $date, $country = null): void
     {
         $this->assertSame($db, $manager->DegreeBefore);
         $this->assertSame($fn, $manager->FirstName);
         $this->assertSame($ln, $manager->LastName);
         $this->assertSame($da, $manager->DegreeAfter);
+        $this->assertSame($bn, $manager->BusinessName);
 
         $this->assertSame($sna, $manager->Address->StreetName);
         $this->assertSame($snu, $manager->Address->StreetNumber);
