@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser\Validator;
+namespace SkGovernmentParser\DataSources\BusinessRegister;
 
 
 class CompanyIdValidator

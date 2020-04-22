@@ -1,5 +1,6 @@
 <?php
 
+
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model;
 
 

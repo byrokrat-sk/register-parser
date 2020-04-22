@@ -17,8 +17,7 @@ const PPC_ICO = "31561802";
 
 $query = BusinessRegisterQuery::network();
 
-// $queryResult = $query->byIdentificator(FINGO_SRO_ICO);
-$queryResult = $query->byName('Allrisk');
-$subjectId = $queryResult->getItems()[2]->SubjectId;
+$queryResult = $query->byIdentificator(FINGO_SRO_ICO);
+//$queryResult = $query->byName('Allrisk')->first();
 
-echo(json_encode($query->bySubjectId($subjectId), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+echo(json_encode($queryResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));

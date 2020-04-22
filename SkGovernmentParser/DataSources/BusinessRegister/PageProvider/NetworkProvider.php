@@ -8,6 +8,7 @@ use SkGovernmentParser\DataSources\BusinessRegister\BusinessRegisterPageProvider
 use SkGovernmentParser\Exceptions\BadHttpRequestException;
 use SkGovernmentParser\Helper\CurlHelper;
 
+
 class NetworkProvider implements BusinessRegisterPageProvider
 {
     public const NAME_QUERY_URL = 'http://orsr.sk/hladaj_subjekt.asp?lan=en&OBMENO={query}&PF=0&R=on';

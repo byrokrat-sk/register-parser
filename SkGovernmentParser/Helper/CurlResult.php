@@ -29,7 +29,7 @@ class CurlResult
     public function getContentType(): ?string
     {
         return array_key_exists(self::HTTP_HEADER_CONTENT_TYPE, $this->HttpHeaders)
-            ? $this->HttpHeaders
+            ? $this->HttpHeaders[self::HTTP_HEADER_CONTENT_TYPE]
             : null;
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+
 namespace SkGovernmentParser\DataSources\BusinessRegister;
 
 
@@ -13,7 +14,6 @@ use SkGovernmentParser\Exceptions\InconclusiveSearchException;
 use SkGovernmentParser\Exceptions\InvalidQueryException;
 use SkGovernmentParser\Helper\StringHelper;
 use SkGovernmentParser\ParserConfiguration;
-use SkGovernmentParser\Validator\CompanyIdValidator;
 
 
 class BusinessRegisterQuery
