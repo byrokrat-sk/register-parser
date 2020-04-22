@@ -182,8 +182,8 @@ class SubjectPageParsingTest extends TestCase
         $this->assertTextDatePair($subject->CompanyObjects[8], 'Činnosť samostatného finančného agenta v sektore poistenia alebo zaistenia, v sektore kapitálového trhu, v sektore prijímania vkladov, v sektore poskytovania úverov a spotrebiteľských úverov, v sektore doplnkového dôchodkového sporenia a v sektore starobného dôchodkového sporenia', '2016-05-14');
 
         // Partners
-        /*$this->assertPartner($subject->Partners[0], null, null, null, null, 'FINGO a.s.',
-            'Turčianska', '19', 'Bratislava - mestská časť Ružinov', '82109', '2017-05-12');*/
+        $this->assertPartner($subject->Partners[0], null, null, null, null, 'FINGO a.s.',
+            'Turčianska', '19', 'Bratislava - mestská časť Ružinov', '82109', '2017-12-05');
 
         // Contributors
         $this->assertContributor($subject->MembersContribution[0], null, null, null, null, 'FINGO a.s.',

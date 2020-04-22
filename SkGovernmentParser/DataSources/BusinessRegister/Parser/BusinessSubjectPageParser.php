@@ -121,6 +121,7 @@ class BusinessSubjectPageParser
                             'first_name' => $parsedName->first_name,
                             'last_name' => $parsedName->last_name,
                             'degree_after' => $parsedName->degree_after,
+                            'business_name' => $parsedName->business_name,
                             'address' => (object)[
                                 'street_name' => $parsedLines[1][0],
                                 'street_number' => $parsedLines[1][1],
