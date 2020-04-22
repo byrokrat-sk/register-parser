@@ -99,47 +99,20 @@ class SubjectPageParsingTest extends TestCase
             7320.0, 7320.0, 'EUR', '2018-03-27');
 
         // Management Body
-        // TODO: Test Management
-
-        /*Ing. Karol Fischer
-        Bellova 23
-        Bratislava - Nové Mesto 831 01
-        (from: 09/18/2000)
-
-        Ing. Martin Melišek
-        Žltá 3897/2B
-        Bratislava 851 07
-        From: 03/01/2004
-        (from: 03/23/2011)
-
-        RNDr. Aleš Mičovský
-        Medená 10/K
-        Bratislava 811 02
-        From: 03/01/2004
-        (from: 03/23/2011)
-
-        Ing. Peter Morávek
-        Čerešňová 76
-        Chorvátsky Grob 900 25
-        From: 03/01/2013
-        (from: 03/14/2013)
-
-        Ing. Alexander Rehorovský
-        Slovienska 1045/6
-        Bratislava - Devín 841 10
-        From: 02/22/2016
-        (from: 03/09/2016)
-
-        Ing. Anton Scheber , CSc.
-        Na kopci 8
-        Bratislava 811 02
-        (from: 09/18/2000)
-
-        Ing. Daniel Scheber
-        Dlhé diely I 5046/8
-        Bratislava - mestská časť Karlova Ves 841 04
-        From: 02/22/2016
-        (from: 03/09/2016)*/
+        $this->assertManager($subject->ManagementBody[0], 'Ing.', 'Karol', 'Fischer', null,
+            'Bellova', '23', 'Bratislava  - Nové Mesto', '83101', '2000-09-18');
+        $this->assertManager($subject->ManagementBody[1], 'Ing.', 'Martin', 'Melišek', null,
+            'Žltá', '3897/2B', 'Bratislava', '85107', '2011-03-23');
+        $this->assertManager($subject->ManagementBody[2], 'RNDr.', 'Aleš', 'Mičovský', null,
+            'Medená', '10/K', 'Bratislava', '81102', '2011-03-23');
+        $this->assertManager($subject->ManagementBody[3], 'Ing.', 'Peter', 'Morávek', null,
+            'Čerešňová', '76', 'Chorvátsky Grob', '90025', '2013-03-14');
+        $this->assertManager($subject->ManagementBody[4], 'Ing.', 'Alexander', 'Rehorovský', null,
+            'Slovienska', '1045/6', 'Bratislava - Devín', '84110', '2016-03-09');
+        $this->assertManager($subject->ManagementBody[5], 'Ing.', 'Anton', 'Scheber', 'CSc.',
+            'Na kopci', '8', 'Bratislava', '81102', '2000-09-18');
+        $this->assertManager($subject->ManagementBody[6], 'Ing.', 'Daniel', 'Scheber', null,
+            'Dlhé diely I', '5046/8', 'Bratislava - mestská časť Karlova Ves', '84104', '2016-03-09');
 
         // Other Legal Facts
         // TODO: Fix bad line-endings so this can be fully tested
