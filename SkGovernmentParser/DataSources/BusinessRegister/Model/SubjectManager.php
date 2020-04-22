@@ -11,11 +11,11 @@ class SubjectManager
     public string $LastName;
     public ?string $DegreeAfter;
 
-    public Address $Address;
+    public ?Address $Address;
 
     public \DateTime $Date;
 
-    public function __construct(?string $DegreeBefore, string $FirstName, string $LastName, ?string $DegreeAfter, Address $Address, \DateTime $Date)
+    public function __construct(?string $DegreeBefore, string $FirstName, string $LastName, ?string $DegreeAfter, ?Address $Address, \DateTime $Date)
     {
         $this->DegreeBefore = $DegreeBefore;
         $this->FirstName = $FirstName;

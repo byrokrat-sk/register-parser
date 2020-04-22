@@ -162,7 +162,12 @@ class BusinessSubjectPageParser
 
                         $parsedLines = self::parseInfoTable($subTable->table);
                         $parsedName = self::parseNameFromLine($parsedLines[0]);
-                        $parsedAddress = self::parseAddressFromLines($parsedLines);
+
+                        $parsedAddress = null;
+                        // There are cases when managers do not have address provided, just name
+                        if (count($parsedLines) > 1) {
+                            $parsedAddress = self::parseAddressFromLines($parsedLines);
+                        }
 
                         $management[] = (object)[
                             'degree_before' => $parsedName->degree_before,
@@ -173,6 +178,7 @@ class BusinessSubjectPageParser
                             'date' => $subTable->date,
                         ];
                     }
+
                     $subjectInfo['management_body'] = $management;
                     break;
                 }
