@@ -1,9 +1,9 @@
 <?php
 
-namespace SkGovernmentParser\DataSources\BusinessRegister\Model\IdentificatorSearch;
+namespace SkGovernmentParser\DataSources\BusinessRegister\Model\SearchPage;
 
 
-class Result
+class Result implements \JsonSerializable
 {
     private array $ResultItems;
 
@@ -30,5 +30,17 @@ class Result
     public function first(): Item
     {
         return array_values($this->ResultItems)[0];
+    }
+
+    public function jsonSerialize()
+    {
+        return array_map(function (Item $item) {
+            return [
+                'id' => $item->SubjectId,
+                'business_name' => $item->BusinessName,
+                'actual_listing_url' => $item->getActualListingPageUrl(),
+                'full_listing_url' => $item->getFullListingPageUrl()
+            ];
+        }, $this->ResultItems);
     }
 }

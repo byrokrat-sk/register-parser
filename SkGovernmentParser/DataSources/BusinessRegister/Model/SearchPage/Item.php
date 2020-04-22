@@ -1,6 +1,6 @@
 <?php
 
-namespace SkGovernmentParser\DataSources\BusinessRegister\Model\IdentificatorSearch;
+namespace SkGovernmentParser\DataSources\BusinessRegister\Model\SearchPage;
 
 
 class Item

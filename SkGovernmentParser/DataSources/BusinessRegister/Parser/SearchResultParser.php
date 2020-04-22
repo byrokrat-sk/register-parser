@@ -3,14 +3,14 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Parser;
 
 
-use SkGovernmentParser\DataSources\BusinessRegister\Model\IdentificatorSearch\Item;
-use \SkGovernmentParser\DataSources\BusinessRegister\Model\IdentificatorSearch\Result;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\SearchPage\Item;
+use \SkGovernmentParser\DataSources\BusinessRegister\Model\SearchPage\Result;
 use SkGovernmentParser\Helper\DomHelper;
 use SkGovernmentParser\Helper\StringHelper;
 use SkGovernmentParser\ParserConfiguration;
 
 
-class SearchByIdentificatorResultParser
+class SearchResultParser
 {
     public static function parseHtml(string $rawHtml): Result
     {
