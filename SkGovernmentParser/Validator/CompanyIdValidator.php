@@ -4,7 +4,7 @@
 namespace SkGovernmentParser\Validator;
 
 
-class CompanyIdentificator
+class CompanyIdValidator
 {
     // https://phpfashion.com/jak-overit-platne-ic-a-rodne-cislo
     public static function isValid(string $identificator): bool

@@ -14,7 +14,7 @@ use SkGovernmentParser\Exceptions\InvalidQueryException;
 use SkGovernmentParser\Helper\StringHelper;
 use \SkGovernmentParser\Interfaces\Queriable;
 use SkGovernmentParser\ParserConfiguration;
-use SkGovernmentParser\Validator\CompanyIdentificator;
+use SkGovernmentParser\Validator\CompanyIdValidator;
 
 
 class IdentificatorQuery extends Queriable {
@@ -25,7 +25,7 @@ class IdentificatorQuery extends Queriable {
     {
         $sanetisedIdentificator = StringHelper::removeWhitespaces($query);
 
-        if (!CompanyIdentificator::isValid($sanetisedIdentificator)) {
+        if (!CompanyIdValidator::isValid($sanetisedIdentificator)) {
             throw new InvalidQueryException("Passed identificator [$query]->[$sanetisedIdentificator] is not valid identificator number!");
         }
 
