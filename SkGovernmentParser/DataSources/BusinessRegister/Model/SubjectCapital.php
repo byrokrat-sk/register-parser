@@ -4,7 +4,7 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model;
 
 
-class SubjectCapital
+class SubjectCapital implements \JsonSerializable
 {
     public float $Amount;
     public float $Paid;
@@ -17,5 +17,15 @@ class SubjectCapital
         $this->Paid = $Paid;
         $this->Currency = $Currency;
         $this->Date = $Date;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'amount' => $this->Amount,
+            'paid' => $this->Paid,
+            'currency' => $this->Currency,
+            'date' => $this->Date->format('Y-m-d'),
+        ];
     }
 }

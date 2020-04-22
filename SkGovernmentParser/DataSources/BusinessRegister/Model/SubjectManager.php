@@ -4,7 +4,7 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model;
 
 
-class SubjectManager
+class SubjectManager implements \JsonSerializable
 {
     public ?string $DegreeBefore;
     public ?string $FirstName;
@@ -25,5 +25,18 @@ class SubjectManager
         $this->BusinessName = $BusinessName;
         $this->Address = $Address;
         $this->Date = $Date;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'degree_before' => $this->DegreeBefore,
+            'first_name' => $this->FirstName,
+            'last_name' => $this->LastName,
+            'degree_after' => $this->DegreeAfter,
+            'business_name' => $this->BusinessName,
+            'address' => $this->Address,
+            'date' => $this->Date->format('Y-m-d')
+        ];
     }
 }

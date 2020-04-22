@@ -143,6 +143,7 @@ class BusinessSubjectPageParser
                             'last_name' => $parsedName->last_name,
                             'degree_after' => $parsedName->degree_after,
                             'business_name' => $parsedName->business_name,
+                            // TODO: Fix bad 'paid' field parsing (-> http://orsr.sk/vypis.asp?lan=en&ID=60188&SID=2&P=0)
                             'amount' => (float)StringHelper::removeWhitespaces(str_replace('Amount of investment: ', '', $parsedLines[1][0])),
                             'paid' => (float)StringHelper::removeWhitespaces(str_replace('Paid up: ', '', $parsedLines[1][2])),
                             'currency' => trim($parsedLines[1][1]),

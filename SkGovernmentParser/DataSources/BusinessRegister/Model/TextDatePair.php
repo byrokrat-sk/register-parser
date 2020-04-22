@@ -4,7 +4,7 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model;
 
 
-class TextDatePair
+class TextDatePair implements \JsonSerializable
 {
     public string $Text;
     public \DateTime $Date;
@@ -18,5 +18,13 @@ class TextDatePair
     public static function fromObject(object $object): TextDatePair
     {
         return new self($object->text, $object->date);
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'text' => $this->Text,
+            'date' => $this->Date->format('Y-m-d')
+        ];
     }
 }

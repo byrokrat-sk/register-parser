@@ -30,4 +30,19 @@ class SubjectContributor
         $this->Currency = $Currency;
         $this->Date = $Date;
     }
+
+    public function jsonSerialize()
+    {
+        return [
+            'degree_before' => $this->DegreeBefore,
+            'first_name' => $this->FirstName,
+            'last_name' => $this->LastName,
+            'degree_after' => $this->DegreeAfter,
+            'business_name' => $this->BusinessName,
+            'amount' => $this->Amount,
+            'paid' => $this->Paid,
+            'currency' => $this->Currency,
+            'date' => $this->Date->format('Y-m-d'),
+        ];
+    }
 }

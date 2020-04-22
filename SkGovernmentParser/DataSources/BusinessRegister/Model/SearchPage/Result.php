@@ -12,6 +12,11 @@ class Result implements \JsonSerializable
         $this->ResultItems = $resultItems;
     }
 
+    public function getItems(): array
+    {
+        return $this->ResultItems;
+    }
+
     public function isEmpty(): bool
     {
         return count($this->ResultItems) === 0;
@@ -35,12 +40,7 @@ class Result implements \JsonSerializable
     public function jsonSerialize()
     {
         return array_map(function (Item $item) {
-            return [
-                'id' => $item->SubjectId,
-                'business_name' => $item->BusinessName,
-                'actual_listing_url' => $item->getActualListingPageUrl(),
-                'full_listing_url' => $item->getFullListingPageUrl()
-            ];
+            return $item->jsonSerialize();
         }, $this->ResultItems);
     }
 }

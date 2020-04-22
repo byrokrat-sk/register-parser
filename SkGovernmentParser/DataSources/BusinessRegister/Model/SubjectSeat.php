@@ -4,7 +4,7 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model;
 
 
-class SubjectSeat
+class SubjectSeat implements \JsonSerializable
 {
     public Address $Address;
     public \DateTime $Date;
@@ -13,5 +13,13 @@ class SubjectSeat
     {
         $this->Address = $Address;
         $this->Date = $Date;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'address' => $this->Address,
+            'date' => $this->Date->format('Y-m-d')
+        ];
     }
 }

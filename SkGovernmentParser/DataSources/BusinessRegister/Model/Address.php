@@ -4,7 +4,7 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model;
 
 
-class Address
+class Address implements \JsonSerializable
 {
     const SLOVAKIA_NAME = 'Slovak Republic';
 
@@ -21,5 +21,16 @@ class Address
         $this->CityName = $CityName;
         $this->Zip = $Zip;
         $this->Country = is_null($Country) ? self::SLOVAKIA_NAME : $Country;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'street_name' => $this->StreetName,
+            'street_number' => $this->StreetNumber,
+            'city_name' => $this->CityName,
+            'zip' => $this->Zip,
+            'country' => $this->Country
+        ];
     }
 }

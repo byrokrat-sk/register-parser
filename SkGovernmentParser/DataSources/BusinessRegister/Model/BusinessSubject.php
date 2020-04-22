@@ -3,9 +3,9 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model;
 
 
-class BusinessSubject
+class BusinessSubject implements \JsonSerializable
 {
-    public int $BusinessRegisterId;
+    public int $SubjectId;
 
     public TextDatePair $BusinessName;
     public string $InsertNumber;
@@ -56,7 +56,7 @@ class BusinessSubject
         \DateTime $UpdatedAt,
         \DateTime $ExtractedAt
     ) {
-        $this->BusinessRegisterId = $BusinessRegisterId;
+        $this->SubjectId = $BusinessRegisterId;
         $this->BusinessName = $BusinessName;
         $this->DistrictCourt = $DistrictCourt;
         $this->Section = $Section;
@@ -79,4 +79,32 @@ class BusinessSubject
         $this->ExtractedAt = $ExtractedAt;
     }
 
+    public function jsonSerialize()
+    {
+        return [
+            'subject_id' => $this->SubjectId,
+            'business_name' => $this->BusinessName,
+            'insert_number' => $this->InsertNumber,
+            'registered_seat' => $this->RegisteredSeat,
+            'identification_number' => $this->IdentificationNumber,
+            'legal_form' => $this->LegalForm,
+            'acting_in_the_name' => $this->ActingInTheName,
+            'procuration' => $this->Procuration,
+            'merger_or_division' => $this->MergerOrDivision,
+            'district_court' => $this->DistrictCourt,
+            'section' => $this->Section,
+            'capital' => $this->Capital,
+            'company_objects' => $this->CompanyObjects,
+            'partners' => $this->Partners,
+            'members_contribution' => $this->MembersContribution,
+            'management_body' => $this->ManagementBody,
+            'supervisory_board' => $this->SupervisoryBoard,
+            'other_legal_facts' => $this->OtherLegalFacts,
+            'dates' => [
+                'entry_date' => is_null($this->EntryDate) ? null : $this->EntryDate->format('Y-m-d'),
+                'updated_at' => is_null($this->UpdatedAt) ? null : $this->UpdatedAt->format('Y-m-d'),
+                'extracted_at' => is_null($this->ExtractedAt) ? null : $this->ExtractedAt->format('Y-m-d'),
+            ],
+        ];
+    }
 }

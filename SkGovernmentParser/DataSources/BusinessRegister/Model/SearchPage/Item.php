@@ -3,7 +3,7 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model\SearchPage;
 
 
-class Item
+class Item implements \JsonSerializable
 {
     public const ACTUAL_PAGE_URL = "http://orsr.sk/vypis.asp?lan=en&ID={query}&SID=2&P=0";
     public const FULL_PAGE_URL = "http://orsr.sk/vypis.asp?lan=en&ID={query}&SID=2&P=1";
@@ -25,5 +25,15 @@ class Item
     public function getFullListingPageUrl(): string
     {
         return str_replace('{query}', $this->SubjectId, self::FULL_PAGE_URL);
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->SubjectId,
+            'business_name' => $this->BusinessName,
+            'actual_listing_url' => $this->getActualListingPageUrl(),
+            'full_listing_url' => $this->getFullListingPageUrl()
+        ];
     }
 }

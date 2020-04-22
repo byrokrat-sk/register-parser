@@ -5,6 +5,7 @@ namespace SkGovernmentParser\DataSources\BusinessRegister;
 
 use SkGovernmentParser\DataSources\BusinessRegister\Model\BusinessSubject;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\SearchPage\Result;
+use SkGovernmentParser\DataSources\BusinessRegister\PageProvider\NetworkProvider;
 use SkGovernmentParser\DataSources\BusinessRegister\Parser\BusinessSubjectPageParser;
 use SkGovernmentParser\DataSources\BusinessRegister\Parser\SearchResultParser;
 use SkGovernmentParser\Exceptions\EmptySearchResultException;
@@ -22,6 +23,13 @@ class BusinessRegisterQuery
     public function __construct(BusinessRegisterPageProvider $driver)
     {
         $this->Driver = $driver;
+    }
+
+    # ~
+
+    public static function network(): BusinessRegisterQuery
+    {
+        return new BusinessRegisterQuery(new NetworkProvider());
     }
 
     # ~
@@ -45,7 +53,12 @@ class BusinessRegisterQuery
             throw new InconclusiveSearchException("Business register returned multiple results [{$searchResult->count()}] from query [$query]!");
         }
 
-        $subjectPageHtml = $this->Driver->getBusinessSubjectPageHtml($searchResult->first()->SubjectId);
+        return $this->bySubjectId($searchResult->first()->SubjectId);
+    }
+
+    public function bySubjectId(int $subjectId): BusinessSubject
+    {
+        $subjectPageHtml = $this->Driver->getBusinessSubjectPageHtml($subjectId);
         return BusinessSubjectPageParser::parseHtml($subjectPageHtml);
     }
 

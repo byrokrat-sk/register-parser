@@ -3,7 +3,6 @@
 require_once __DIR__.'/vendor/autoload.php';
 
 use \SkGovernmentParser\DataSources\BusinessRegister\BusinessRegisterQuery;
-use \SkGovernmentParser\DataSources\BusinessRegister\PageProvider\NetworkProvider;
 
 # ~
 
@@ -16,7 +15,10 @@ const PPC_ICO = "31561802";
 
 # ~
 
-$query = new BusinessRegisterQuery(new NetworkProvider());
+$query = BusinessRegisterQuery::network();
 
-echo(json_encode($query->byIdentificator(FINGO_SRO_ICO), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-// echo(json_encode($query->byName('Allrisk'), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+// $queryResult = $query->byIdentificator(FINGO_SRO_ICO);
+$queryResult = $query->byName('Allrisk');
+$subjectId = $queryResult->getItems()[2]->SubjectId;
+
+echo(json_encode($query->bySubjectId($subjectId), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
