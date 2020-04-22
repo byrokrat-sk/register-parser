@@ -30,17 +30,17 @@ class SubjectPageParsingTest extends TestCase
         $subject = BusinessSubjectPageParser::parseHtml($pageHtml);
 
         // Business name
-        $this->assertSame($subject->BusinessName->Text, 'SOFTEC, spoločnosť s ručením obmedzeným skrátene: SOFTEC, spol. s r.o.');
+        $this->assertSame('SOFTEC, spoločnosť s ručením obmedzeným skrátene: SOFTEC, spol. s r.o.', $subject->BusinessName->Text);
 
-        $this->assertSame($subject->Section, 'Sro');
-        $this->assertSame($subject->InsertNumber, '140/B');
+        $this->assertSame('Sro', $subject->Section);
+        $this->assertSame('140/B', $subject->InsertNumber);
 
         // Registered Seat
-        $this->assertSame($subject->RegisteredSeat->Address->CityName, 'Bratislava');
-        $this->assertSame($subject->RegisteredSeat->Address->StreetName, 'Jarošova');
-        $this->assertSame($subject->RegisteredSeat->Address->StreetNumber, '1');
-        $this->assertSame($subject->RegisteredSeat->Address->Zip, '83103');
-        $this->assertSame($subject->RegisteredSeat->Date->format('Y-m-d'), '2011-03-23');
+        $this->assertSame('Bratislava', $subject->RegisteredSeat->Address->CityName);
+        $this->assertSame('Jarošova', $subject->RegisteredSeat->Address->StreetName);
+        $this->assertSame('1', $subject->RegisteredSeat->Address->StreetNumber);
+        $this->assertSame('83103', $subject->RegisteredSeat->Address->Zip);
+        $this->assertSame('2011-03-23', $subject->RegisteredSeat->Date->format('Y-m-d'));
 
         // Text Values
         $this->assertTextDatePair($subject->IdentificationNumber, '00683540', '1990-08-29');
@@ -50,10 +50,10 @@ class SubjectPageParsingTest extends TestCase
         $this->assertTextDatePair($subject->MergerOrDivision, 'Spoločnosť je právnym nástupcom v dôsledku zlúčenia', '2018-03-27');
 
         // Capital
-        $this->assertSame($subject->Capital->Amount, 73200.0);
-        $this->assertSame($subject->Capital->Paid, 73200.0);
-        $this->assertSame($subject->Capital->Currency, 'EUR');
-        $this->assertSame($subject->Capital->Date->format('Y-m-d'), '2018-03-27');
+        $this->assertSame(73200.0, $subject->Capital->Amount);
+        $this->assertSame(73200.0, $subject->Capital->Paid);
+        $this->assertSame('EUR', $subject->Capital->Currency);
+        $this->assertSame('2018-03-27', $subject->Capital->Date->format('Y-m-d'));
 
         // Objects Of The Company
         $this->assertTextDatePair($subject->CompanyObjects[0], 'počítačové služby', '2014-02-07');
@@ -134,9 +134,9 @@ class SubjectPageParsingTest extends TestCase
         $this->assertTextDatePair($subject->OtherLegalFacts[14], 'Zápisnica z mimoriadneho valného zhromaždenia konaného dňa 01.02.2018. Zmluva o zlúčení zo dňa 01.02.2018 vo forme notárskej zápisnice č. N 83/2018, Nz 3446/2018, NCRls 3497/2018.', '2018-03-27');
 
         // Standalone Dates
-        $this->assertSame($subject->EntryDate->format('Y-m-d'), '1990-08-29');
-        $this->assertSame($subject->ExtractedAt->format('Y-m-d'), '2020-04-22');
-        $this->assertSame($subject->UpdatedAt->format('Y-m-d'), '2020-04-20');
+        $this->assertSame('1990-08-29', $subject->EntryDate->format('Y-m-d'));
+        $this->assertSame('2020-04-22', $subject->ExtractedAt->format('Y-m-d'));
+        $this->assertSame('2020-04-20', $subject->UpdatedAt->format('Y-m-d'));
     }
 
     public function testFingoSroParsing()
@@ -145,17 +145,17 @@ class SubjectPageParsingTest extends TestCase
         $subject = BusinessSubjectPageParser::parseHtml($pageHtml);
 
         // Business name
-        $this->assertSame($subject->BusinessName->Text, 'FINGO.SK s. r. o.');
+        $this->assertSame('FINGO.SK s. r. o.', $subject->BusinessName->Text);
 
-        $this->assertSame($subject->Section, 'Sro');
-        $this->assertSame($subject->InsertNumber, '123762/B');
+        $this->assertSame('Sro', $subject->Section);
+        $this->assertSame('123762/B', $subject->InsertNumber);
 
         // Registered Seat
-        $this->assertSame($subject->RegisteredSeat->Address->CityName, 'Bratislava - mestská časť Nové Mesto');
-        $this->assertSame($subject->RegisteredSeat->Address->StreetName, 'Vajnorská');
-        $this->assertSame($subject->RegisteredSeat->Address->StreetNumber, '100/B');
-        $this->assertSame($subject->RegisteredSeat->Address->Zip, '83104');
-        $this->assertSame($subject->RegisteredSeat->Date->format('Y-m-d'), '2018-05-03');
+        $this->assertSame('Bratislava - mestská časť Nové Mesto', $subject->RegisteredSeat->Address->CityName);
+        $this->assertSame('Vajnorská', $subject->RegisteredSeat->Address->StreetName);
+        $this->assertSame('100/B', $subject->RegisteredSeat->Address->StreetNumber);
+        $this->assertSame('83104', $subject->RegisteredSeat->Address->Zip);
+        $this->assertSame('2018-05-03', $subject->RegisteredSeat->Date->format('Y-m-d'));
 
         // Text Values
         $this->assertTextDatePair($subject->IdentificationNumber, '50230859', '2016-03-24');
@@ -163,10 +163,10 @@ class SubjectPageParsingTest extends TestCase
         $this->assertTextDatePair($subject->ActingInTheName, 'V mene spoločnosti konajú vždy dvaja konatelia spoločne s tým, že jedným z nich musí byť vždy Lívia Palásthyová, pričom každý konateľ k písanému alebo tlačenému obchodnému menu spoločnosti alebo k odtlačku pečiatky spoločnosti a k podpisu druhého konateľa pripojí svoj vlastnoručný podpis.', '2018-02-15');
 
         // Capital
-        $this->assertSame($subject->Capital->Amount, 5000.0);
-        $this->assertSame($subject->Capital->Paid, 5000.0);
-        $this->assertSame($subject->Capital->Currency, 'EUR');
-        $this->assertSame($subject->Capital->Date->format('Y-m-d'), '2016-03-24');
+        $this->assertSame(5000.0, $subject->Capital->Amount);
+        $this->assertSame(5000.0, $subject->Capital->Paid);
+        $this->assertSame('EUR', $subject->Capital->Currency);
+        $this->assertSame('2016-03-24', $subject->Capital->Date->format('Y-m-d'));
 
         // Objects Of The Company
         $this->assertTextDatePair($subject->CompanyObjects[0], 'Kúpa tovaru na účely jeho predaja konečnému spotrebiteľovi (maloobchod) alebo iným prevádzkovateľom živnosti (veľkoobchod)', '2016-03-24');
@@ -200,9 +200,9 @@ class SubjectPageParsingTest extends TestCase
         $this->assertTextDatePair($subject->OtherLegalFacts[1], 'Rozhodnutie jediného spoločníka zo dňa 31.01.2018.', '2018-02-15');
 
         // Standalone Dates
-        $this->assertSame($subject->EntryDate->format('Y-m-d'), '2016-03-24');
-        $this->assertSame($subject->ExtractedAt->format('Y-m-d'), '2020-04-22');
-        $this->assertSame($subject->UpdatedAt->format('Y-m-d'), '2020-04-20');
+        $this->assertSame('2016-03-24', $subject->EntryDate->format('Y-m-d'));
+        $this->assertSame('2020-04-22', $subject->ExtractedAt->format('Y-m-d'));
+        $this->assertSame('2020-04-20', $subject->UpdatedAt->format('Y-m-d'));
     }
 
     public function testFingoAsParsing()
@@ -211,17 +211,17 @@ class SubjectPageParsingTest extends TestCase
         $subject = BusinessSubjectPageParser::parseHtml($pageHtml);
 
         // Business name
-        $this->assertSame($subject->BusinessName->Text, 'FINGO a. s.');
+        $this->assertSame('FINGO a. s.', $subject->BusinessName->Text);
 
-        $this->assertSame($subject->Section, 'Sa');
-        $this->assertSame($subject->InsertNumber, '6621/B');
+        $this->assertSame('Sa', $subject->Section);
+        $this->assertSame('6621/B', $subject->InsertNumber);
 
         // Registered Seat
-        $this->assertSame($subject->RegisteredSeat->Address->CityName, 'Bratislava - mestská časť Nové Mesto');
-        $this->assertSame($subject->RegisteredSeat->Address->StreetName, 'Vajnorská');
-        $this->assertSame($subject->RegisteredSeat->Address->StreetNumber, '100/B');
-        $this->assertSame($subject->RegisteredSeat->Address->Zip, '83104');
-        $this->assertSame($subject->RegisteredSeat->Date->format('Y-m-d'), '2018-05-04');
+        $this->assertSame('Bratislava - mestská časť Nové Mesto', $subject->RegisteredSeat->Address->CityName);
+        $this->assertSame('Vajnorská', $subject->RegisteredSeat->Address->StreetName);
+        $this->assertSame('100/B', $subject->RegisteredSeat->Address->StreetNumber);
+        $this->assertSame('83104', $subject->RegisteredSeat->Address->Zip);
+        $this->assertSame('2018-05-04', $subject->RegisteredSeat->Date->format('Y-m-d'));
 
         // Text Values
         $this->assertTextDatePair($subject->IdentificationNumber, '51015625', '2017-07-13');
@@ -229,10 +229,10 @@ class SubjectPageParsingTest extends TestCase
         $this->assertTextDatePair($subject->ActingInTheName, 'V mene spoločnosti je vo všetkých veciach oprávnený konať a podpisovať predseda predstavenstva samostatne alebo dvaja členovia predstavenstva spoločne. Podpisovanie za spoločnosť sa vykoná tak, že k vytlačenému alebo napísanému obchodnému menu spoločnosti, menu a funkcii pripojí podpisujúci svoj podpis.', '2017-07-13');
 
         // Capital
-        $this->assertSame($subject->Capital->Amount, 30000.0);
-        $this->assertSame($subject->Capital->Paid, 30000.0);
-        $this->assertSame($subject->Capital->Currency, 'EUR');
-        $this->assertSame($subject->Capital->Date->format('Y-m-d'), '2017-07-13');
+        $this->assertSame(30000.0, $subject->Capital->Amount);
+        $this->assertSame(30000.0, $subject->Capital->Paid);
+        $this->assertSame('EUR', $subject->Capital->Currency);
+        $this->assertSame('2017-07-13', $subject->Capital->Date->format('Y-m-d'));
 
         // Shares
         // TODO: Implement shares test
@@ -262,9 +262,9 @@ class SubjectPageParsingTest extends TestCase
         $this->assertTextDatePair($subject->OtherLegalFacts[1], 'Zápisnica z valného zhromaždenia konaného dňa 11.08.2017. Notárska zápisnica č. N 667/2017, Nz 29301/2017, NCRls 30008/2017 zo dňa 24.08.2017.', '2017-09-12');
 
         // Standalone Dates
-        $this->assertSame($subject->EntryDate->format('Y-m-d'), '2017-07-13');
-        $this->assertSame($subject->ExtractedAt->format('Y-m-d'), '2020-04-22');
-        $this->assertSame($subject->UpdatedAt->format('Y-m-d'), '2020-04-20');
+        $this->assertSame('2017-07-13', $subject->EntryDate->format('Y-m-d'));
+        $this->assertSame('2020-04-22', $subject->ExtractedAt->format('Y-m-d'));
+        $this->assertSame('2020-04-20', $subject->UpdatedAt->format('Y-m-d'));
     }
 
     /*public function testTescoParsing()
@@ -315,53 +315,53 @@ class SubjectPageParsingTest extends TestCase
 
     private function assertTextDatePair(TextDatePair $pair, string $text, string $date): void
     {
-        $this->assertSame($pair->Text, $text);
-        $this->assertSame($pair->Date->format('Y-m-d'), $date);
+        $this->assertSame($text, $pair->Text);
+        $this->assertSame($date, $pair->Date->format('Y-m-d'));
     }
 
     private function assertPartner(SubjectPartner $partner, $db, $fn, $ln, $da, $bn, $sna, $snu, $cn, $zip, $date): void
     {
-        $this->assertSame($partner->DegreeBefore, $db);
-        $this->assertSame($partner->FirstName, $fn);
-        $this->assertSame($partner->LastName, $ln);
-        $this->assertSame($partner->DegreeAfter, $da);
-        $this->assertSame($partner->BusinessName, $bn);
+        $this->assertSame($db, $partner->DegreeBefore);
+        $this->assertSame($fn, $partner->FirstName);
+        $this->assertSame($ln, $partner->LastName);
+        $this->assertSame($da, $partner->DegreeAfter);
+        $this->assertSame($bn, $partner->BusinessName);
 
-        $this->assertSame($partner->Address->StreetName, $sna);
-        $this->assertSame($partner->Address->StreetNumber, $snu);
-        $this->assertSame($partner->Address->CityName, $cn);
-        $this->assertSame($partner->Address->Zip, $zip);
+        $this->assertSame($sna, $partner->Address->StreetName);
+        $this->assertSame($snu, $partner->Address->StreetNumber);
+        $this->assertSame($cn, $partner->Address->CityName);
+        $this->assertSame($zip, $partner->Address->Zip);
 
-        $this->assertSame($partner->Date->format('Y-m-d'), $date);
+        $this->assertSame($date, $partner->Date->format('Y-m-d'));
     }
 
     private function assertManager(SubjectManager $manager, $db, $fn, $ln, $da, $sna, $snu, $cn, $zip, $date): void
     {
-        $this->assertSame($manager->DegreeBefore, $db);
-        $this->assertSame($manager->FirstName, $fn);
-        $this->assertSame($manager->LastName, $ln);
-        $this->assertSame($manager->DegreeAfter, $da);
+        $this->assertSame($db, $manager->DegreeBefore);
+        $this->assertSame($fn, $manager->FirstName);
+        $this->assertSame($ln, $manager->LastName);
+        $this->assertSame($da, $manager->DegreeAfter);
 
-        $this->assertSame($manager->Address->StreetName, $sna);
-        $this->assertSame($manager->Address->StreetNumber, $snu);
-        $this->assertSame($manager->Address->CityName, $cn);
-        $this->assertSame($manager->Address->Zip, $zip);
+        $this->assertSame($sna, $manager->Address->StreetName);
+        $this->assertSame($snu, $manager->Address->StreetNumber);
+        $this->assertSame($cn, $manager->Address->CityName);
+        $this->assertSame($zip, $manager->Address->Zip);
 
-        $this->assertSame($manager->Date->format('Y-m-d'), $date);
+        $this->assertSame($date, $manager->Date->format('Y-m-d'));
     }
 
     private function assertContributor(SubjectContributor $contributor, $db, $fn, $ln, $da, $bn, $amount, $paid, $currency, $date): void
     {
-        $this->assertSame($contributor->DegreeBefore, $db);
-        $this->assertSame($contributor->FirstName, $fn);
-        $this->assertSame($contributor->LastName, $ln);
-        $this->assertSame($contributor->DegreeAfter, $da);
-        $this->assertSame($contributor->BusinessName, $bn);
+        $this->assertSame($db, $contributor->DegreeBefore);
+        $this->assertSame($fn, $contributor->FirstName);
+        $this->assertSame($ln, $contributor->LastName);
+        $this->assertSame($da, $contributor->DegreeAfter);
+        $this->assertSame($bn, $contributor->BusinessName);
 
-        $this->assertSame($contributor->Amount, $amount);
-        $this->assertSame($contributor->Paid, $paid);
-        $this->assertSame($contributor->Currency, $currency);
+        $this->assertSame($amount, $contributor->Amount);
+        $this->assertSame($paid, $contributor->Paid);
+        $this->assertSame($currency, $contributor->Currency);
 
-        $this->assertSame($contributor->Date->format('Y-m-d'), $date);
+        $this->assertSame($date, $contributor->Date->format('Y-m-d'));
     }
 }
