@@ -5,6 +5,7 @@ namespace SkGovernmentParser\DataSources\BusinessRegister\PageProvider;
 
 
 use SkGovernmentParser\DataSources\BusinessRegister\BusinessRegisterPageProvider;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Search\Listing;
 use SkGovernmentParser\Exceptions\BadHttpRequestException;
 use SkGovernmentParser\Helper\CurlHelper;
 
@@ -35,10 +36,9 @@ class NetworkProvider implements BusinessRegisterPageProvider
         return $this->fetchPage($searchPageUrl);
     }
 
-    public function getBusinessSubjectPageHtml(int $subjectId): string
+    public function getBusinessSubjectPageHtml(Listing $listing): string
     {
-        $subjectPageUrl = str_replace('{query}', $subjectId, $this->RootAddress.self::ACTUAL_PAGE_URL);
-        return $this->fetchPage($subjectPageUrl);
+        return $this->fetchPage($listing->getUrl());
     }
 
     # ~

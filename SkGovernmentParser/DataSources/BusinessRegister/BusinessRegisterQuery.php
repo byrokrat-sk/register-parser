@@ -5,10 +5,12 @@ namespace SkGovernmentParser\DataSources\BusinessRegister;
 
 
 use SkGovernmentParser\DataSources\BusinessRegister\Model\BusinessSubject;
-use SkGovernmentParser\DataSources\BusinessRegister\Model\SearchPage\Result;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Search\Item;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Search\Listing;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Search\Result;
 use SkGovernmentParser\DataSources\BusinessRegister\PageProvider\NetworkProvider;
 use SkGovernmentParser\DataSources\BusinessRegister\Parser\BusinessSubjectPageParser;
-use SkGovernmentParser\DataSources\BusinessRegister\Parser\SearchResultParser;
+use SkGovernmentParser\DataSources\BusinessRegister\Parser\SearchResultPageParser;
 use SkGovernmentParser\Exceptions\EmptySearchResultException;
 use SkGovernmentParser\Exceptions\InconclusiveSearchException;
 use SkGovernmentParser\Exceptions\InvalidQueryException;
@@ -43,7 +45,7 @@ class BusinessRegisterQuery
         }
 
         $searchPageHtml = $this->Provider->getIdentificatorSearchPageHtml($trimmedQuery);
-        $searchResult = SearchResultParser::parseHtml($searchPageHtml);
+        $searchResult = SearchResultPageParser::parseHtml($searchPageHtml);
 
         if ($searchResult->isEmpty()) {
             throw new EmptySearchResultException("Business register returned empty result for query [$query]!");
@@ -53,12 +55,12 @@ class BusinessRegisterQuery
             throw new InconclusiveSearchException("Business register returned multiple results [{$searchResult->count()}] from query [$query]!");
         }
 
-        return $this->bySubjectId($searchResult->first()->SubjectId);
+        return $this->byListing($searchResult->first()->ActualListing);
     }
 
-    public function bySubjectId(int $subjectId): BusinessSubject
+    public function byListing(Listing $listing): BusinessSubject
     {
-        $subjectPageHtml = $this->Provider->getBusinessSubjectPageHtml($subjectId);
+        $subjectPageHtml = $this->Provider->getBusinessSubjectPageHtml($listing);
         return BusinessSubjectPageParser::parseHtml($subjectPageHtml);
     }
 
@@ -71,6 +73,6 @@ class BusinessRegisterQuery
         }
 
         $searchPageHtml = $this->Provider->getNameSearchPageHtml($trimmedQuery);
-        return SearchResultParser::parseHtml($searchPageHtml);
+        return SearchResultPageParser::parseHtml($searchPageHtml);
     }
 }
