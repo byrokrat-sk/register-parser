@@ -6,6 +6,8 @@ namespace SkGovernmentParser\DataSources\BusinessRegister\Parser;
 
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Address;
 use \SkGovernmentParser\DataSources\BusinessRegister\Model\BusinessSubject;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Contributor;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Person;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\SubjectCapital;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\SubjectContributor;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\SubjectManager;
@@ -71,43 +73,41 @@ class BusinessSubjectPageParser
         foreach ($infoTables as $infoTable) {
             switch ($infoTable->tableTitle) {
                 case 'Business name': {
-                    $subjectInfo["business_name"] = self::parseSimpleInfoTable($infoTable);
+                    $subjectInfo["business_name"] = TextDatePair::fromObject(self::parseSimpleInfoTable($infoTable));
                     break;
                 }
                 case 'Registered seat': {
-                    $subjectInfo["registered_seat"] = (object)[
-                        'address' => (object)[
-                            'city' => trim($infoTable->subTables[0]->table->childNodes[5]->textContent),
-                            'zip_code' => StringHelper::removeWhitespaces($infoTable->subTables[0]->table->childNodes[7]->textContent),
-                            'street_name' => trim($infoTable->subTables[0]->table->childNodes[1]->textContent),
-                            'street_number' => trim($infoTable->subTables[0]->table->childNodes[3]->textContent),
-                        ],
-                        'date' => $infoTable->subTables[0]->date
-                    ];
+                    $subjectInfo["registered_seat"] = new SubjectSeat(
+                        new Address(
+                            trim($infoTable->subTables[0]->table->childNodes[1]->textContent),
+                            trim($infoTable->subTables[0]->table->childNodes[3]->textContent),
+                            trim($infoTable->subTables[0]->table->childNodes[5]->textContent),
+                            StringHelper::removeWhitespaces($infoTable->subTables[0]->table->childNodes[7]->textContent)
+                        ),
+                        $infoTable->subTables[0]->date
+                    );
                     break;
                 }
                 case 'Identification number (IČO)': {
                     $subjectInfo["identification_number"] = self::parseSimpleInfoTable($infoTable);
                     $subjectInfo["identification_number"]->text = StringHelper::removeWhitespaces($subjectInfo["identification_number"]->text);
+                    $subjectInfo["identification_number"] = TextDatePair::fromObject($subjectInfo['identification_number']);
                     break;
                 }
                 case 'Date of entry': {
-                    $subjectInfo["date_of_entry"] = self::parseSimpleInfoTable($infoTable);
+                    $subjectInfo["date_of_entry"] = TextDatePair::fromObject(self::parseSimpleInfoTable($infoTable))->Text;
                     break;
                 }
                 case 'Legal form': {
-                    $subjectInfo["legal_form"] = self::parseSimpleInfoTable($infoTable);
+                    $subjectInfo["legal_form"] = TextDatePair::fromObject(self::parseSimpleInfoTable($infoTable));
                     break;
                 }
                 case 'Objects of the company': {
                     $objects = [];
                     foreach ($infoTable->subTables as $subTable) {
-                        $objects[] = (object)[
-                            'text' => trim($subTable->table->textContent),
-                            'date' => $subTable->date
-                        ];
+                        $objects[] = new TextDatePair(trim($subTable->table->textContent), $subTable->date);
                     }
-                    $subjectInfo['company_objects'] = $objects;
+                    $subjectInfo['company_objects'] = empty($objects) ? null : $objects;
                     break;
                 }
                 case 'Partners': {
@@ -117,18 +117,18 @@ class BusinessSubjectPageParser
                         $parsedName = self::parseNameFromLine($parsedLines[0]);
                         $parsedAddress = self::parseAddressFromLines($parsedLines);
 
-                        $partners[] = (object)[
-                            'degree_before' => $parsedName->degree_before,
-                            'first_name' => $parsedName->first_name,
-                            'last_name' => $parsedName->last_name,
-                            'degree_after' => $parsedName->degree_after,
-                            'business_name' => $parsedName->business_name,
-                            'address' => $parsedAddress,
-                            'date' => $subTable->date
-                        ];
+                        $partners[] = new Person(
+                            $parsedName->degree_before,
+                            $parsedName->first_name,
+                            $parsedName->last_name,
+                            $parsedName->degree_after,
+                            $parsedName->business_name,
+                            $parsedAddress,
+                            $subTable->date
+                        );
                     }
 
-                    $subjectInfo['partners'] = $partners;
+                    $subjectInfo['partners'] = empty($partners) ? null : $partners;
                     break;
                 }
                 case 'Contribution of each member': {
@@ -138,27 +138,28 @@ class BusinessSubjectPageParser
                         $parsedLines = self::parseInfoTable($subTable->table);
                         $parsedName = self::parseNameFromLine($parsedLines[0]);
 
-                        $contributions[] = (object)[
-                            'degree_before' => $parsedName->degree_before,
-                            'first_name' => $parsedName->first_name,
-                            'last_name' => $parsedName->last_name,
-                            'degree_after' => $parsedName->degree_after,
-                            'business_name' => $parsedName->business_name,
-                            // TODO: Fix bad 'paid' field parsing (-> http://orsr.sk/vypis.asp?lan=en&ID=60188&SID=2&P=0)
-                            'amount' => (float)StringHelper::removeWhitespaces(str_replace('Amount of investment: ', '', $parsedLines[1][0])),
-                            'paid' => (float)StringHelper::removeWhitespaces(str_replace('Paid up: ', '', $parsedLines[1][2])),
-                            'currency' => trim($parsedLines[1][1]),
-                            'date' => $subTable->date,
-                        ];
+                        $contributions[] = new Contributor(
+                            new Person(
+                                $parsedName->degree_before,
+                                $parsedName->first_name,
+                                $parsedName->last_name,
+                                $parsedName->degree_after,
+                                $parsedName->business_name,
+                                null,
+                                $subTable->date
+                            ),
+                            (float)StringHelper::removeWhitespaces(str_replace('Amount of investment: ', '', $parsedLines[1][0])),
+                            (float)StringHelper::removeWhitespaces(str_replace('Paid up: ', '', $parsedLines[1][2])),
+                            trim($parsedLines[1][1])
+                        );
                     }
-                    $subjectInfo['members_contribution'] = $contributions;
+                    $subjectInfo['members_contribution'] = empty($contributions) ? null : $contributions;
                     break;
                 }
                 case 'Management body': {
                     $management = [];
                     foreach ($infoTable->subTables as $subTable) {
-                        $nodeText = trim($subTable->table->textContent);
-                        if ($nodeText === 'konatelia' || $nodeText === 'Managing board' || $nodeText === 'spoločníci') {
+                        if (in_array(trim($subTable->table->textContent), ['konatelia', 'Managing board', 'spoločníci'])) {
                             continue; // Skip header table cell
                         }
 
@@ -166,27 +167,27 @@ class BusinessSubjectPageParser
                         $parsedName = self::parseNameFromLine($parsedLines[0]);
 
                         $parsedAddress = null;
-                        // There are cases when managers do not have address provided, just name
                         if (count($parsedLines) > 1) {
+                            // There are cases when managers do not have address provided, just name
                             $parsedAddress = self::parseAddressFromLines($parsedLines);
                         }
 
-                        $management[] = (object)[
-                            'degree_before' => $parsedName->degree_before,
-                            'first_name' => $parsedName->first_name,
-                            'last_name' => $parsedName->last_name,
-                            'degree_after' => $parsedName->degree_after,
-                            'business_name' => $parsedName->business_name,
-                            'address' => $parsedAddress,
-                            'date' => $subTable->date,
-                        ];
+                        $management[] = new Person(
+                            $parsedName->degree_before,
+                            $parsedName->first_name,
+                            $parsedName->last_name,
+                            $parsedName->degree_after,
+                            $parsedName->business_name,
+                            $parsedAddress,
+                            $subTable->date
+                        );
                     }
 
-                    $subjectInfo['management_body'] = $management;
+                    $subjectInfo['management_body'] = empty($management) ? null : $management;
                     break;
                 }
                 case 'Supervisory board': {
-                    $management = [];
+                    $supervisortBoard = [];
                     foreach ($infoTable->subTables as $subTable) {
                         $nodeText = trim($subTable->table->textContent);
                         if ($nodeText === 'konatelia' || $nodeText === "Managing board") {
@@ -197,29 +198,29 @@ class BusinessSubjectPageParser
                         $parsedName = self::parseNameFromLine($parsedLines[0]);
                         $parsedAddress = self::parseAddressFromLines($parsedLines);
 
-                        $management[] = (object)[
-                            'degree_before' => $parsedName->degree_before,
-                            'first_name' => $parsedName->first_name,
-                            'last_name' => $parsedName->last_name,
-                            'degree_after' => $parsedName->degree_after,
-                            'business_name' => $parsedName->business_name,
-                            'address' => $parsedAddress,
-                            'date' => $subTable->date,
-                        ];
+                        $supervisortBoard[] = new Person(
+                            $parsedName->degree_before,
+                            $parsedName->first_name,
+                            $parsedName->last_name,
+                            $parsedName->degree_after,
+                            $parsedName->business_name,
+                            $parsedAddress,
+                            $subTable->date
+                        );
                     }
-                    $subjectInfo['supervisory_board'] = $management;
+                    $subjectInfo['supervisory_board'] = empty($supervisortBoard) ? null : $supervisortBoard;
                     break;
                 }
                 case 'Acting in the name of the company': {
-                    $subjectInfo['acting_in_the_name'] = self::parseSimpleInfoTable($infoTable);
+                    $subjectInfo['acting_in_the_name'] = TextDatePair::fromObject(self::parseSimpleInfoTable($infoTable));
                     break;
                 }
                 case 'Procuration': {
-                    $subjectInfo['procuration'] = self::parseSimpleInfoTable($infoTable);
+                    $subjectInfo['procuration'] = TextDatePair::fromObject(self::parseSimpleInfoTable($infoTable));
                     break;
                 }
                 case 'Merger or division': {
-                    $subjectInfo['merger_or_division'] = self::parseSimpleInfoTable($infoTable);
+                    $subjectInfo['merger_or_division'] = TextDatePair::fromObject(self::parseSimpleInfoTable($infoTable));
                     break;
                 }
                 /*case 'Company ceased to exist by (way of) a merger or a division': {
@@ -231,29 +232,30 @@ class BusinessSubjectPageParser
                     break;
                 }*/
                 case 'Capital': {
-                    $subjectInfo["capital"] = (object)[
-                        'total' => (float)StringHelper::removeWhitespaces($infoTable->subTables[0]->table->childNodes[1]->textContent),
-                        'paid' => (float)StringHelper::removeWhitespaces(
+                    $subjectInfo["capital"] = new SubjectCapital(
+                        (float)StringHelper::removeWhitespaces($infoTable->subTables[0]->table->childNodes[1]->textContent),
+                        (float)StringHelper::removeWhitespaces(
                             str_replace('Paid up: ', '', $infoTable->subTables[0]->table->childNodes[5]->textContent)
                         ),
-                        'currency' => StringHelper::removeWhitespaces($infoTable->subTables[0]->table->childNodes[3]->textContent),
-                        'date' => $infoTable->subTables[0]->date
-                    ];
+                        StringHelper::removeWhitespaces($infoTable->subTables[0]->table->childNodes[3]->textContent),
+                        $infoTable->subTables[0]->date
+                    );
                     break;
                 }
                 case 'Other legal facts': {
                     $facts = [];
                     foreach ($infoTable->subTables as $subTable) {
-                        $facts[] = (object)[
-                            // TODO: This can contain multiple paragraphs splitted by multiple spaces.
-                            //   -> Would it be useful to support this?
-                            'text' => StringHelper::paragraphText($subTable->table->textContent),
-                            'date' => $subTable->date
-                        ];
+                        // TODO: This can contain multiple paragraphs splitted by multiple spaces.
+                        //   -> Would it be useful to support this?
+                        $facts[] = new TextDatePair(StringHelper::paragraphText($subTable->table->textContent), $subTable->date);
                     }
-                    $subjectInfo['other_legal_facts'] = $facts;
+                    $subjectInfo['other_legal_facts'] = empty($facts) ? null : $facts;
                     break;
                 }
+                /*case 'Shares': {
+                    // TODO: case 'Shares': {} -> http://www.orsr.sk/vypis.asp?lan=en&ID=384809&SID=2&P=0
+                    break;
+                }*/
                 default:
                     break; // ignore -> not implemented
             }
@@ -268,83 +270,24 @@ class BusinessSubjectPageParser
 
         return new BusinessSubject(
             $subjectInfo['business_register_id'],
-            TextDatePair::fromObject($subjectInfo['business_name']),
+            $subjectInfo['business_name'],
             $subjectInfo['district_court'],
             $subjectInfo['section'],
             $subjectInfo['insert_number'],
-            new SubjectSeat(
-                new Address(
-                    $subjectInfo['registered_seat']->address->street_name,
-                    $subjectInfo['registered_seat']->address->street_number,
-                    $subjectInfo['registered_seat']->address->city,
-                    $subjectInfo['registered_seat']->address->zip_code,
-                ),
-                $subjectInfo['registered_seat']->date
-            ),
-            TextDatePair::fromObject($subjectInfo['identification_number']),
-            TextDatePair::fromObject($subjectInfo['legal_form']),
-            TextDatePair::fromObject($subjectInfo['acting_in_the_name']),
-            is_null($subjectInfo['procuration']) ? null : TextDatePair::fromObject($subjectInfo['procuration']),
-            is_null($subjectInfo['merger_or_division']) ? null : TextDatePair::fromObject($subjectInfo['merger_or_division']),
-            new SubjectCapital(
-                $subjectInfo['capital']->total,
-                $subjectInfo['capital']->paid,
-                $subjectInfo['capital']->currency,
-                $subjectInfo['capital']->date,
-            ),
-            array_map(function ($rawObject) {
-                return new TextDatePair($rawObject->text, $rawObject->date);
-            }, $subjectInfo['company_objects']),
-            is_null($subjectInfo['partners']) ? null : array_map(function ($rawPartner) {
-                return new SubjectPartner(
-                    $rawPartner->degree_before,
-                    $rawPartner->first_name,
-                    $rawPartner->last_name,
-                    $rawPartner->degree_after,
-                    $rawPartner->business_name,
-                    $rawPartner->address,
-                    $rawPartner->date
-                );
-            }, $subjectInfo['partners']),
-            is_null($subjectInfo['members_contribution']) ? null : array_map(function ($rawContributor) {
-                return new SubjectContributor(
-                    $rawContributor->degree_before,
-                    $rawContributor->first_name,
-                    $rawContributor->last_name,
-                    $rawContributor->degree_after,
-                    $rawContributor->business_name,
-                    $rawContributor->amount,
-                    $rawContributor->paid,
-                    $rawContributor->currency,
-                    $rawContributor->date,
-                );
-            }, $subjectInfo['members_contribution']),
-            array_map(function ($rawManager) {
-                return new SubjectManager(
-                    $rawManager->degree_before,
-                    $rawManager->first_name,
-                    $rawManager->last_name,
-                    $rawManager->degree_after,
-                    $rawManager->business_name,
-                    $rawManager->address,
-                    $rawManager->date
-                );
-            }, $subjectInfo['management_body']),
-            is_null($subjectInfo['supervisory_board']) ? null : array_map(function ($rawManager) {
-                return new SubjectManager(
-                    $rawManager->degree_before,
-                    $rawManager->first_name,
-                    $rawManager->last_name,
-                    $rawManager->degree_after,
-                    $rawManager->business_name,
-                    $rawManager->address,
-                    $rawManager->date
-                );
-            }, $subjectInfo['supervisory_board']),
-            array_map(function ($rawFact) {
-                return new TextDatePair($rawFact->text, $rawFact->date);
-            }, $subjectInfo['other_legal_facts']),
-            new \DateTime($subjectInfo['date_of_entry']->text),
+            $subjectInfo['registered_seat'],
+            $subjectInfo['identification_number'],
+            $subjectInfo['legal_form'],
+            $subjectInfo['acting_in_the_name'],
+            $subjectInfo['procuration'],
+            $subjectInfo['merger_or_division'],
+            $subjectInfo['capital'],
+            $subjectInfo['company_objects'],
+            $subjectInfo['partners'],
+            $subjectInfo['members_contribution'],
+            $subjectInfo['management_body'],
+            $subjectInfo['supervisory_board'],
+            $subjectInfo['other_legal_facts'],
+            new \DateTime($subjectInfo['date_of_entry']),
             new \DateTime($subjectInfo['updated_at']),
             new \DateTime($subjectInfo['extracted_at'])
         );

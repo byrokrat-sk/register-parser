@@ -4,16 +4,16 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model;
 
 
-class SubjectManager implements \JsonSerializable
+class Person implements \JsonSerializable
 {
     public ?string $DegreeBefore;
     public ?string $FirstName;
     public ?string $LastName;
     public ?string $DegreeAfter;
+
     public ?string $BusinessName;
 
     public ?Address $Address;
-
     public \DateTime $Date;
 
     public function __construct(?string $DegreeBefore, ?string $FirstName, ?string $LastName, ?string $DegreeAfter, ?string $BusinessName, ?Address $Address, \DateTime $Date)

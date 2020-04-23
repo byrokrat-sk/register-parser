@@ -5,9 +5,8 @@ namespace BusinessRegister\Parsing;
 
 use PHPUnit\Framework\TestCase;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Address;
-use SkGovernmentParser\DataSources\BusinessRegister\Model\SubjectContributor;
-use SkGovernmentParser\DataSources\BusinessRegister\Model\SubjectManager;
-use SkGovernmentParser\DataSources\BusinessRegister\Model\SubjectPartner;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Contributor;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Person;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\TextDatePair;
 use SkGovernmentParser\DataSources\BusinessRegister\Parser\BusinessSubjectPageParser;
 
@@ -69,52 +68,52 @@ class SubjectPageParsingTest extends TestCase
         $this->assertTextDatePair($subject->CompanyObjects[9], 'prenájom nehnuteľností spojený s poskytovaním iných než základných služieb spojených s prenájmom', '2014-02-07');
 
         // Partners
-        $this->assertPartner($subject->Partners[0], 'Ing.', 'Karol', 'Fischer', null, null,
-            'Bellova', '23', 'Bratislava - mestská časť Nové Mesto', '83101', '2009-06-30');
-        $this->assertPartner($subject->Partners[1], 'Ing.', 'Martin', 'Melišek', null, null,
-            'Žltá', '3897/2B', 'Bratislava - mestská časť Petržalka', '85107', '2004-10-22');
-        $this->assertPartner($subject->Partners[2], 'RNDr.', 'Aleš', 'Mičovský', null, null,
-            'Medená', '10/K', 'Bratislava - mestská časť Staré Mesto', '81102', '2004-10-22');
-        $this->assertPartner($subject->Partners[3], 'Ing.', 'Peter', 'Morávek', null, null,
-            'Čerešňová', '76', 'Chorvátsky Grob', '90025', '2017-10-13');
-        $this->assertPartner($subject->Partners[4], 'Ing.', 'Alexander', 'Rehorovský', null, null,
-            'Slovienska', '1045/6', 'Bratislava - mestská časť Devín', '84110', '2017-10-13');
-        $this->assertPartner($subject->Partners[5], 'Ing.', 'Daniel', 'Scheber', null, null,
-            'Dlhé diely I', '5046/8', 'Bratislava - mestská časť Karlova Ves', '84104', '2017-03-11');
-        $this->assertPartner($subject->Partners[6], 'Ing.', 'Anton', 'Scheber', 'CSc.', null,
-            'Na kopci', '8', 'Bratislava - mestská časť Staré Mesto', '81102', '2009-06-30');
+        $this->assertPerson($subject->Partners[0], 'Ing.', 'Karol', 'Fischer', null, null,
+            'Bellova', '23', 'Bratislava - mestská časť Nové Mesto', '83101', null, '2009-06-30');
+        $this->assertPerson($subject->Partners[1], 'Ing.', 'Martin', 'Melišek', null, null,
+            'Žltá', '3897/2B', 'Bratislava - mestská časť Petržalka', '85107', null, '2004-10-22');
+        $this->assertPerson($subject->Partners[2], 'RNDr.', 'Aleš', 'Mičovský', null, null,
+            'Medená', '10/K', 'Bratislava - mestská časť Staré Mesto', '81102', null, '2004-10-22');
+        $this->assertPerson($subject->Partners[3], 'Ing.', 'Peter', 'Morávek', null, null,
+            'Čerešňová', '76', 'Chorvátsky Grob', '90025', null, '2017-10-13');
+        $this->assertPerson($subject->Partners[4], 'Ing.', 'Alexander', 'Rehorovský', null, null,
+            'Slovienska', '1045/6', 'Bratislava - mestská časť Devín', '84110',  null,'2017-10-13');
+        $this->assertPerson($subject->Partners[5], 'Ing.', 'Daniel', 'Scheber', null, null,
+            'Dlhé diely I', '5046/8', 'Bratislava - mestská časť Karlova Ves', '84104', null, '2017-03-11');
+        $this->assertPerson($subject->Partners[6], 'Ing.', 'Anton', 'Scheber', 'CSc.', null,
+            'Na kopci', '8', 'Bratislava - mestská časť Staré Mesto', '81102',  null,'2009-06-30');
 
         // Contributors
-        $this->assertContributor($subject->MembersContribution[0], 'Ing.', 'Martin', 'Melišek', null, null,
+        $this->AssertContributor($subject->MembersContribution[0], 'Ing.', 'Martin', 'Melišek', null, null,
             11712.0, 11712.0, 'EUR', '2018-03-27');
-        $this->assertContributor($subject->MembersContribution[1], 'RNDr.', 'Aleš', 'Mičovský', null, null,
+        $this->AssertContributor($subject->MembersContribution[1], 'RNDr.', 'Aleš', 'Mičovský', null, null,
             11712.0, 11712.0, 'EUR', '2018-03-27');
-        $this->assertContributor($subject->MembersContribution[2], 'Ing.', 'Daniel', 'Scheber', null, null,
+        $this->AssertContributor($subject->MembersContribution[2], 'Ing.', 'Daniel', 'Scheber', null, null,
             7320.0, 7320.0, 'EUR', '2018-03-27');
-        $this->assertContributor($subject->MembersContribution[3], 'Ing.', 'Karol', 'Fischer', null, null,
+        $this->AssertContributor($subject->MembersContribution[3], 'Ing.', 'Karol', 'Fischer', null, null,
             13908.0, 13908.0, 'EUR', '2018-03-27');
-        $this->assertContributor($subject->MembersContribution[4], 'Ing.', 'Anton', 'Scheber', 'CSc.', null,
+        $this->AssertContributor($subject->MembersContribution[4], 'Ing.', 'Anton', 'Scheber', 'CSc.', null,
             13908.0, 13908.0, 'EUR', '2018-03-27');
-        $this->assertContributor($subject->MembersContribution[5], 'Ing.', 'Peter', 'Morávek', null, null,
+        $this->AssertContributor($subject->MembersContribution[5], 'Ing.', 'Peter', 'Morávek', null, null,
             7320.0, 7320.0, 'EUR', '2018-03-27');
-        $this->assertContributor($subject->MembersContribution[6], 'Ing.', 'Alexander', 'Rehorovský', null, null,
+        $this->AssertContributor($subject->MembersContribution[6], 'Ing.', 'Alexander', 'Rehorovský', null, null,
             7320.0, 7320.0, 'EUR', '2018-03-27');
 
         // Management Body
-        $this->assertManager($subject->ManagementBody[0], 'Ing.', 'Karol', 'Fischer', null, null,
-            'Bellova', '23', 'Bratislava  - Nové Mesto', '83101', '2000-09-18');
-        $this->assertManager($subject->ManagementBody[1], 'Ing.', 'Martin', 'Melišek', null, null,
-            'Žltá', '3897/2B', 'Bratislava', '85107', '2011-03-23');
-        $this->assertManager($subject->ManagementBody[2], 'RNDr.', 'Aleš', 'Mičovský', null, null,
-            'Medená', '10/K', 'Bratislava', '81102', '2011-03-23');
-        $this->assertManager($subject->ManagementBody[3], 'Ing.', 'Peter', 'Morávek', null, null,
-            'Čerešňová', '76', 'Chorvátsky Grob', '90025', '2013-03-14');
-        $this->assertManager($subject->ManagementBody[4], 'Ing.', 'Alexander', 'Rehorovský', null, null,
-            'Slovienska', '1045/6', 'Bratislava - Devín', '84110', '2016-03-09');
-        $this->assertManager($subject->ManagementBody[5], 'Ing.', 'Anton', 'Scheber', 'CSc.', null,
-            'Na kopci', '8', 'Bratislava', '81102', '2000-09-18');
-        $this->assertManager($subject->ManagementBody[6], 'Ing.', 'Daniel', 'Scheber', null, null,
-            'Dlhé diely I', '5046/8', 'Bratislava - mestská časť Karlova Ves', '84104', '2016-03-09');
+        $this->assertPerson($subject->ManagementBody[0], 'Ing.', 'Karol', 'Fischer', null, null,
+            'Bellova', '23', 'Bratislava  - Nové Mesto', '83101',null, '2000-09-18');
+        $this->assertPerson($subject->ManagementBody[1], 'Ing.', 'Martin', 'Melišek', null, null,
+            'Žltá', '3897/2B', 'Bratislava', '85107',null, '2011-03-23');
+        $this->assertPerson($subject->ManagementBody[2], 'RNDr.', 'Aleš', 'Mičovský', null, null,
+            'Medená', '10/K', 'Bratislava', '81102',null, '2011-03-23');
+        $this->assertPerson($subject->ManagementBody[3], 'Ing.', 'Peter', 'Morávek', null, null,
+            'Čerešňová', '76', 'Chorvátsky Grob', '90025',null, '2013-03-14');
+        $this->assertPerson($subject->ManagementBody[4], 'Ing.', 'Alexander', 'Rehorovský', null, null,
+            'Slovienska', '1045/6', 'Bratislava - Devín', '84110',null, '2016-03-09');
+        $this->assertPerson($subject->ManagementBody[5], 'Ing.', 'Anton', 'Scheber', 'CSc.', null,
+            'Na kopci', '8', 'Bratislava', '81102',null, '2000-09-18');
+        $this->assertPerson($subject->ManagementBody[6], 'Ing.', 'Daniel', 'Scheber', null, null,
+            'Dlhé diely I', '5046/8', 'Bratislava - mestská časť Karlova Ves', '84104',null, '2016-03-09');
 
         // Other Legal Facts
         // TODO: Fix bad line-endings so this can be fully tested
@@ -181,20 +180,20 @@ class SubjectPageParsingTest extends TestCase
         $this->assertTextDatePair($subject->CompanyObjects[8], 'Činnosť samostatného finančného agenta v sektore poistenia alebo zaistenia, v sektore kapitálového trhu, v sektore prijímania vkladov, v sektore poskytovania úverov a spotrebiteľských úverov, v sektore doplnkového dôchodkového sporenia a v sektore starobného dôchodkového sporenia', '2016-05-14');
 
         // Partners
-        $this->assertPartner($subject->Partners[0], null, null, null, null, 'FINGO a.s.',
-            'Turčianska', '19', 'Bratislava - mestská časť Ružinov', '82109', '2017-12-05');
+        $this->assertPerson($subject->Partners[0], null, null, null, null, 'FINGO a.s.',
+            'Turčianska', '19', 'Bratislava - mestská časť Ružinov', '82109', null, '2017-12-05');
 
         // Contributors
-        $this->assertContributor($subject->MembersContribution[0], null, null, null, null, 'FINGO a.s.',
+        $this->AssertContributor($subject->MembersContribution[0], null, null, null, null, 'FINGO a.s.',
             5000.0, 5000.0, 'EUR', '2017-12-05');
 
         // Management Body
-        $this->assertManager($subject->ManagementBody[0], null, 'Roland', 'Dvořák', null, null,
-            'Letná', '166/62', 'Malá Ida', '04420', '2018-02-15');
-        $this->assertManager($subject->ManagementBody[1], null, 'Ondrej', 'Matvija', null, null,
-            'Attidova', '1462/11', 'Bratislava - mestská časť Rusovce', '85110', '2017-12-05');
-        $this->assertManager($subject->ManagementBody[2], null, 'Lívia', 'Palásthyová', null, null,
-            'Tupolevova', '1040/4', 'Bratislava - mestská časť Petržalka', '85101', '2018-02-15');
+        $this->assertPerson($subject->ManagementBody[0], null, 'Roland', 'Dvořák', null, null,
+            'Letná', '166/62', 'Malá Ida', '04420', null, '2018-02-15');
+        $this->assertPerson($subject->ManagementBody[1], null, 'Ondrej', 'Matvija', null, null,
+            'Attidova', '1462/11', 'Bratislava - mestská časť Rusovce', '85110', null, '2017-12-05');
+        $this->assertPerson($subject->ManagementBody[2], null, 'Lívia', 'Palásthyová', null, null,
+            'Tupolevova', '1040/4', 'Bratislava - mestská časť Petržalka', '85101', null, '2018-02-15');
 
         // Other Legal Facts
         $this->assertTextDatePair($subject->OtherLegalFacts[0], 'Rozhodnutie jediného spoločníka zo dňa 7.11.2017. Zmena obchodného mena z VIA FINANCE s.r.o. na FINGO.SK s.r.o.', '2017-12-05');
@@ -255,8 +254,8 @@ class SubjectPageParsingTest extends TestCase
         $this->assertTextDatePair($subject->CompanyObjects[12], 'Činnosť podriadeného finančného agenta v sektore starobného dôchodkového sporenia', '2017-09-12');
 
         // Management Body
-        $this->assertManager($subject->ManagementBody[0], null, 'Lívia', 'Palásthyová', null, null,
-            'Tupolevova', '1040/4', 'Bratislava - mestská časť Petržalka', '85101', '2019-07-12');
+        $this->assertPerson($subject->ManagementBody[0], null, 'Lívia', 'Palásthyová', null, null,
+            'Tupolevova', '1040/4', 'Bratislava - mestská časť Petržalka', '85101', null, '2019-07-12');
 
         // Other Legal Facts
         $this->assertTextDatePair($subject->OtherLegalFacts[0], 'Akciová spoločnosť bola založená bez výzvy na upisovanie akcií zakladateľskou zmluvou vo forme notárskej zápisnice č. N 501/2017, Nz 22455/2017, NCRls 22942/2017 zo dňa 28.06.2017 podľa §§ 154-220a Obchodného zákonníka č. 513/1991 Zb. v znení neskorších predpisov.', '2017-07-13');
@@ -335,18 +334,18 @@ class SubjectPageParsingTest extends TestCase
         $this->assertTextDatePair($subject->CompanyObjects[4],'prieskum trhu a verejnej mienky', '2010-12-07');
 
         // Partners
-        $this->assertPartner($subject->Partners[0], null, null, null, null, 'Google International LLC',
-            'Little Falls Drive', '251', 'Wilmington', 'DE19808', '2018-11-09', 'Spojené štáty americké');
+        $this->assertPerson($subject->Partners[0], null, null, null, null, 'Google International LLC',
+            'Little Falls Drive', '251', 'Wilmington', 'DE19808', 'Spojené štáty americké', '2018-11-09');
 
         // Contributors
-        $this->assertContributor($subject->MembersContribution[0], null, null, null, null, 'Google International LLC',
+        $this->AssertContributor($subject->MembersContribution[0], null, null, null, null, 'Google International LLC',
             100000.0, 100000.0, 'EUR', '2018-11-09');
 
         // Management Body
-        $this->assertManager($subject->ManagementBody[0], null, 'Kenneth Hohee', 'Yi', null, null,
-            'Sand Hill Circle', '620', 'Menlo Park, Kalifornia', '94025', '2015-05-12', 'Spojené štáty americké');
-        $this->assertManager($subject->ManagementBody[1], null, 'Paul Terence', 'Manicle', null, null,
-            'Balally Park, Dundrum', '97', 'Dublin 16', null, '2015-11-06', 'Írsko');
+        $this->assertPerson($subject->ManagementBody[0], null, 'Kenneth Hohee', 'Yi', null, null,
+            'Sand Hill Circle', '620', 'Menlo Park, Kalifornia', '94025', 'Spojené štáty americké', '2015-05-12');
+        $this->assertPerson($subject->ManagementBody[1], null, 'Paul Terence', 'Manicle', null, null,
+            'Balally Park, Dundrum', '97', 'Dublin 16', null, 'Írsko', '2015-11-06');
 
         // Other Legal Facts
         $this->assertTextDatePair($subject->OtherLegalFacts[0], 'Obchodná spoločnosť bola založená zakladateľskou listinou zo dňa 28.10.2010 v zmysle §§ 105 - 153 Zák. č. 513/1991 Zb. v znení neskorších predpisov.', '2010-12-07');
@@ -378,52 +377,35 @@ class SubjectPageParsingTest extends TestCase
         $this->assertSame($date, $pair->Date->format('Y-m-d'));
     }
 
-    private function assertPartner(SubjectPartner $partner, $db, $fn, $ln, $da, $bn, $sna, $snu, $cn, $zip, $date, $country = null): void
+    private function assertPerson(Person $person, $db, $fn, $ln, $da, $bn, $sna, $snu, $cn, $zip, $country, $date): void
     {
-        $this->assertSame($db, $partner->DegreeBefore);
-        $this->assertSame($fn, $partner->FirstName);
-        $this->assertSame($ln, $partner->LastName);
-        $this->assertSame($da, $partner->DegreeAfter);
-        $this->assertSame($bn, $partner->BusinessName);
+        $this->assertSame($db, $person->DegreeBefore);
+        $this->assertSame($fn, $person->FirstName);
+        $this->assertSame($ln, $person->LastName);
+        $this->assertSame($da, $person->DegreeAfter);
+        $this->assertSame($bn, $person->BusinessName);
 
-        $this->assertSame($sna, $partner->Address->StreetName);
-        $this->assertSame($snu, $partner->Address->StreetNumber);
-        $this->assertSame($cn, $partner->Address->CityName);
-        $this->assertSame($zip, $partner->Address->Zip);
-        $this->assertSame(is_null($country) ? Address::SLOVAKIA_NAME : $country, $partner->Address->Country);
+        $this->assertSame($sna, $person->Address->StreetName);
+        $this->assertSame($snu, $person->Address->StreetNumber);
+        $this->assertSame($cn, $person->Address->CityName);
+        $this->assertSame($zip, $person->Address->Zip);
+        $this->assertSame(is_null($country) ? Address::DEFAULT_COUNTRY : $country, $person->Address->Country);
 
-        $this->assertSame($date, $partner->Date->format('Y-m-d'));
+        $this->assertSame($date, $person->Date->format('Y-m-d'));
     }
 
-    private function assertManager(SubjectManager $manager, $db, $fn, $ln, $da, $bn, $sna, $snu, $cn, $zip, $date, $country = null): void
+    private function AssertContributor(Contributor $contributor, $db, $fn, $ln, $da, $bn, $amount, $paid, $currency, $date): void
     {
-        $this->assertSame($db, $manager->DegreeBefore);
-        $this->assertSame($fn, $manager->FirstName);
-        $this->assertSame($ln, $manager->LastName);
-        $this->assertSame($da, $manager->DegreeAfter);
-        $this->assertSame($bn, $manager->BusinessName);
-
-        $this->assertSame($sna, $manager->Address->StreetName);
-        $this->assertSame($snu, $manager->Address->StreetNumber);
-        $this->assertSame($cn, $manager->Address->CityName);
-        $this->assertSame($zip, $manager->Address->Zip);
-        $this->assertSame(is_null($country) ? Address::SLOVAKIA_NAME : $country, $manager->Address->Country);
-
-        $this->assertSame($date, $manager->Date->format('Y-m-d'));
-    }
-
-    private function assertContributor(SubjectContributor $contributor, $db, $fn, $ln, $da, $bn, $amount, $paid, $currency, $date): void
-    {
-        $this->assertSame($db, $contributor->DegreeBefore);
-        $this->assertSame($fn, $contributor->FirstName);
-        $this->assertSame($ln, $contributor->LastName);
-        $this->assertSame($da, $contributor->DegreeAfter);
-        $this->assertSame($bn, $contributor->BusinessName);
+        $this->assertSame($db, $contributor->Person->DegreeBefore);
+        $this->assertSame($fn, $contributor->Person->FirstName);
+        $this->assertSame($ln, $contributor->Person->LastName);
+        $this->assertSame($da, $contributor->Person->DegreeAfter);
+        $this->assertSame($bn, $contributor->Person->BusinessName);
 
         $this->assertSame($amount, $contributor->Amount);
         $this->assertSame($paid, $contributor->Paid);
         $this->assertSame($currency, $contributor->Currency);
 
-        $this->assertSame($date, $contributor->Date->format('Y-m-d'));
+        $this->assertSame($date, $contributor->Person->Date->format('Y-m-d'));
     }
 }
