@@ -13,7 +13,7 @@ class Listing
     const LISTING_URL = '/vypis.asp?ID={id}&SID={sid}&P={p}&lan=en';
 
     /*
-     * I really do not know what are these but apperentlly you need all of them to get relevant informations from the
+     * I really do not know what are these but apparently you need all of them to get relevant informations from the
      * register.
      */
     public int $Id;
@@ -29,7 +29,7 @@ class Listing
 
     public function getSubject(): BusinessSubject
     {
-        BusinessRegisterQuery::network()->byListing($this);
+        return BusinessRegisterQuery::network()->byListing($this);
     }
 
     public function getUrl(): string
