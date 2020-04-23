@@ -351,6 +351,7 @@ class BusinessSubjectPageParser
             return $item !== "- predseda" && $item !== '- člen dozornej rady';
         });
 
+        // TODO: Refactor edge-case code after switch
         switch(count($line)) {
             case 1: {
                 $businessName = $line[0];

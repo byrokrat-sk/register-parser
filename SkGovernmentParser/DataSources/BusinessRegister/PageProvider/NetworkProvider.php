@@ -11,28 +11,33 @@ use SkGovernmentParser\Helper\CurlHelper;
 
 class NetworkProvider implements BusinessRegisterPageProvider
 {
-    public const NAME_QUERY_URL = 'http://orsr.sk/hladaj_subjekt.asp?lan=en&OBMENO={query}&PF=0&R=on';
-    public const IDENTIFICATOR_QUERY_URL = 'http://orsr.sk/hladaj_ico.asp?lan=en&ICO={query}&SID=0';
-    public const ACTUAL_PAGE_URL = "http://orsr.sk/vypis.asp?lan=en&ID={query}&SID=2&P=0";
-    public const FULL_PAGE_URL = "http://orsr.sk/vypis.asp?lan=en&ID={query}&SID=2&P=1";
+    public const NAME_QUERY_URL = '/hladaj_subjekt.asp?lan=en&OBMENO={query}&PF=0&R=on';
+    public const IDENTIFICATOR_QUERY_URL = '/hladaj_ico.asp?lan=en&ICO={query}&SID=0';
+    public const ACTUAL_PAGE_URL = "/vypis.asp?lan=en&ID={query}&SID=2&P=0";
+    public const FULL_PAGE_URL = "/vypis.asp?lan=en&ID={query}&SID=2&P=1";
 
-    public function __construct() {}
+    private string $RootAddress;
+
+    public function __construct(string $rootAddress)
+    {
+        $this->RootAddress = $rootAddress;
+    }
 
     public function getIdentificatorSearchPageHtml(string $identificator): string
     {
-        $searchPageUrl = str_replace('{query}', $identificator, self::IDENTIFICATOR_QUERY_URL);
+        $searchPageUrl = str_replace('{query}', $identificator, $this->RootAddress.self::IDENTIFICATOR_QUERY_URL);
         return $this->fetchPage($searchPageUrl);
     }
 
     public function getNameSearchPageHtml(string $query): string
     {
-        $searchPageUrl = str_replace('{query}', $query, self::NAME_QUERY_URL);
+        $searchPageUrl = str_replace('{query}', $query, $this->RootAddress.self::NAME_QUERY_URL);
         return $this->fetchPage($searchPageUrl);
     }
 
     public function getBusinessSubjectPageHtml(int $subjectId): string
     {
-        $subjectPageUrl = str_replace('{query}', $subjectId, self::ACTUAL_PAGE_URL);
+        $subjectPageUrl = str_replace('{query}', $subjectId, $this->RootAddress.self::ACTUAL_PAGE_URL);
         return $this->fetchPage($subjectPageUrl);
     }
 

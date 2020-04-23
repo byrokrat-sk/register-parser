@@ -18,18 +18,18 @@ use SkGovernmentParser\ParserConfiguration;
 
 class BusinessRegisterQuery
 {
-    private BusinessRegisterPageProvider $Driver;
+    private BusinessRegisterPageProvider $Provider;
 
     public function __construct(BusinessRegisterPageProvider $driver)
     {
-        $this->Driver = $driver;
+        $this->Provider = $driver;
     }
 
     # ~
 
     public static function network(): BusinessRegisterQuery
     {
-        return new BusinessRegisterQuery(new NetworkProvider());
+        return new BusinessRegisterQuery(new NetworkProvider(ParserConfiguration::$BusinessRegisterUrlRoot));
     }
 
     # ~
@@ -42,7 +42,7 @@ class BusinessRegisterQuery
             throw new InvalidQueryException("Passed identificator [$query]->[$trimmedQuery] is not valid identificator number!");
         }
 
-        $searchPageHtml = $this->Driver->getIdentificatorSearchPageHtml($trimmedQuery);
+        $searchPageHtml = $this->Provider->getIdentificatorSearchPageHtml($trimmedQuery);
         $searchResult = SearchResultParser::parseHtml($searchPageHtml);
 
         if ($searchResult->isEmpty()) {
@@ -58,7 +58,7 @@ class BusinessRegisterQuery
 
     public function bySubjectId(int $subjectId): BusinessSubject
     {
-        $subjectPageHtml = $this->Driver->getBusinessSubjectPageHtml($subjectId);
+        $subjectPageHtml = $this->Provider->getBusinessSubjectPageHtml($subjectId);
         return BusinessSubjectPageParser::parseHtml($subjectPageHtml);
     }
 
@@ -70,7 +70,7 @@ class BusinessRegisterQuery
             throw new InvalidQueryException("Provided query is empty!");
         }
 
-        $searchPageHtml = $this->Driver->getNameSearchPageHtml($trimmedQuery);
+        $searchPageHtml = $this->Provider->getNameSearchPageHtml($trimmedQuery);
         return SearchResultParser::parseHtml($searchPageHtml);
     }
 }
