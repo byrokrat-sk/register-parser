@@ -6,10 +6,11 @@ namespace SkGovernmentParser\DataSources\BusinessRegister\Model\Search;
 
 use SkGovernmentParser\DataSources\BusinessRegister\BusinessRegisterQuery;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\BusinessSubject;
+use SkGovernmentParser\ParserConfiguration;
 
 class Listing
 {
-    const LISTING_URL = 'http://www.orsr.sk/vypis.asp?ID={id}&SID={sid}&P={p}&lan=en';
+    const LISTING_URL = '/vypis.asp?ID={id}&SID={sid}&P={p}&lan=en';
 
     /*
      * I really do not know what are these but apperentlly you need all of them to get relevant informations from the
@@ -37,7 +38,7 @@ class Listing
     }
 
     public static function formatListingUrl(int $id, int $sid, int $p): string {
-        $url = str_replace('{id}', $id, self::LISTING_URL);
+        $url = str_replace('{id}', $id, ParserConfiguration::$BusinessRegisterUrlRoot.self::LISTING_URL);
         $url = str_replace('{sid}', $sid, $url);
         $url = str_replace('{p}', $p, $url);
         return $url;
