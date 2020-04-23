@@ -4,6 +4,9 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model\Search;
 
 
+use SkGovernmentParser\DataSources\BusinessRegister\BusinessRegisterQuery;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\BusinessSubject;
+
 class Listing
 {
     const LISTING_URL = 'http://www.orsr.sk/vypis.asp?ID={id}&SID={sid}&P={p}&lan=en';
@@ -21,6 +24,11 @@ class Listing
         $this->Id = $Id;
         $this->Sid = $Sid;
         $this->P = $P;
+    }
+
+    public function getSubject(): BusinessSubject
+    {
+        BusinessRegisterQuery::network()->byListing($this);
     }
 
     public function getUrl(): string
