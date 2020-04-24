@@ -5,7 +5,6 @@ namespace SkGovernmentParser\DataSources\BusinessRegister;
 
 
 use SkGovernmentParser\DataSources\BusinessRegister\Model\BusinessSubject;
-use SkGovernmentParser\DataSources\BusinessRegister\Model\Search\Item;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Search\Listing;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Search\Result;
 use SkGovernmentParser\DataSources\BusinessRegister\PageProvider\NetworkProvider;
