@@ -21,7 +21,7 @@ class NetworkProvider implements TradeRegisterPageProvider
 
     // I think it would be possible to store this on the disk or in Redis for certain amount of time before session expire
     // TODO: How long does it take session from trade register to expire?
-    private static array $SessionCache = [];
+    public static array $SessionCache = [];
 
     private string $RootAddress;
 
@@ -72,10 +72,10 @@ class NetworkProvider implements TradeRegisterPageProvider
      */
     public function getPersonSearchPageHtml(?string $firstName = null, ?string $lastName = null, ?string $municipality = null, ?string $streetName = null, ?string $streetNumber = null, ?string $districtId = null): string
     {
-        $session = $this->getSession(self::SESSION_URL_BUSINESS_NAME);
+        $session = $this->getSession(self::SESSION_URL_PERSON);
 
         // 1. First we need to set session with desired identificator
-        $sessionSetUrl = $this->RootAddress.self::SESSION_URL_BUSINESS_NAME;
+        $sessionSetUrl = $this->RootAddress.self::SESSION_URL_PERSON;
         $this->setSession($session, $sessionSetUrl, [
             'txtPriezvisko' => $lastName,
             'txtMeno' => $firstName,
@@ -168,8 +168,7 @@ class NetworkProvider implements TradeRegisterPageProvider
 
         // Session set is returning 302 on success
         if ($sessionResponse->HttpCode !== '302') {
-            print_r($sessionResponse);
-            throw new BadHttpRequestException("Page request on business name search [$sessionSetUrl] was not succesfull! HTTP code [302] was excepted but [$sessionResponse->HttpCode] was returned.");
+            throw new BadHttpRequestException("Page request on business name search [$url] was not succesfull! HTTP code [302] was excepted but [$sessionResponse->HttpCode] was returned.");
         }
     }
 

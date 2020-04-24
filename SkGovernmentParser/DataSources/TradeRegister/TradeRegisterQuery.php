@@ -70,4 +70,12 @@ class TradeRegisterQuery
 
         return $searchResult;
     }
+
+    public function byPerson(?string $firstName = null, ?string $lastName = null, ?string $municipality = null, ?string $streetName = null, ?string $streetNumber = null, ?string $districtId = null): Result
+    {
+        $searchPageHtml = $this->Provider->getPersonSearchPageHtml($firstName, $lastName, $municipality, $streetName, $streetNumber, $districtId);
+        $searchResult = SearchResultPageParser::parseHtml($searchPageHtml);
+
+        return $searchResult;
+    }
 }

@@ -12,5 +12,5 @@ const GOMBARCIK_ICO = '36012122';
 
 # ~
 
-$queryResult = TradeRegisterQuery::network()->byIdentificator(GOMBARCIK_ICO);
+$queryResult = TradeRegisterQuery::network()->byPerson('Martin', 'Sršeň');
 echo(json_encode($queryResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
