@@ -5,6 +5,7 @@ namespace SkGovernmentParser\DataSources\TradeRegister;
 
 
 use SkGovernmentParser\DataSources\BusinessRegister\CompanyIdValidator;
+use SkGovernmentParser\DataSources\TradeRegister\Model\Search\Result;
 use SkGovernmentParser\DataSources\TradeRegister\Model\TradeSubject;
 use SkGovernmentParser\DataSources\TradeRegister\PageProvider\NetworkProvider;
 use SkGovernmentParser\DataSources\TradeRegister\Parser\SearchResultPageParser;
@@ -56,5 +57,17 @@ class TradeRegisterQuery
         $parsedTradeSubject = TradeSubjectPageParser::parseHtml($tradeSubjectPageHtml);
 
         return $parsedTradeSubject;
+    }
+
+    public function byBusinessName(?string $businessName = null, ?string $municipality = null, ?string $streetName = null, ?string $streetNumber = null, ?string $disctrictId = null): Result
+    {
+        if (strlen($businessName) < 2) {
+            throw new InvalidQueryException("Business name must have at least 2 characters");
+        }
+
+        $searchPageHtml = $this->Provider->getBusinessSubjectSearchPageHtml($businessName, $municipality, $streetName, $streetNumber, $disctrictId);
+        $searchResult = SearchResultPageParser::parseHtml($searchPageHtml);
+
+        return $searchResult;
     }
 }

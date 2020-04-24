@@ -4,15 +4,17 @@ namespace SkGovernmentParser;
 
 class ParserConfiguration
 {
-    /*
-     * Maximal request timeout in seconds
-     */
+
+    /* Maximal request timeout in seconds */
     public static $RequestTimeoutSeconds = 10;
 
-    /*
-     * Some URL addresses parsed from HTML are not prefixed. This string is placed on beggining of the relative URL
-     * addresses.
-     */
+
+    #
+    # Business Register Configuration
+    #
+
+
+    /* Root URL address of business register */
     public static $BusinessRegisterUrlRoot = 'http://orsr.sk';
 
     /*
@@ -22,7 +24,13 @@ class ParserConfiguration
      */
     public static $BusinessRegisterAllowMultipleIdsResult = true;
 
-    # ~
 
+    #
+    # Trade Register Configuration
+    #
+
+
+    /* Root URL address of trade register */
     public static $TradeRegisterUrlRoot = 'https://www.zrsr.sk';
+
 }
