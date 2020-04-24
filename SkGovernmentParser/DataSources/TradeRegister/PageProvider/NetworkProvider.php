@@ -19,8 +19,11 @@ class NetworkProvider implements TradeRegisterPageProvider
     public const BROWSE_RESULTS_URL = '/zr_browse.aspx';
     public const BROWSE_SUBJECT_URL = '/zr_vypis.aspx?ID={order}&V=A'; // V={A,U}
 
-    private string $RootAddress;
+    // I think it would be possible to store this on the disk or in Redis for certain amount of time before session expire
+    // TODO: How long does it take session from trade register to expire?
     private static array $SessionCache = [];
+
+    private string $RootAddress;
 
     public function __construct(string $rootAddress)
     {
@@ -126,16 +129,16 @@ class NetworkProvider implements TradeRegisterPageProvider
     }
 
     /** This function will init session with request to register if it's not yet initialised */
-    private function getSession(string $forAction): object
+    private function getSession(string $forUrl): object
     {
-        if (!array_key_exists($forAction, self::$SessionCache)) {
+        if (!array_key_exists($forUrl, self::$SessionCache)) {
             // Session can be obtained from any URL so we choose page with identificator form
-            $sessionSetUrl = $this->RootAddress.$forAction;
+            $sessionSetUrl = $this->RootAddress.$forUrl;
             $response = CurlHelper::get($sessionSetUrl);
             $pageHtml = $response->Response;
 
             // This is simple enough that DOM parser is not needed
-            self::$SessionCache[$forAction] = (object)[
+            self::$SessionCache[$forUrl] = (object)[
                 'session_id' => StringHelper::stringBetween($response->HttpHeaders['set-cookie'][0], 'NET_SessionId=', '; '),
                 'view_state' => StringHelper::stringBetween($pageHtml, '<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="', '" />'),
                 'view_state_generator' => StringHelper::stringBetween($pageHtml, '<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="', '" />'),
@@ -143,7 +146,7 @@ class NetworkProvider implements TradeRegisterPageProvider
             ];
         }
 
-        return self::$SessionCache[$forAction];
+        return self::$SessionCache[$forUrl];
     }
 
     /*
