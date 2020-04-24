@@ -8,13 +8,13 @@ class Address implements \JsonSerializable
 {
     const DEFAULT_COUNTRY = 'Slovak Republic';
 
-    public string $StreetName;
+    public ?string $StreetName;
     public string $StreetNumber;
     public string $CityName;
     public ?string $Zip;
     public string $Country;
 
-    public function __construct(string $StreetName, string $StreetNumber, string $CityName, ?string $Zip, ?string $Country = null)
+    public function __construct(?string $StreetName, string $StreetNumber, string $CityName, ?string $Zip, ?string $Country = null)
     {
         $this->StreetName = $StreetName;
         $this->StreetNumber = $StreetNumber;

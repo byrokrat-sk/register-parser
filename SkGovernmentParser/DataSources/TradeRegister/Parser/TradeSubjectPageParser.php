@@ -7,6 +7,7 @@ namespace SkGovernmentParser\DataSources\TradeRegister\Parser;
 use SkGovernmentParser\DataSources\TradeRegister\Model\Address;
 use SkGovernmentParser\DataSources\TradeRegister\Model\BusinessObject;
 use SkGovernmentParser\DataSources\TradeRegister\Model\Establishment;
+use SkGovernmentParser\DataSources\TradeRegister\Model\Manager;
 use SkGovernmentParser\DataSources\TradeRegister\Model\TradeSubject;
 use SkGovernmentParser\Helper\StringHelper;
 
@@ -68,10 +69,10 @@ class TradeSubjectPageParser
                                 break;
                             }
                             case 'Štatutárny orgán': {
-                                $tradeSubject['management'][] = (object)[
-                                    'name' => trim($listItem->childNodes[0]->textContent),
-                                    'address' => trim($listItem->childNodes[1]->textContent)
-                                ];
+                                $tradeSubject['management'][] = new Manager(
+                                    trim($listItem->childNodes[0]->textContent),
+                                    self::parseAddress(trim($listItem->childNodes[1]->textContent))
+                                );
                                 break;
                             }
                             default: {
@@ -109,7 +110,7 @@ class TradeSubjectPageParser
                     }
 
                     $businessObjects[] = new BusinessObject(
-                        trim($listNode->childNodes[0]->textContent),
+                        StringHelper::paragraphText($listNode->childNodes[0]->textContent),
                         self::parseDmyDate(str_replace('Deň vzniku oprávnenia:', '', $listNode->childNodes[1]->textContent)),
                         $manager,
                         empty($establishments) ? null : $establishments,
@@ -138,28 +139,42 @@ class TradeSubjectPageParser
 
     private static function parseAddress(string $rawAddress): Address
     {
-        $commaSplit = explode(',', $rawAddress);
+        $streetName = null;
+        $streetNumber = null;
+        $city = null;
+        $zip = null;
 
-        $citySplit = explode(' ', $commaSplit[0]);
-        if (count($citySplit) === 1) {
-            $zip = null; // zip is not defined
-            $city = $citySplit[0];
+        $commaSplit = explode(',', $rawAddress);
+        if (count($commaSplit) === 1) {
+            // Address do not contain comma
+            $spaceSplit = explode(' ', $rawAddress);
+            $zip = $spaceSplit[0];
+            $streetNumber = $spaceSplit[count($spaceSplit) - 1];
+            unset($spaceSplit[count($spaceSplit) - 1]);
+            unset($spaceSplit[0]);
+            $city = implode(' ', $spaceSplit);
         } else {
-            $zip = $citySplit[0]; // First part of "city" is zip
-            unset($citySplit[0]);
-            $city = implode(' ', $citySplit);
+            $citySplit = explode(' ', $commaSplit[0]);
+            if (count($citySplit) === 1) {
+                // Address do not contain ZIP
+                $city = $citySplit[0];
+            } else {
+                $zip = trim($citySplit[0]); // First part of "city" is zip
+                unset($citySplit[0]);
+                $city = implode(' ', $citySplit);
+            }
+
+            $streetSplit = explode(' ', $commaSplit[1]);
+            $streetNumber = $streetSplit[count($streetSplit) - 1]; // Last "word" of street is number
+            unset($streetSplit[count($streetSplit) - 1]);
+            $streetName = trim(implode(' ', $streetSplit));
         }
 
-        $streetSplit = explode(' ', $commaSplit[1]);
-        $streetNumber = $streetSplit[count($streetSplit) - 1]; // Last "word" of street is number
-        unset($streetSplit[count($streetSplit) - 1]);
-        $streetName = implode(' ', $streetSplit);
-
         return new Address(
-            trim($streetName),
-            trim($streetNumber),
+            empty($streetName) ? null : $streetName,
+            $streetNumber,
             trim($city),
-            trim($zip)
+            empty($zip) ? null : $zip
         );
     }
 

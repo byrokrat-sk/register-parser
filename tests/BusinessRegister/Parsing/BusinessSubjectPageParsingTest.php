@@ -11,7 +11,7 @@ use SkGovernmentParser\DataSources\BusinessRegister\Model\TextDatePair;
 use SkGovernmentParser\DataSources\BusinessRegister\Parser\BusinessSubjectPageParser;
 
 
-class SubjectPageParsingTest extends TestCase
+class BusinessSubjectPageParsingTest extends TestCase
 {
     private const SOFTEC = '00683540';
     private const TESCO = '31321828';

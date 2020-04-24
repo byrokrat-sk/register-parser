@@ -11,19 +11,19 @@ class TradeSubject implements \JsonSerializable
     public string $RegisterNumber;
     public string $DistrictCourt;
     public Address $RegisteredSeat;
-    public ?array $Mamagament;
+    public ?array $Managament;
     public ?array $BusinessObjects;
     public \DateTime $ExtractedAt;
     public ?\DateTime $TerminatedAt;
 
-    public function __construct($IdentificationNumber, $BusinessName, $RegisterNumber, $DistrictCourt, $RegisteredSeat, $Mamagament, $BusinessObjects, $ExtractedAt, $TerminatedAt)
+    public function __construct($IdentificationNumber, $BusinessName, $RegisterNumber, $DistrictCourt, $RegisteredSeat, $Managament, $BusinessObjects, $ExtractedAt, $TerminatedAt)
     {
         $this->IdentificationNumber = $IdentificationNumber;
         $this->BusinessName = $BusinessName;
         $this->RegisterNumber = $RegisterNumber;
         $this->DistrictCourt = $DistrictCourt;
         $this->RegisteredSeat = $RegisteredSeat;
-        $this->Mamagament = $Mamagament;
+        $this->Managament = $Managament;
         $this->BusinessObjects = $BusinessObjects;
         $this->ExtractedAt = $ExtractedAt;
         $this->TerminatedAt = $TerminatedAt;
@@ -37,7 +37,7 @@ class TradeSubject implements \JsonSerializable
             'register_number' => $this->RegisterNumber,
             'district_court' => $this->DistrictCourt,
             'registered_seat' => $this->RegisteredSeat,
-            'mamagament' => $this->Mamagament,
+            'managament' => $this->Managament,
             'business_objects' => $this->BusinessObjects,
             'extracted_at' => $this->ExtractedAt->format('Y-m-d'),
             'terminated_at' => is_null($this->TerminatedAt) ? null : $this->TerminatedAt->format('Y-m-d'),
