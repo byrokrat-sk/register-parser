@@ -21,4 +21,8 @@ class ParserConfiguration
      * be created new entity in business register and old one will be marked as inactive but displayed duplicit.
      */
     public static $BusinessRegisterAllowMultipleIdsResult = true;
+
+    # ~
+
+    public static $TradeRegisterUrlRoot = 'https://www.zrsr.sk';
 }

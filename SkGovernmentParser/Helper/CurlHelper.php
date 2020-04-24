@@ -3,19 +3,27 @@
 namespace SkGovernmentParser\Helper;
 
 
+use function PHPUnit\Framework\isEmpty;
 use \SkGovernmentParser\ParserConfiguration;
 
 class CurlHelper
 {
     public static function fetch(string $methode, string $url, array $data = [], array $headers = [], callable $setupCurl = null): CurlResult
     {
+        if (strtoupper($methode) === 'GET' && !isEmpty($data)) {
+            throw new \InvalidArgumentException('Fetch with GET methode should pass parameters in URL address!');
+        }
+
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $methode);
         curl_setopt($curl, CURLOPT_URL, $url);
-
         curl_setopt($curl, CURLOPT_TIMEOUT, ParserConfiguration::$RequestTimeoutSeconds);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+        if (!empty($data)) {
+            curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+        }
 
         // Parse headers from HTTP response
         $responseHeaders = [];
@@ -56,7 +64,10 @@ class CurlHelper
 
     public static function get(string $url, array $data = [], $headers = []): CurlResult
     {
-        return self::fetch('GET', $url, $data, $headers);
+        if (!empty($data)) {
+            $url .= '?'.http_build_query($data);
+        }
+        return self::fetch('GET', $url, [], $headers);
     }
 
     public static function post(string $url, array $data = [], $headers = []): CurlResult
