@@ -57,6 +57,17 @@ class DistrictEnum
     PUBLIC const ZIAR_NAD_HRONOM = 680;
     PUBLIC const ZILINA = 580;
 
+    public static function getEnum(): array
+    {
+        $oClass = new \ReflectionClass(__CLASS__);
+        return $oClass->getConstants();
+    }
+
+    public static function hasId(int $id): bool
+    {
+        return in_array($id, self::getEnum());
+    }
+
     public static function getNameById(int $id): string
     {
         $names = [

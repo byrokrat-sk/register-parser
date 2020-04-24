@@ -5,6 +5,7 @@ namespace SkGovernmentParser\DataSources\TradeRegister;
 
 
 use SkGovernmentParser\DataSources\BusinessRegister\CompanyIdValidator;
+use SkGovernmentParser\DataSources\TradeRegister\Enum\DistrictEnum;
 use SkGovernmentParser\DataSources\TradeRegister\Model\Search\Result;
 use SkGovernmentParser\DataSources\TradeRegister\Model\TradeSubject;
 use SkGovernmentParser\DataSources\TradeRegister\PageProvider\NetworkProvider;
@@ -59,13 +60,17 @@ class TradeRegisterQuery
         return $parsedTradeSubject;
     }
 
-    public function byBusinessName(?string $businessName = null, ?string $municipality = null, ?string $streetName = null, ?string $streetNumber = null, ?string $disctrictId = null): Result
+    public function byBusinessName(?string $businessName = null, ?string $municipality = null, ?string $streetName = null, ?string $streetNumber = null, ?string $districtId = null): Result
     {
         if (strlen($businessName) < 2) {
             throw new InvalidQueryException("Business name must have at least 2 characters");
         }
 
-        $searchPageHtml = $this->Provider->getBusinessSubjectSearchPageHtml($businessName, $municipality, $streetName, $streetNumber, $disctrictId);
+        if (!is_null($districtId) && !DistrictEnum::hasId($districtId)) {
+            throw new InvalidQueryException("District with id [$districtId] do not exist in enum!");
+        }
+
+        $searchPageHtml = $this->Provider->getBusinessSubjectSearchPageHtml($businessName, $municipality, $streetName, $streetNumber, $districtId);
         $searchResult = SearchResultPageParser::parseHtml($searchPageHtml);
 
         return $searchResult;
@@ -73,6 +78,10 @@ class TradeRegisterQuery
 
     public function byPerson(?string $firstName = null, ?string $lastName = null, ?string $municipality = null, ?string $streetName = null, ?string $streetNumber = null, ?string $districtId = null): Result
     {
+        if (!is_null($districtId) && !DistrictEnum::hasId($districtId)) {
+            throw new InvalidQueryException("District with id [$districtId] do not exist in enum!");
+        }
+
         $searchPageHtml = $this->Provider->getPersonSearchPageHtml($firstName, $lastName, $municipality, $streetName, $streetNumber, $districtId);
         $searchResult = SearchResultPageParser::parseHtml($searchPageHtml);
 
