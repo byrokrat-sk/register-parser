@@ -19,7 +19,7 @@ class NetworkProvider implements TradeRegisterPageProvider
     public const BROWSE_RESULTS_URL = '/zr_browse.aspx';
     public const BROWSE_SUBJECT_URL = '/zr_vypis.aspx?ID={order}&V=A'; // V={A,U}
 
-    // I think it would be possible to store this on the disk or in Redis for certain amount of time before session expire
+    // I think it would be possible to store this on a disk or in Redis for certain amount of time before session expire
     // TODO: How long does it take session from trade register to expire?
     public static array $SessionCache = [];
 
