@@ -124,7 +124,7 @@ class DistrictEnum
         ];
 
         if (!array_key_exists($id, $names)) {
-            throw new \OutOfRangeException("District with id [$id] is not in this enum");
+            throw new \OutOfRangeException("District with id [$id] do not have defined name or is not in this enum!");
         }
 
         return $names[$id];
