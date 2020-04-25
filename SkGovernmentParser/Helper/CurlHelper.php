@@ -4,10 +4,13 @@ namespace SkGovernmentParser\Helper;
 
 
 use function PHPUnit\Framework\isEmpty;
+use SkGovernmentParser\Exceptions\HttpTimeoutException;
 use \SkGovernmentParser\ParserConfiguration;
 
 class CurlHelper
 {
+    private const CURL_TIMEOUT_ERR_CODE = 28;
+
     public static function fetch(string $methode, string $url, array $data = [], array $headers = [], callable $setupCurl = null): CurlResult
     {
         if (strtoupper($methode) === 'GET' && !isEmpty($data)) {
@@ -44,6 +47,11 @@ class CurlHelper
 
         $requestStartTime = microtime(true);
         $response = curl_exec($curl);
+
+        if(curl_errno($curl) == self::CURL_TIMEOUT_ERR_CODE) {
+            throw new HttpTimeoutException("Request to URL [$url] with [$methode] methode timeouted after [".ParserConfiguration::$RequestTimeoutSeconds."] seconds.");
+        }
+
         $requestEndTime = microtime(true);
         $requestDuration = $requestEndTime - $requestStartTime;
 
