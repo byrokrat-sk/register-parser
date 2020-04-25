@@ -6,7 +6,7 @@ This package provides acces to structured data from web pages of various slovak 
 
 - Business Register: http://orsr.sk/Default.asp?lan=en
 - Trade Register: http://www.zrsr.sk/default.aspx?LANG=en
-- Financial Agent Register: https://regfap.nbs.sk/search.php
+- Financial Agent Register: [regfap.nbs.sk](https://regfap.nbs.sk/search.php); [registre.nbs.sk](https://registre.nbs.sk/odb-sposobilost/osoby)
 - Financial Statements Register: http://www.registeruz.sk/cruz-public/domain/accountingentity/simplesearch
 
 ### Planned/possible future data sources
@@ -18,4 +18,5 @@ This package provides acces to structured data from web pages of various slovak 
 - https://www.dovera.sk/overenia/dlznici/zoznam-dlznikov
 - https://www.vszp.sk/platitelia/platenie-poistneho/zoznam-dlznikov.html
 - https://www.justice.gov.sk/Formulare/Stranky/Platobne-rozkazy.aspx
+- https://www.justice.gov.sk/PortalApp/ObchodnyVestnik/Web/Detail.aspx?IdOVod=2320
 - https://ru.justice.sk/ru-verejnost-web/
