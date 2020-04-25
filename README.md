@@ -8,3 +8,14 @@ This package provides acces to structured data from web pages of various slovak 
 - Trade Register: http://www.zrsr.sk/default.aspx?LANG=en
 - Financial Agent Register: https://regfap.nbs.sk/search.php
 - Financial Statements Register: http://www.registeruz.sk/cruz-public/domain/accountingentity/simplesearch
+
+### Planned/possible future data sources
+
+- https://www.socpoist.sk/zoznam-dlznikov-emw/487s
+- https://www.financnasprava.sk/sk/elektronicke-sluzby/verejne-sluzby/zoznamy/exporty-z-online-informacnych
+- https://api.otvorenesudy.sk/
+- https://www.union.sk/zoznam-dlznikov
+- https://www.dovera.sk/overenia/dlznici/zoznam-dlznikov
+- https://www.vszp.sk/platitelia/platenie-poistneho/zoznam-dlznikov.html
+- https://www.justice.gov.sk/Formulare/Stranky/Platobne-rozkazy.aspx
+- https://ru.justice.sk/ru-verejnost-web/
