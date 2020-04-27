@@ -38,7 +38,6 @@ class FinancialAgentPageParser
         ];
 
         foreach ($rawData as $section) {
-            $isActive = true;
             $sectors = [];
 
             $registration = [

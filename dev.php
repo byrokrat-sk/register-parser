@@ -21,9 +21,5 @@ const BITTARA_NUMBER = '235784';
 
 # ~
 
-dd(\SkGovernmentParser\DataSources\FinancialAgentRegister\Parser\FinancialAgentPageParser::parseHtml(
-    file_get_contents(__DIR__.'/SkGovernmentParser/DataSources/FinancialAgentRegister/Parser/fingo.html')
-), true);
-
-$queryResult = FinancialAgentRegisterQuery::network()->byNumber(FINGO_NUMBER);
+$queryResult = FinancialAgentRegisterQuery::network()->byNumber(BITTARA_NUMBER);
 echo(json_encode($queryResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
