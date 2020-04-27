@@ -29,6 +29,8 @@ class FinancialAgentPageParser
             'first_name' => null,
             'last_name' => null,
             'business_name' => null,
+            'email' => null,
+            'phone_number' => null,
             'residence_address' => null,
             'business_address' => null,
             'registrations' => null,
@@ -72,7 +74,10 @@ class FinancialAgentPageParser
                         $agentData['business_address'] = self::parseAddressArray($sectionFields); break;
                     }
                     case 'Adresa sídla': {
-                        $agentData['business_address'] = self::parseAddressArray($sectionFields); break;
+                        $agentData['business_address'] = self::parseAddressArray($sectionFields);
+                        if (isset($sectionFields['telefónne číslo'])) $agentData['phone_number'] = StringHelper::removeWhitespaces($sectionFields['telefónne číslo']);
+                        if (isset($sectionFields['adresa elektronickej pošty'])) $agentData['email'] = $sectionFields['adresa elektronickej pošty'];
+                        break;
                     }
                     case 'Podregister doplnkového dôchodkového sporenia':
                     case 'Podregister starobného dôchodkového sporenia':
@@ -99,6 +104,8 @@ class FinancialAgentPageParser
             $agentData['first_name'],
             $agentData['last_name'],
             $agentData['business_name'],
+            $agentData['email'],
+            $agentData['phone_number'],
             $agentData['residence_address'],
             $agentData['business_address'],
             empty($agentData['registrations']) ? null : $agentData['registrations'],

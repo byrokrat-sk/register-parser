@@ -11,18 +11,22 @@ class FinancialAgent implements \JsonSerializable
     public ?string $FirstName;
     public ?string $LastName;
     public ?string $BusinessName;
+    public ?string $EmailAddress;
+    public ?String $PhoneNumber;
     public ?Address $ResidenceAddress;
     public ?Address $BusinessAddress;
     public ?array $Registrations;
     public ?array $Contracts;
 
-    public function __construct($LegalForm, $IdentificationNumber, $FirstName, $LastName, $BusinessName, $ResidenceAddress, $BusinessAddress, $Registrations, $Contracts)
+    public function __construct($LegalForm, $IdentificationNumber, $FirstName, $LastName, $BusinessName, $EmailAddress, $PhoneNumber, $ResidenceAddress, $BusinessAddress, $Registrations, $Contracts)
     {
         $this->LegalForm = $LegalForm;
         $this->IdentificationNumber = $IdentificationNumber;
         $this->FirstName = $FirstName;
         $this->LastName = $LastName;
         $this->BusinessName = $BusinessName;
+        $this->EmailAddress = $EmailAddress;
+        $this->PhoneNumber = $PhoneNumber;
         $this->ResidenceAddress = $ResidenceAddress;
         $this->BusinessAddress = $BusinessAddress;
         $this->Registrations = $Registrations;
@@ -37,6 +41,8 @@ class FinancialAgent implements \JsonSerializable
             'first_name' => $this->FirstName,
             'last_name' => $this->LastName,
             'business_name' => $this->BusinessName,
+            'email_address' => $this->EmailAddress,
+            'phone_number' => $this->PhoneNumber,
             'residence_address' => $this->ResidenceAddress,
             'business_address' => $this->BusinessAddress,
             'registrations' => $this->Registrations,
