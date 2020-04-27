@@ -5,10 +5,10 @@ namespace SkGovernmentParser\DataSources\TradeRegister\PageProvider;
 
 use SkGovernmentParser\DataSources\TradeRegister\TradeRegisterPageProvider;
 use SkGovernmentParser\Exceptions\BadHttpRequestException;
-use SkGovernmentParser\Exceptions\InvalidQueryException;
 use SkGovernmentParser\Helper\CurlHelper;
 use SkGovernmentParser\Helper\CurlResult;
 use SkGovernmentParser\Helper\StringHelper;
+
 
 class NetworkProvider implements TradeRegisterPageProvider
 {

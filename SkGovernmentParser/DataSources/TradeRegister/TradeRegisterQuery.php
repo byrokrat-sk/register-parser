@@ -17,6 +17,7 @@ use SkGovernmentParser\Exceptions\InvalidQueryException;
 use SkGovernmentParser\Helper\StringHelper;
 use SkGovernmentParser\ParserConfiguration;
 
+
 class TradeRegisterQuery
 {
     private TradeRegisterPageProvider $Provider;

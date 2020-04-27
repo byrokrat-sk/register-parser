@@ -6,7 +6,6 @@ namespace SkGovernmentParser\DataSources\TradeRegister\Parser;
 
 use SkGovernmentParser\DataSources\TradeRegister\Model\Address;
 use SkGovernmentParser\DataSources\TradeRegister\Model\BusinessObject;
-use SkGovernmentParser\DataSources\TradeRegister\Model\Establishment;
 use SkGovernmentParser\DataSources\TradeRegister\Model\Manager;
 use SkGovernmentParser\DataSources\TradeRegister\Model\TradeSubject;
 use SkGovernmentParser\Helper\StringHelper;

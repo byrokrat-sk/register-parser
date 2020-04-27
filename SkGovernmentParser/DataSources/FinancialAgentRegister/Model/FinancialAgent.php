@@ -4,6 +4,9 @@
 namespace SkGovernmentParser\DataSources\FinancialAgentRegister\Model;
 
 
+use SkGovernmentParser\DataSources\FinancialAgentRegister\Model\Search\Item;
+
+
 class FinancialAgent implements \JsonSerializable
 {
     public string $LegalForm;
