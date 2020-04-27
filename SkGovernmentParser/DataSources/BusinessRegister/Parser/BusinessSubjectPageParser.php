@@ -17,7 +17,6 @@ use SkGovernmentParser\Helper\StringHelper;
 class BusinessSubjectPageParser
 {
 
-    // TODO: Refactor parsing from raw objects to classes
     public static function parseHtml(string $rawHtml): BusinessSubject
     {
         $doc = new \DOMDocument();

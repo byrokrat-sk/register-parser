@@ -33,4 +33,12 @@ class ParserConfiguration
     /* Root URL address of trade register */
     public static $TradeRegisterUrlRoot = 'https://www.zrsr.sk';
 
+
+    #
+    # Financial Agent Register Configuration
+    #
+
+
+    public static $FinancialAgentRegisterUrlRoot = 'https://regfap.nbs.sk';
+
 }

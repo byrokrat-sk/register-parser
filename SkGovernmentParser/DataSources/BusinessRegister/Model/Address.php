@@ -6,7 +6,7 @@ namespace SkGovernmentParser\DataSources\BusinessRegister\Model;
 
 class Address implements \JsonSerializable
 {
-    const DEFAULT_COUNTRY = 'Slovak Republic';
+    const DEFAULT_COUNTRY = 'Slovensko';
 
     public string $StreetName;
     public string $StreetNumber;
