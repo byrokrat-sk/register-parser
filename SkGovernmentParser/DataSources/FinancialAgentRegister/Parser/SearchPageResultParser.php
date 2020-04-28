@@ -49,8 +49,9 @@ class SearchPageResultParser
         // Multiple page result
         $pagesNumber = 1;
         $currentPage = 1;
-        if ($htmlBody->childNodes[3]->childNodes[3]->childNodes[8]->getAttribute('class') === 'search_pager') {
-            $paginator = $htmlBody->childNodes[3]->childNodes[3]->childNodes[8]->childNodes[1];
+        $pager = $htmlBody->childNodes[3]->childNodes[3]->childNodes[8];
+        if ($pager->getAttribute('class') === 'search_pager' && count($pager->childNodes) > 1) {
+            $paginator = $pager->childNodes[1];
             $pagesNumber = (int)$paginator->childNodes[count($paginator->childNodes) - 1]->textContent;
 
             $currentPage = null;

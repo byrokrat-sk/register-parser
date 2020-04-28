@@ -23,5 +23,5 @@ const BITTARA_NUMBER = '235784';
 
 # ~
 
-$queryResult = FinancialAgentRegisterQuery::network()->byNumber('1000');
+$queryResult = FinancialAgentRegisterQuery::network()->byNumber(BITTARA_NUMBER);
 echo(json_encode($queryResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
