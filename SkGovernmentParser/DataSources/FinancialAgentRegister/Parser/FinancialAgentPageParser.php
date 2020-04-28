@@ -139,6 +139,14 @@ class FinancialAgentPageParser
             $proposerNumber = trim($proposerExplode[0]);
         }
 
+        $startedAt = isset($sector['Dátum vzniku oprávnenia']) ? $sector['Dátum vzniku oprávnenia'] : (
+            isset($sector['Dátum zápisu do registra']) ? $sector['Dátum zápisu do registra'] : null
+        );
+
+        $endedAt = isset($sector['Dátum zániku oprávnenia']) ? $sector['Dátum zániku oprávnenia'] : (
+            isset($sector['Dátum zrušenia zápisu v registri']) ? $sector['Dátum zrušenia zápisu v registri'] : null
+        );
+
         return new SectorRegistration(
             $sector[self::TITLE_KEY],
             $sector['Zapísaný ako'],
@@ -148,8 +156,8 @@ class FinancialAgentPageParser
             isset($sector['prevzatie zodpovednosti navrhovateľom']) ? ($sector['prevzatie zodpovednosti navrhovateľom'] === 'áno') : null,
             isset($sector['Iné členské štáty']) ? self::parseSectorStates($sector['Iné členské štáty']) : null,
             isset($sector['Odborný garant']) ? self::parseGarantorArray($sector['Odborný garant']) : null,
-            DateHelper::parseDmyDate($sector['Dátum vzniku oprávnenia']),
-            isset($sector['Dátum zániku oprávnenia']) ? DateHelper::parseDmyDate($sector['Dátum zániku oprávnenia']) : null
+            is_null($startedAt) ? null : DateHelper::parseDmyDate($startedAt),
+            is_null($endedAt) ? null : DateHelper::parseDmyDate($endedAt)
         );
     }
 

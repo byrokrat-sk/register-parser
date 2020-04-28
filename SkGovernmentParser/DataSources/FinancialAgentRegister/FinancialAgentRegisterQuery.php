@@ -5,9 +5,7 @@ namespace SkGovernmentParser\DataSources\FinancialAgentRegister;
 
 
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Model\FinancialAgent;
-use SkGovernmentParser\DataSources\FinancialAgentRegister\Model\Search\Item;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Model\Search\Result;
-use SkGovernmentParser\DataSources\FinancialAgentRegister\PageProvider\AgentPageProvidedException;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\PageProvider\NetworkProvider;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Parser\FinancialAgentPageParser;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Parser\SearchPageResultParser;

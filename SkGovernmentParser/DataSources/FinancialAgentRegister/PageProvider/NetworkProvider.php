@@ -26,10 +26,10 @@ class NetworkProvider implements FinanfialAgentRegisterPageProvider
         $this->RootUrl = $rootUrl;
     }
 
-    public function getSearchPageHtml(string $query): string
+    public function getSearchPageHtml(string $query, int $pageNumber = 1): string
     {
         $accessToken = $this->getAccessToken();
-        $searchResponse = CurlHelper::post($this->RootUrl.self::SEARCH_PAGE_URL, [
+        $searchResponse = CurlHelper::post($this->RootUrl.self::SEARCH_PAGE_URL.'?pg='.$pageNumber, [
             'search_val' => $query,
             'token' => $accessToken,
             'search_set' => 'Hľadaj',
@@ -46,7 +46,7 @@ class NetworkProvider implements FinanfialAgentRegisterPageProvider
          * In this case I will throw up exception because I am too lazy to implement this some other way.
          * TODO: Fix this code "architecture" mistake
          */
-        if (!StringHelper::str_contains($searchResponse->Response, '<div align="right">Spolu')) {
+        if (StringHelper::str_contains($searchResponse->Response, 'Identifikačné údaje')) {
             /*
              * "These Are Confusing Times"
              *     ~ Hulk, Avengers: Endgame
@@ -57,16 +57,26 @@ class NetworkProvider implements FinanfialAgentRegisterPageProvider
         return $searchResponse->Response;
     }
 
-    public function getAgentPageHtml(string $number): string
+    public function getAgentPageHtml(string $registrationNumber): string
     {
         try {
-            $searchPageHtml = $this->getSearchPageHtml($number);
-            $parsedResult = SearchPageResultParser::parseHtml($searchPageHtml);
+            $matchedAgent = null;
+            $parsedResult = null;
+            $pageNumber = 1;
 
-            $matchedAgent = $parsedResult->withNumber($number);
+            /*
+             * If register return multiple page result then parse will requests all pages until there is not match with
+             * registration number.
+             */
+            while (is_null($parsedResult) || (is_null($matchedAgent) && $parsedResult->hasNextPage())) {
+                $searchPageHtml = $this->getSearchPageHtml($registrationNumber, $pageNumber);
+                $parsedResult = SearchPageResultParser::parseHtml($searchPageHtml);
+                $matchedAgent = $parsedResult->withNumber($registrationNumber);
+                $pageNumber += 1;
+            }
 
             if (is_null($matchedAgent)) {
-                return new EmptySearchResultException("Financial agent with number [$number] was not found");
+                return new EmptySearchResultException("Financial agent with registration number [$registrationNumber] was not found");
             }
 
             $agentPageResponse = CurlHelper::get($this->RootUrl.self::SEARCH_PAGE_URL, [

@@ -7,10 +7,14 @@ namespace SkGovernmentParser\DataSources\FinancialAgentRegister\Model\Search;
 class Result implements \JsonSerializable
 {
     private array $ResultItems;
+    private int $CurrentPage;
+    private int $PagesCount;
 
-    public function __construct(array $resultItems)
+    public function __construct(array $resultItems, int $currentPage = 1, int $pagesCount = 1)
     {
         $this->ResultItems = $resultItems;
+        $this->CurrentPage = $currentPage;
+        $this->PagesCount = $pagesCount;
     }
 
     # ~
@@ -21,6 +25,11 @@ class Result implements \JsonSerializable
     }
 
     # ~
+
+    public function hasNextPage(): bool
+    {
+        return $this->CurrentPage < $this->PagesCount;
+    }
 
     public function getItems(): array
     {

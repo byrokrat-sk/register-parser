@@ -14,6 +14,10 @@ class SearchPageResultParser
 {
     public static function parseHtml(string $rawHtml): Result
     {
+        if (StringHelper::str_contains($rawHtml, 'Bolo nájdených príliš veľa záznamov obsahujúcich hľadaný výraz. Skúste lepšie špecifikovať výberové kritérium.')) {
+            throw new InvalidQueryException('Register did not return response because query matched too many entities.');
+        }
+
         if (StringHelper::str_contains($rawHtml, 'Neboli nájdené žiadne záznamy obsahujúce hľadaný výraz.')) {
             return Result::emptyResult();
         }
@@ -32,19 +36,32 @@ class SearchPageResultParser
         unset($resultRows[0]); // Remove header row
 
         $resultItems = [];
-        $itemOrder = 1;
         foreach ($resultRows as $tableRow) {
             $resultItems[] = new Item(
-                $itemOrder,
+                explode('?row=', $tableRow->childNodes[2]->childNodes[0]->getAttribute('href'))[1],
                 trim($tableRow->childNodes[0]->textContent),
                 trim($tableRow->childNodes[2]->textContent),
                 trim($tableRow->childNodes[4]->textContent),
                 trim($tableRow->childNodes[6]->textContent)
             );
-
-            $itemOrder += 1;
         }
 
-        return new Result($resultItems);
+        // Multiple page result
+        $pagesNumber = 1;
+        $currentPage = 1;
+        if ($htmlBody->childNodes[3]->childNodes[3]->childNodes[8]->getAttribute('class') === 'search_pager') {
+            $paginator = $htmlBody->childNodes[3]->childNodes[3]->childNodes[8]->childNodes[1];
+            $pagesNumber = (int)$paginator->childNodes[count($paginator->childNodes) - 1]->textContent;
+
+            $currentPage = null;
+            foreach ($paginator->childNodes as $pageElement) {
+                if ($pageElement->nodeName === 'strong') {
+                    $currentPage = (int)$pageElement->textContent;
+                    break;
+                }
+            }
+        }
+
+        return new Result($resultItems, $currentPage, $pagesNumber);
     }
 }

@@ -10,7 +10,7 @@ use SkGovernmentParser\DataSources\FinancialAgentRegister\Model\Search\Item;
 class FinancialAgent implements \JsonSerializable
 {
     public string $LegalForm;
-    public string $IdentificationNumber;
+    public ?string $IdentificationNumber;
     public ?string $FirstName;
     public ?string $LastName;
     public ?string $BusinessName;
