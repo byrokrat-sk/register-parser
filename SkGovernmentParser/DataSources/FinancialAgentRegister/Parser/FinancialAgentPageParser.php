@@ -62,7 +62,7 @@ class FinancialAgentPageParser
                                 case 'Meno': $agentData['first_name'] = $value; break;
                                 case 'Priezvisko': $agentData['last_name'] = $value; break;
                                 case 'Číslo rozhodnutia': $registration['decision_number'] = $value; break;
-                                case 'Obchodné meno': $agentData['business_name'];
+                                case 'Obchodné meno': $agentData['business_name'] = $value; break;
                             }
                         }
                         break;
