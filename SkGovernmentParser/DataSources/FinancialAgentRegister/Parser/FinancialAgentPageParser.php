@@ -62,6 +62,7 @@ class FinancialAgentPageParser
                                 case 'Meno': $agentData['first_name'] = $value; break;
                                 case 'Priezvisko': $agentData['last_name'] = $value; break;
                                 case 'Číslo rozhodnutia': $registration['decision_number'] = $value; break;
+                                case 'Obchodné meno': $agentData['business_name'];
                             }
                         }
                         break;
@@ -152,6 +153,7 @@ class FinancialAgentPageParser
             $sector['Zapísaný ako'],
             $proposerName,
             $proposerNumber,
+            isset($sector['Orgán dohľadu']) ? $sector['Orgán dohľadu'] : null,
             isset($sector['Poistenie zodpovednosti']) ? self::parseInsurance($sector['Poistenie zodpovednosti']) : null,
             isset($sector['prevzatie zodpovednosti navrhovateľom']) ? ($sector['prevzatie zodpovednosti navrhovateľom'] === 'áno') : null,
             isset($sector['Iné členské štáty']) ? self::parseSectorStates($sector['Iné členské štáty']) : null,

@@ -76,7 +76,7 @@ class NetworkProvider implements FinanfialAgentRegisterPageProvider
             }
 
             if (is_null($matchedAgent)) {
-                return new EmptySearchResultException("Financial agent with registration number [$registrationNumber] was not found");
+                throw new EmptySearchResultException("Financial agent with registration number [$registrationNumber] was not found");
             }
 
             $agentPageResponse = CurlHelper::get($this->RootUrl.self::SEARCH_PAGE_URL, [

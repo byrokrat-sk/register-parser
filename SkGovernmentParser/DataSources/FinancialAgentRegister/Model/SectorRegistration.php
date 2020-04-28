@@ -10,6 +10,7 @@ class SectorRegistration implements \JsonSerializable
     public string $RegistrationType;
     public ?string $ProposerName;
     public ?string $ProposerNumber;
+    public ?string $SupervisoryAuthority;
     public ?bool $ProposerResponsibility;
     public ?array $LiabilityInsurance;
     public ?array $States;
@@ -17,12 +18,13 @@ class SectorRegistration implements \JsonSerializable
     public \DateTime $RegistratedAt;
     public ?\DateTime $TerminatedAt;
 
-    public function __construct($SectorName, $RegistrationType, $ProposerName, $ProposerNumber, $LiabilityInsurance, $ProposerResponsibility, $States, $Guarantors, $RegistratedAt, $TerminatedAt)
+    public function __construct($SectorName, $RegistrationType, $ProposerName, $ProposerNumber, $SupervisoryAuthority, $LiabilityInsurance, $ProposerResponsibility, $States, $Guarantors, $RegistratedAt, $TerminatedAt)
     {
         $this->SectorName = $SectorName;
         $this->RegistrationType = $RegistrationType;
         $this->ProposerName = $ProposerName;
         $this->ProposerNumber = $ProposerNumber;
+        $this->SupervisoryAuthority = $SupervisoryAuthority;
         $this->LiabilityInsurance = $LiabilityInsurance;
         $this->ProposerResponsibility = $ProposerResponsibility;
         $this->States = $States;
@@ -38,6 +40,7 @@ class SectorRegistration implements \JsonSerializable
             'registration_type' => $this->RegistrationType,
             'proposer_name' => $this->ProposerName,
             'proposer_number' => $this->ProposerNumber,
+            'supervisory_authority' => $this->SupervisoryAuthority,
             'proposer_responsibility' => $this->ProposerResponsibility,
             'liability_insurance' => $this->LiabilityInsurance,
             'states' => $this->States,
