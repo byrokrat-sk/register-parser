@@ -215,7 +215,7 @@ class FinancialAgentPageParser
                         $guarantor['address'] = self::parseRawAddress($rawAddress);
                     } else if (StringHelper::str_contains($subline, 'dátum začiatku vykonávania funkcie')) {
                         $rawDate = str_replace('dátum začiatku vykonávania funkcie: ', '', $subline);
-                        $guarantor['adstarted_atdress'] = DateHelper::parseDmyDate($rawDate);
+                        $guarantor['started_at'] = DateHelper::parseDmyDate($rawDate);
                     } else if (StringHelper::str_contains($subline, 'dátum ukončenia vykonávania funkcie')) {
                         $rawDate = str_replace('dátum ukončenia vykonávania funkcie: ', '', $subline);
                         $guarantor['ended_at'] = DateHelper::parseDmyDate($rawDate);
