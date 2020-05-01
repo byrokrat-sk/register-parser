@@ -47,7 +47,8 @@ class FinancialAgentPageParser
                 'terminated_at' => null,
             ];
 
-            foreach ($section as $sectionName => $sectionFields) {
+            foreach ($section as $sectionFields) {
+                $sectionName = $sectionFields[self::TITLE_KEY];
                 if (empty($sectionName) && $sectionFields[0] === 'Zrušený zápis') {
                     continue; // ignore header
                 }
@@ -128,7 +129,7 @@ class FinancialAgentPageParser
             $streetName,
             $streetNumber,
             $address['Mesto'],
-            $address['PSČ'],
+            StringHelper::removeWhitespaces($address['PSČ']),
             isset($address['Štát']) ? $address['Štát'] : null
         );
     }
@@ -308,6 +309,7 @@ class FinancialAgentPageParser
         $parsedTables = [];
         foreach ($registrationTables as $tableElement) {
             $currentSubtableHeader = null;
+            $currentSubtableIndex = 0;
             $parsedTable = [];
 
             // Table with current active record have different structure as terminated record
@@ -315,7 +317,8 @@ class FinancialAgentPageParser
                 if (in_array($row->childNodes[0]->getAttribute('class'), ['search_hr', 'search_ihr'])) {
                     $currentSubtableHeader = trim($row->childNodes[0]->textContent);
                     $currentSubtableHeader = empty($currentSubtableHeader) ? '__empty' : $currentSubtableHeader;
-                    $parsedTable[$currentSubtableHeader] = [
+                    $currentSubtableIndex += 1;
+                    $parsedTable[$currentSubtableIndex] = [
                         self::TITLE_KEY => $currentSubtableHeader
                     ];
                     continue;
@@ -332,7 +335,7 @@ class FinancialAgentPageParser
                     $propertyValue = trim($row->childNodes[1]->textContent);
                 }
 
-                $parsedTable[$currentSubtableHeader][$propertyTitle] = $propertyValue;
+                $parsedTable[$currentSubtableIndex][$propertyTitle] = $propertyValue;
             }
 
             if (!empty($parsedTable)) {
