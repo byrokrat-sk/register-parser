@@ -452,10 +452,15 @@ class FinancialAgentPageParser
                 $city = implode(' ', $citySplit);
             }
 
-            $streetSplit = explode(' ', $commaSplit[0]);
-            $streetNumber = $streetSplit[count($streetSplit) - 1]; // Last "word" of street is number
-            unset($streetSplit[count($streetSplit) - 1]);
-            $streetName = trim(implode(' ', $streetSplit));
+            /*
+             * This regex is fixing special edge-case when there is typo "adresa trvalého pobytu: Čečinová16/c" where
+             * city name and street number are not separated by space.
+             */
+            $pattern = '/(?=\d)/'; // find first number in string
+            $numberSplit = preg_split($pattern, $commaSplit[0], 2);
+
+            $streetName = trim($numberSplit[0]);
+            $streetNumber = trim($numberSplit[1]);
         }
 
         return new Address(
