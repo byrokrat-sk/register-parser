@@ -7,6 +7,7 @@ namespace SkGovernmentParser\DataSources\FinancialAgentRegister\Model;
 class Guarantor implements \JsonSerializable
 {
     public string $Name;
+    /** @var Address */
     public Address $Address;
     public ?\DateTime $StartedAt;
     public ?\DateTime $StoppedAt;

@@ -12,8 +12,11 @@ class SectorRegistration implements \JsonSerializable
     public ?string $ProposerNumber;
     public ?string $SupervisoryAuthority;
     public ?bool $ProposerResponsibility;
+    /** @var LiabilityInsurance[] */
     public ?array $LiabilityInsurance;
+    /** @var State[] */
     public ?array $States;
+    /** @var Guarantor[] */
     public ?array $Guarantors;
     public \DateTime $RegistratedAt;
     public ?\DateTime $TerminatedAt;

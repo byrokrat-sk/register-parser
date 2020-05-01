@@ -8,6 +8,7 @@ class AgentRegistration implements \JsonSerializable
 {
     public string $RegistrationNumber;
     public ?string $DecisionNumber;
+    /** @var SectorRegistration[] */
     public array $SectorRegistrations;
 
     public function __construct($RegistrationNumber, $DecisionNumber, $SectorRegistrations)
