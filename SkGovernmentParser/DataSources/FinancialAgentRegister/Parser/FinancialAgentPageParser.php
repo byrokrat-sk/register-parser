@@ -4,6 +4,7 @@
 namespace SkGovernmentParser\DataSources\FinancialAgentRegister\Parser;
 
 
+use function PHPUnit\Framework\isEmpty;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Model\Address;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Model\AgentRegistration;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Model\Contract;
@@ -118,7 +119,7 @@ class FinancialAgentPageParser
         );
     }
 
-    private static function parseAddressArray(array $address): Address
+    private static function parseAddressArray(array $address): ?Address
     {
         $streetExplode = explode(' ', $address['Ulica']);
         $streetNumber = $streetExplode[count($streetExplode) - 1]; // last index is street number
@@ -126,8 +127,8 @@ class FinancialAgentPageParser
         $streetName = implode(' ', $streetExplode); // Rest is street name
 
         return new Address(
-            $streetName,
-            $streetNumber,
+            empty($streetName) ? null : $streetName,
+            empty($streetNumber) ? null : $streetNumber,
             $address['Mesto'],
             StringHelper::removeWhitespaces($address['PSČ']),
             isset($address['Štát']) ? $address['Štát'] : null

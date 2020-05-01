@@ -18,8 +18,12 @@ class StringHelper
         return substr($string, $ini, $len);
     }
 
-    public static function removeWhitespaces(string $text): string
+    public static function removeWhitespaces(?string $text): ?string
     {
+        if (empty($text)) {
+            return null;
+        }
+
         return trim(preg_replace('/(\s+|'.self::NON_BREAKING_SPACE.')/', '', $text));
     }
 
