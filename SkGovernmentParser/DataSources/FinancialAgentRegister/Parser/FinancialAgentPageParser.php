@@ -82,7 +82,9 @@ class FinancialAgentPageParser
                         break;
                     }
                     case 'Zmluvy s finančnou inštitúciou': {
-                        $agentData['contracts'] = self::parseInstitutionsListArray($sectionFields['Zoznam']);
+                        if (isset($sectionFields['Zoznam'])) {
+                            $agentData['contracts'] = self::parseInstitutionsListArray($sectionFields['Zoznam']);
+                        }
                         break;
                     }
                     case 'Podregister doplnkového dôchodkového sporenia':
