@@ -79,6 +79,10 @@ class FinancialAgentPageParser
                         if (isset($sectionFields['adresa elektronickej pošty'])) $agentData['email'] = $sectionFields['adresa elektronickej pošty'];
                         break;
                     }
+                    case 'Zmluvy s finančnou inštitúciou': {
+                        $agentData['contracts'] = self::parseInstitutionsListArray($sectionFields['Zoznam']);
+                        break;
+                    }
                     case 'Podregister doplnkového dôchodkového sporenia':
                     case 'Podregister starobného dôchodkového sporenia':
                     case 'Podregister poistenia alebo zaistenia':
@@ -154,7 +158,7 @@ class FinancialAgentPageParser
             $proposerName,
             $proposerNumber,
             isset($sector['Orgán dohľadu']) ? $sector['Orgán dohľadu'] : null,
-            isset($sector['Poistenie zodpovednosti']) ? self::parseInsurance($sector['Poistenie zodpovednosti']) : null,
+            isset($sector['Poistenie zodpovednosti']) ? self::parseInstitutionsListArray($sector['Poistenie zodpovednosti']) : null,
             isset($sector['prevzatie zodpovednosti navrhovateľom']) ? ($sector['prevzatie zodpovednosti navrhovateľom'] === 'áno') : null,
             isset($sector['Iné členské štáty']) ? self::parseSectorStates($sector['Iné členské štáty']) : null,
             isset($sector['Odborný garant']) ? self::parseGarantorArray($sector['Odborný garant']) : null,
@@ -234,7 +238,7 @@ class FinancialAgentPageParser
         return $guarantors;
     }
 
-    private static function parseInsurance(array $sections): array
+    private static function parseInstitutionsListArray(array $sections): array
     {
         $contracts = [];
 
