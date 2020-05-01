@@ -68,5 +68,5 @@ fclose($logFile);
 echo ("Download done! Downloaded: $successes agents!\n");*/
 
 
-$queryResult = FinancialAgentRegisterQuery::network()->byNumber('43552');
+$queryResult = FinancialAgentRegisterQuery::network()->byNumber('774');
 echo(json_encode($queryResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));

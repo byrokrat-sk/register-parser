@@ -7,7 +7,7 @@ namespace SkGovernmentParser\DataSources\FinancialAgentRegister\Model;
 class State implements \JsonSerializable
 {
     public string $Name;
-    public \DateTime $StartedAt;
+    public ?\DateTime $StartedAt;
     public ?\DateTime $TerminatedAt;
 
     public function __construct($Name, $StartedAt, $TerminatedAt)

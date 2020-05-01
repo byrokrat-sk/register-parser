@@ -184,10 +184,10 @@ class FinancialAgentPageParser
 
                 foreach ($group['sub_lines'] as $subline) {
                     if (StringHelper::str_contains($subline, 'dátum vzniku oprávnenia')) {
-                        $rawDate = str_replace('dátum vzniku oprávnenia: ', '', $subline);
+                        $rawDate = trim(str_replace('dátum vzniku oprávnenia:', '', $subline));
                         $state['started_at'] = DateHelper::parseDmyDate($rawDate);
                     } else if (StringHelper::str_contains($subline, 'dátum zániku oprávnenia')) {
-                        $rawDate = str_replace('dátum zániku oprávnenia: ', '', $subline);
+                        $rawDate = trim(str_replace('dátum zániku oprávnenia:', '', $subline));
                         $state['terminated_at'] = DateHelper::parseDmyDate($rawDate);
                     }
                 }
@@ -221,10 +221,10 @@ class FinancialAgentPageParser
                         $rawAddress = str_replace('adresa trvalého pobytu: ', '', $subline);
                         $guarantor['address'] = self::parseRawAddress($rawAddress);
                     } else if (StringHelper::str_contains($subline, 'dátum začiatku vykonávania funkcie')) {
-                        $rawDate = str_replace('dátum začiatku vykonávania funkcie: ', '', $subline);
+                        $rawDate = trim(str_replace('dátum začiatku vykonávania funkcie:', '', $subline));
                         $guarantor['started_at'] = DateHelper::parseDmyDate($rawDate);
                     } else if (StringHelper::str_contains($subline, 'dátum ukončenia vykonávania funkcie')) {
-                        $rawDate = str_replace('dátum ukončenia vykonávania funkcie: ', '', $subline);
+                        $rawDate = trim(str_replace('dátum ukončenia vykonávania funkcie:', '', $subline));
                         $guarantor['ended_at'] = DateHelper::parseDmyDate($rawDate);
                     }
                 }
