@@ -18,7 +18,7 @@ class AgentRegistration implements \JsonSerializable
         $this->SectorRegistrations = $SectorRegistrations;
     }
 
-    public function getFromDate(): \Datetime
+    public function getFromDate(): ?\Datetime
     {
         return min(array_column($this->SectorRegistrations, 'RegistratedAt'));
     }

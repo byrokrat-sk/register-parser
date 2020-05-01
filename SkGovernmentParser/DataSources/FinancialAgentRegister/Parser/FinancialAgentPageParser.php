@@ -160,12 +160,13 @@ class FinancialAgentPageParser
             $proposerName,
             $proposerNumber,
             isset($sector['Orgán dohľadu']) ? $sector['Orgán dohľadu'] : null,
+            isset($sector['Adresa sídla orgánu dohľadu']) ? self::parseRawAddress($sector['Adresa sídla orgánu dohľadu']) : null,
             isset($sector['Poistenie zodpovednosti']) ? self::parseInstitutionsListArray($sector['Poistenie zodpovednosti']) : null,
             isset($sector['prevzatie zodpovednosti navrhovateľom']) ? ($sector['prevzatie zodpovednosti navrhovateľom'] === 'áno') : null,
             isset($sector['Iné členské štáty']) ? self::parseSectorStates($sector['Iné členské štáty']) : null,
             isset($sector['Odborný garant']) ? self::parseGarantorArray($sector['Odborný garant']) : null,
-            is_null($startedAt) ? null : DateHelper::parseDmyDate($startedAt),
-            is_null($endedAt) ? null : DateHelper::parseDmyDate($endedAt)
+            (is_null($startedAt) || $startedAt === 'neuvedené') ? null : DateHelper::parseDmyDate($startedAt),
+            (is_null($endedAt) || $endedAt === 'neuvedené') ? null : DateHelper::parseDmyDate($endedAt)
         );
     }
 
@@ -431,6 +432,7 @@ class FinancialAgentPageParser
         $streetNumber = null;
         $city = null;
         $zip = null;
+        $country = null;
 
         $commaSplit = explode(',', $rawAddress);
         if (count($commaSplit) === 1) {
@@ -464,11 +466,17 @@ class FinancialAgentPageParser
             $streetNumber = trim($numberSplit[1]);
         }
 
+        // Country can be written after second comma
+        if (isset($commaSplit[2])) {
+            $country = trim($commaSplit[2]);
+        }
+
         return new Address(
             empty($streetName) ? null : $streetName,
             $streetNumber,
             trim($city),
-            empty($zip) ? null : $zip
+            empty($zip) ? null : $zip,
+            $country
         );
     }
 }

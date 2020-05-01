@@ -18,18 +18,28 @@ use SkGovernmentParser\Exceptions\EmptySearchResultException;
 
 # ~
 
-/*const CIKES_NUMBER = '235741';
+const CIKES_NUMBER = '235741';
 const FINGO_NUMBER = '215683';
-const BITTARA_NUMBER = '235784';*/
+const BITTARA_NUMBER = '235784';
 
 # ~
 
+/*function readNumbers(): Iterator
+{
+    $inputFile = fopen(__DIR__.'/numbers.txt', 'r');
+
+    while (($line = fgets($inputFile)) !== false) {
+        yield trim($line);
+    }
+
+    fclose($inputFile);
+}
 
 $register = FinancialAgentRegisterQuery::network();
 
 $successes = 0;
 $logFile = fopen('log.txt', 'a');
-for ($id = 100; $id <= 260000; $id++) {
+foreach (readNumbers() as $id) {
     try {
         $financialAgent = $register->byNumber($id);
         $fileName = str_pad($id, 6, '0', STR_PAD_LEFT);
@@ -55,8 +65,8 @@ for ($id = 100; $id <= 260000; $id++) {
 }
 
 fclose($logFile);
-echo ("Download done! Downloaded: $successes agents!\n");
+echo ("Download done! Downloaded: $successes agents!\n");*/
 
 
-/*$queryResult = FinancialAgentRegisterQuery::network()->byNumber('412');
-echo(json_encode($queryResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));*/
+$queryResult = FinancialAgentRegisterQuery::network()->byNumber('43552');
+echo(json_encode($queryResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));

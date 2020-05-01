@@ -10,7 +10,8 @@ class SectorRegistration implements \JsonSerializable
     public string $RegistrationType;
     public ?string $ProposerName;
     public ?string $ProposerNumber;
-    public ?string $SupervisoryAuthority;
+    public ?string $OverseerName;
+    public ?Address $OverseerAddress;
     public ?bool $ProposerResponsibility;
     /** @var LiabilityInsurance[] */
     public ?array $LiabilityInsurance;
@@ -18,16 +19,17 @@ class SectorRegistration implements \JsonSerializable
     public ?array $States;
     /** @var Guarantor[] */
     public ?array $Guarantors;
-    public \DateTime $RegistratedAt;
+    public ?\DateTime $RegistratedAt;
     public ?\DateTime $TerminatedAt;
 
-    public function __construct($SectorName, $RegistrationType, $ProposerName, $ProposerNumber, $SupervisoryAuthority, $LiabilityInsurance, $ProposerResponsibility, $States, $Guarantors, $RegistratedAt, $TerminatedAt)
+    public function __construct($SectorName, $RegistrationType, $ProposerName, $ProposerNumber, $OverseerName, $OverseerAddress, $LiabilityInsurance, $ProposerResponsibility, $States, $Guarantors, $RegistratedAt, $TerminatedAt)
     {
         $this->SectorName = $SectorName;
         $this->RegistrationType = $RegistrationType;
         $this->ProposerName = $ProposerName;
         $this->ProposerNumber = $ProposerNumber;
-        $this->SupervisoryAuthority = $SupervisoryAuthority;
+        $this->OverseerName = $OverseerName;
+        $this->OverseerAddress = $OverseerAddress;
         $this->LiabilityInsurance = $LiabilityInsurance;
         $this->ProposerResponsibility = $ProposerResponsibility;
         $this->States = $States;
@@ -43,7 +45,8 @@ class SectorRegistration implements \JsonSerializable
             'registration_type' => $this->RegistrationType,
             'proposer_name' => $this->ProposerName,
             'proposer_number' => $this->ProposerNumber,
-            'supervisory_authority' => $this->SupervisoryAuthority,
+            'overseer_name' => $this->OverseerName,
+            'overseer_address' => $this->OverseerAddress,
             'proposer_responsibility' => $this->ProposerResponsibility,
             'liability_insurance' => $this->LiabilityInsurance,
             'states' => $this->States,

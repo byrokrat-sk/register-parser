@@ -8,6 +8,7 @@ use SkGovernmentParser\DataSources\TradeRegister\Model\Address;
 use SkGovernmentParser\DataSources\TradeRegister\Model\BusinessObject;
 use SkGovernmentParser\DataSources\TradeRegister\Model\Manager;
 use SkGovernmentParser\DataSources\TradeRegister\Model\TradeSubject;
+use SkGovernmentParser\Helper\DateHelper;
 use SkGovernmentParser\Helper\StringHelper;
 
 class TradeSubjectPageParser
@@ -82,7 +83,7 @@ class TradeSubjectPageParser
                     }
                 }
             } elseif ($contentNode->tagName === 'p' && StringHelper::str_contains($contentNode->textContent, 'ukončil podnikateľskú činnosť')) {
-                $tradeSubject['terminated_at'] = self::parseDmyDate(str_replace('Podnikateľský subjekt ukončil podnikateľskú činnosť vo všetkých predmetoch podnikania uvedených na dokladoch o živnostenskom oprávnení ku dňu', '', $contentNode->textContent));
+                $tradeSubject['terminated_at'] = DateHelper::parseDmyDate(str_replace('Podnikateľský subjekt ukončil podnikateľskú činnosť vo všetkých predmetoch podnikania uvedených na dokladoch o živnostenskom oprávnení ku dňu ', '', $contentNode->textContent));
             } elseif ($contentNode->tagName === 'ol') {
                 $businessObjects = [];
                 foreach ($contentNode->childNodes as $listNode) {
@@ -110,7 +111,7 @@ class TradeSubjectPageParser
 
                     $businessObjects[] = new BusinessObject(
                         StringHelper::paragraphText($listNode->childNodes[0]->textContent),
-                        self::parseDmyDate(str_replace('Deň vzniku oprávnenia:', '', $listNode->childNodes[1]->textContent)),
+                        DateHelper::parseDmyDate(str_replace('Deň vzniku oprávnenia: ', '', $listNode->childNodes[1]->textContent)),
                         $manager,
                         empty($establishments) ? null : $establishments,
                     );
@@ -121,7 +122,7 @@ class TradeSubjectPageParser
         }
 
         $lastSection = $main->childNodes[count($main->childNodes) - 1];
-        $tradeSubject['extracted_at'] = self::parseDmyDate(str_replace('Dátum výpisu:', '', $lastSection->textContent));
+        $tradeSubject['extracted_at'] = DateHelper::parseDmyDate(str_replace('Dátum výpisu: ', '', $lastSection->textContent));
 
         return new TradeSubject(
             $tradeSubject['identification_number'],
@@ -175,14 +176,5 @@ class TradeSubjectPageParser
             trim($city),
             empty($zip) ? null : $zip
         );
-    }
-
-    private static function parseDmyDate(string $rawDate): \DateTime
-    {
-        try {
-            return \DateTime::createFromFormat('d.m.Y', trim($rawDate));
-        } catch (\TypeError $exception) {
-            print_r($rawDate); die("\n");
-        }
     }
 }

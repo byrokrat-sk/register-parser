@@ -12,6 +12,12 @@ class DateHelper
             return null;
         }
 
-        return \DateTime::createFromFormat('d.m.Y', $rawDate);
+        $parsedDateTime = \DateTime::createFromFormat('d.m.Y', $rawDate);
+
+        if ($parsedDateTime === false) {
+            throw new \InvalidArgumentException("String [$rawDate] is not valid d.m.Y date!");
+        }
+
+        return $parsedDateTime;
     }
 }
