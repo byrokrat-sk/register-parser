@@ -46,4 +46,15 @@ class StringHelper
             preg_replace('/\s+/', ' ', $text)
         );
     }
+
+    public static function parseJson(?string $rawJson): ?object
+    {
+        $jsonObj = (object)\json_decode($rawJson);
+
+        if ($jsonObj === null && json_last_error() !== JSON_ERROR_NONE) {
+            throw new \InvalidArgumentException("Passed JSON is not valid!");
+        }
+
+        return $jsonObj;
+    }
 }

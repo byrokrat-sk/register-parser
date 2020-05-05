@@ -41,4 +41,11 @@ class ParserConfiguration
 
     public static $FinancialAgentRegisterUrlRoot = 'https://regfap.nbs.sk';
 
+
+    #
+    # $Financial Statements Register
+    #
+
+    public static $FinancialStatementsUrlRoot = 'http://www.registeruz.sk/cruz-public/api';
+
 }

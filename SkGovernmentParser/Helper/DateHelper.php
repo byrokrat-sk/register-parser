@@ -20,4 +20,19 @@ class DateHelper
 
         return $parsedDateTime;
     }
+
+    public static function parseYmdDate(?string $rawDate): ?\DateTime
+    {
+        if (empty($rawDate)) {
+            return null;
+        }
+
+        $parsedDateTime = \DateTime::createFromFormat('Y-m-d', $rawDate);
+
+        if ($parsedDateTime === false) {
+            throw new \InvalidArgumentException("String [$rawDate] is not valid Y-m-d date!");
+        }
+
+        return $parsedDateTime;
+    }
 }

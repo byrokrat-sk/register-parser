@@ -27,11 +27,6 @@ class Listing
         $this->P = $P;
     }
 
-    public function getSubject(): BusinessSubject
-    {
-        return BusinessRegisterQuery::network()->byListing($this);
-    }
-
     public function getUrl(): string
     {
         return self::formatListingUrl($this->Id, $this->Sid, $this->P);
