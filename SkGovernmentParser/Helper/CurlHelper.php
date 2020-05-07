@@ -3,7 +3,6 @@
 namespace SkGovernmentParser\Helper;
 
 
-use function PHPUnit\Framework\isEmpty;
 use SkGovernmentParser\Exceptions\HttpTimeoutException;
 use \SkGovernmentParser\ParserConfiguration;
 
@@ -13,7 +12,7 @@ class CurlHelper
 
     public static function fetch(string $methode, string $url, array $data = [], array $headers = [], callable $setupCurl = null): CurlResult
     {
-        if (strtoupper($methode) === 'GET' && !isEmpty($data)) {
+        if (strtoupper($methode) === 'GET' && !empty($data)) {
             throw new \InvalidArgumentException('Fetch with GET methode should pass parameters in URL address!');
         }
 
