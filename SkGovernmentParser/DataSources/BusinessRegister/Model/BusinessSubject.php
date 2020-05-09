@@ -27,7 +27,7 @@ class BusinessSubject implements \JsonSerializable
     public ?array $MembersContribution;
     public array $ManagementBody;
     public ?array $SupervisoryBoard;
-    public array $OtherLegalFacts;
+    public ?array $OtherLegalFacts;
 
     public \DateTime $EntryDate;
     public \DateTime $UpdatedAt;
@@ -52,7 +52,7 @@ class BusinessSubject implements \JsonSerializable
         ?array $MembersContribution,
         array $ManagementBody,
         ?array $SupervisoryBoard,
-        array $OtherLegalFacts,
+        ?array $OtherLegalFacts,
         \DateTime $EntryDate,
         \DateTime $UpdatedAt,
         \DateTime $ExtractedAt
