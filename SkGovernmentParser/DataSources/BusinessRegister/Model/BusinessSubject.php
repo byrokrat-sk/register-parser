@@ -4,108 +4,85 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model;
 
 
-class BusinessSubject implements \JsonSerializable
+use SkGovernmentParser\Helper\Arrayable;
+use SkGovernmentParser\Helper\DateHelper;
+
+class BusinessSubject implements \JsonSerializable, Arrayable
 {
-    public int $SubjectId;
+    // Static properties
+    public ?string $InsertNumber = null;
+    public ?string $Section = null;
+    public ?string $Court = null;
+    public ?string $Cin = null;
 
-    public TextDatePair $BusinessName;
-    public string $InsertNumber;
-    public SubjectSeat $RegisteredSeat;
-    public TextDatePair $IdentificationNumber;
-    public TextDatePair $LegalForm;
-    public TextDatePair $ActingInTheName;
-    public ?TextDatePair $Procuration;
-    public ?TextDatePair $MergerOrDivision;
+    // Groups
+    public ?VersionableGroup $RegisteredSeat = null;
+    public ?VersionableGroup $BusinessName = null;
+    public ?VersionableGroup $LegalForm = null;
 
-    public string $DistrictCourt;
-    public string $Section;
+    public ?VersionableGroup $MemberContributions = null;
+    public ?VersionableGroup $SupervisoryBoard = null;
+    public ?VersionableGroup $ActingInTheName = null;
+    public ?VersionableGroup $ManagementBody = null;
+    public ?VersionableGroup $Stockholders = null;
+    public ?VersionableGroup $Procuration = null;
+    public ?VersionableGroup $Partners = null;
 
-    public SubjectCapital $Capital;
+    public ?VersionableGroup $Capital = null;
+    public ?VersionableGroup $Shares = null;
 
-    public array $CompanyObjects;
-    public ?array $Partners;
-    public ?array $MembersContribution;
-    public array $ManagementBody;
-    public ?array $SupervisoryBoard;
-    public ?array $OtherLegalFacts;
+    public ?VersionableGroup $OtherLegalFacts = null;
+    public ?VersionableGroup $CompanyObjects = null;
 
-    public \DateTime $EntryDate;
-    public \DateTime $UpdatedAt;
-    public \DateTime $ExtractedAt;
+    public ?VersionableGroup $EnterpriseBranches = null;
 
+    public ?VersionableGroup $MergerOfDivision = null;
+    public ?VersionableGroup $CompaniesCoased = null;
+    public ?VersionableGroup $LegalSuccessors = null;
 
-    public function __construct(
-        int $BusinessRegisterId,
-        TextDatePair $BusinessName,
-        string $DistrictCourt,
-        string $Section,
-        string $InsertNumber,
-        SubjectSeat $RegisteredSeat,
-        TextDatePair $IdentificationNumber,
-        TextDatePair $LegalForm,
-        TextDatePair $ActingInTheName,
-        ?TextDatePair $Procuration,
-        ?TextDatePair $MergerOrDivision,
-        SubjectCapital $Capital,
-        array $CompanyObjects,
-        ?array $Partners,
-        ?array $MembersContribution,
-        array $ManagementBody,
-        ?array $SupervisoryBoard,
-        ?array $OtherLegalFacts,
-        \DateTime $EntryDate,
-        \DateTime $UpdatedAt,
-        \DateTime $ExtractedAt
-    ) {
-        $this->SubjectId = $BusinessRegisterId;
-        $this->BusinessName = $BusinessName;
-        $this->DistrictCourt = $DistrictCourt;
-        $this->Section = $Section;
-        $this->InsertNumber = $InsertNumber;
-        $this->RegisteredSeat = $RegisteredSeat;
-        $this->IdentificationNumber = $IdentificationNumber;
-        $this->LegalForm = $LegalForm;
-        $this->ActingInTheName = $ActingInTheName;
-        $this->Procuration = $Procuration;
-        $this->MergerOrDivision = $MergerOrDivision;
-        $this->Capital = $Capital;
-        $this->CompanyObjects = $CompanyObjects;
-        $this->Partners = $Partners;
-        $this->MembersContribution = $MembersContribution;
-        $this->ManagementBody = $ManagementBody;
-        $this->SupervisoryBoard = $SupervisoryBoard;
-        $this->OtherLegalFacts = $OtherLegalFacts;
-        $this->EntryDate = $EntryDate;
-        $this->UpdatedAt = $UpdatedAt;
-        $this->ExtractedAt = $ExtractedAt;
+    // Dates
+    public ?\DateTime $EnteredAt = null;
+    public ?\Datetime $UpdatedAt = null;
+    public ?\Datetime $ExtractedAt = null;
+
+    public function __construct()
+    {
+        // All attributes are initialised with null
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'insert_number' => $this->InsertNumber,
+            'section' => $this->Section,
+            'court' => $this->Court,
+            'cin' => $this->Cin,
+            'registered_seat' => $this->RegisteredSeat,
+            'business_name' => $this->BusinessName,
+            'legal_form' => $this->LegalForm,
+            'member_contributions' => $this->MemberContributions,
+            'supervisory_board' => $this->SupervisoryBoard,
+            'acting_in_the_name' => $this->ActingInTheName,
+            'management_body' => $this->ManagementBody,
+            'stockholders' => $this->Stockholders,
+            'procuration' => $this->Procuration,
+            'partners' => $this->Partners,
+            'capital' => $this->Capital,
+            'shares' => $this->Shares,
+            'other_legal_facts' => $this->OtherLegalFacts,
+            'company_objects' => $this->CompanyObjects,
+            'enterprise_branches' => $this->EnterpriseBranches,
+            'merger_of_division' => $this->MergerOfDivision,
+            'companies_coased' => $this->CompaniesCoased,
+            'legal_successors' => $this->LegalSuccessors,
+            'entered_at' => DateHelper::formatYmd($this->EnteredAt),
+            'updated_at' => DateHelper::formatYmd($this->UpdatedAt),
+            'extracted_at' => DateHelper::formatYmd($this->ExtractedAt),
+        ];
     }
 
     public function jsonSerialize()
     {
-        return [
-            'subject_id' => $this->SubjectId,
-            'business_name' => $this->BusinessName,
-            'insert_number' => $this->InsertNumber,
-            'registered_seat' => $this->RegisteredSeat,
-            'identification_number' => $this->IdentificationNumber,
-            'legal_form' => $this->LegalForm,
-            'acting_in_the_name' => $this->ActingInTheName,
-            'procuration' => $this->Procuration,
-            'merger_or_division' => $this->MergerOrDivision,
-            'district_court' => $this->DistrictCourt,
-            'section' => $this->Section,
-            'capital' => $this->Capital,
-            'company_objects' => $this->CompanyObjects,
-            'partners' => $this->Partners,
-            'members_contribution' => $this->MembersContribution,
-            'management_body' => $this->ManagementBody,
-            'supervisory_board' => $this->SupervisoryBoard,
-            'other_legal_facts' => $this->OtherLegalFacts,
-            'dates' => [
-                'entry_date' => is_null($this->EntryDate) ? null : $this->EntryDate->format('Y-m-d'),
-                'updated_at' => is_null($this->UpdatedAt) ? null : $this->UpdatedAt->format('Y-m-d'),
-                'extracted_at' => is_null($this->ExtractedAt) ? null : $this->ExtractedAt->format('Y-m-d'),
-            ],
-        ];
+        return $this->toArray();
     }
 }

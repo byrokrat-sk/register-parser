@@ -13,7 +13,7 @@ use SkGovernmentParser\Helper\CurlHelper;
 class NetworkProvider implements BusinessRegisterPageProvider
 {
     public const NAME_QUERY_URL = '/hladaj_subjekt.asp?lan=en&OBMENO={query}&PF=0&R=on';
-    public const IDENTIFICATOR_QUERY_URL = '/hladaj_ico.asp?lan=en&ICO={query}&SID=0';
+    public const IDENTIFICATOR_QUERY_URL = '/hladaj_ico.asp?ICO={query}&SID=0';
     public const ACTUAL_PAGE_URL = "/vypis.asp?lan=en&ID={query}&SID=2&P=0";
     public const FULL_PAGE_URL = "/vypis.asp?lan=en&ID={query}&SID=2&P=1";
 

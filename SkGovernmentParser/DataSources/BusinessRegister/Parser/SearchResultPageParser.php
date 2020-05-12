@@ -46,7 +46,7 @@ class SearchResultPageParser
     {
         $id = StringHelper::stringBetween($url, 'ID=', '&');
         $sid = StringHelper::stringBetween($url, 'SID=', '&');
-        $p = StringHelper::stringBetween($url, 'P=', '&');
+        $p = explode('&P=', $url)[1];
         return new Listing($id, $sid, $p);
     }
 }

@@ -4,26 +4,25 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model;
 
 
-class Address implements \JsonSerializable
+use SkGovernmentParser\Helper\Arrayable;
+use SkGovernmentParser\Helper\DateHelper;
+
+class Address implements \JsonSerializable, Arrayable
 {
     const DEFAULT_COUNTRY = 'Slovensko';
 
-    public string $StreetName;
-    public string $StreetNumber;
-    public string $CityName;
-    public ?string $Zip;
-    public string $Country;
+    public ?string $StreetName = null;
+    public ?string $StreetNumber = null;
+    public ?string $CityName = null;
+    public ?string $Zip = null;
+    public ?string $Country = null;
 
-    public function __construct(string $StreetName, string $StreetNumber, string $CityName, ?string $Zip, ?string $Country = null)
+    public function __construct()
     {
-        $this->StreetName = $StreetName;
-        $this->StreetNumber = $StreetNumber;
-        $this->CityName = $CityName;
-        $this->Zip = $Zip;
-        $this->Country = is_null($Country) ? self::DEFAULT_COUNTRY : $Country;
+        $this->Country = self::DEFAULT_COUNTRY;
     }
 
-    public function jsonSerialize()
+    public function toArray(): array
     {
         return [
             'street_name' => $this->StreetName,
@@ -32,5 +31,10 @@ class Address implements \JsonSerializable
             'zip' => $this->Zip,
             'country' => $this->Country
         ];
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 }

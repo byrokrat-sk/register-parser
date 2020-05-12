@@ -40,7 +40,7 @@ class BusinessRegisterQuery
         $trimmedQuery = StringHelper::removeWhitespaces($query);
 
         if (!CompanyIdValidator::isValid($trimmedQuery)) {
-            throw new InvalidQueryException("Passed identificator [$query]->[$trimmedQuery] is not valid identificator number!");
+            throw new InvalidQueryException("Passed identificator [$trimmedQuery] is not valid identificator number!");
         }
 
         $searchPageHtml = $this->Provider->getIdentificatorSearchPageHtml($trimmedQuery);
@@ -54,7 +54,7 @@ class BusinessRegisterQuery
             throw new InconclusiveSearchException("Business register returned multiple results [{$searchResult->count()}] from query [$query]!");
         }
 
-        return $this->byListing($searchResult->first()->ActualListing);
+        return $this->byListing($searchResult->first()->FullListing);
     }
 
     public function byListing(Listing $listing): BusinessSubject

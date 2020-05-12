@@ -35,4 +35,13 @@ class DateHelper
 
         return $parsedDateTime;
     }
+
+    public static function formatYmd(?\DateTime $dateTime): ?string
+    {
+        if (is_null($dateTime)) {
+            return null;
+        }
+
+        return $dateTime->format('Y-m-d');
+    }
 }
