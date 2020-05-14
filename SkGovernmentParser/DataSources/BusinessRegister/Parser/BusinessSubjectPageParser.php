@@ -238,6 +238,15 @@ class BusinessSubjectPageParser
 
     private static function parseManagerArray(array $managerArray): Manager
     {
+        // Edge-case fix: second line contains function name so we move it to first line
+        if ($managerArray['lines'][1][0][0] === '-') {
+            // TODO: Implement parsing of function name of institution
+            //$managerArray['lines'][0][] = $managerArray['lines'][1][0]; // <- adding function name to name line
+
+            unset($managerArray['lines'][1]);
+            $managerArray['lines'] = array_values($managerArray['lines']); // re-index array
+        }
+
         $nameLine = $managerArray['lines'][0];
         $managerArray['lines'] = array_slice($managerArray['lines'], 1);
 
@@ -309,9 +318,10 @@ class BusinessSubjectPageParser
         $degreeAfter = null;
         $functionName = null;
 
-        if (count($nameLine) === 1) {
-            // Just business name
-            $businessName = $nameLine[0];
+        if (count($nameLine) === 1 || StringHelper::str_contains($nameLine[1], 'IČO')) {
+            // There can be weird edge-case where second cell of business name line contains CIN of institution
+            // Is there benefit to store that CIN? I think it's really unusual case -> for now lets implode it!
+            $businessName = implode(' ', $nameLine);
         } else {
             if (StringHelper::str_contains($nameLine[0], '.')) {
                 $degreeBefore = $nameLine[0];
