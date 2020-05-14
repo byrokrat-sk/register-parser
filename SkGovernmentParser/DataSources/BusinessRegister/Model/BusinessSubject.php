@@ -36,7 +36,7 @@ class BusinessSubject implements \JsonSerializable, Arrayable
 
     public ?VersionableGroup $EnterpriseBranches = null;
 
-    public ?VersionableGroup $MergerOfDivision = null;
+    public ?VersionableGroup $MergerOrDivision = null;
     public ?VersionableGroup $CompaniesCoased = null;
     public ?VersionableGroup $LegalSuccessors = null;
 
@@ -72,7 +72,7 @@ class BusinessSubject implements \JsonSerializable, Arrayable
             'other_legal_facts' => $this->OtherLegalFacts,
             'company_objects' => $this->CompanyObjects,
             'enterprise_branches' => $this->EnterpriseBranches,
-            'merger_of_division' => $this->MergerOfDivision,
+            'merger_of_division' => $this->MergerOrDivision,
             'companies_coased' => $this->CompaniesCoased,
             'legal_successors' => $this->LegalSuccessors,
             'entered_at' => DateHelper::formatYmd($this->EnteredAt),

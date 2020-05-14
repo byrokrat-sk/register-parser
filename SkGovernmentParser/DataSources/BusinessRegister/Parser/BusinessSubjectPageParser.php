@@ -4,18 +4,23 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Parser;
 
 
-use SkGovernmentParser\DataSources\BusinessRegister\Model\Person;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Acting;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\BusinessName;
 use \SkGovernmentParser\DataSources\BusinessRegister\Model\BusinessSubject;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Capital;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\CoasedCompany;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\CompanyObject;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\EnterpriseBranch;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\LegalFact;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\LegalForm;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Manager;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\MergerOrDivision;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Person;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\RegisteredSeat;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Shares;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Stockholder;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\VersionableGroup;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Address;
-use SkGovernmentParser\DataSources\TradeRegister\Model\BusinessObject;
 use SkGovernmentParser\Helper\StringHelper;
 use SkGovernmentParser\Helper\DateHelper;
 
@@ -116,7 +121,7 @@ class BusinessSubjectPageParser
                 case 'Konanie menom spoločnosti': {
                     $texts = [];
                     foreach ($mainTable['records'] as $record) {
-                        $text = new Acting($record['lines'][0][0]);
+                        $text = new Acting(StringHelper::paragraphText($record['lines'][0][0]));
                         $validity = self::parseTableDate($record['date']);
                         $text->setDates($validity->from, $validity->to);
                         $texts[] = $text;
@@ -129,35 +134,69 @@ class BusinessSubjectPageParser
                     break;
                 }
                 case 'Základné imanie': {
-                    // TODO: Implement me pls :/
+                    $capitalRecords = [];
+                    foreach ($mainTable['records'] as $record) {
+                        $capitalRecords[] = self::parseCapitalRecord($record);
+                    }
+                    $subject->Capital = new VersionableGroup($capitalRecords);
                     break;
                 }
                 case 'Akcie': {
-                    // TODO: Implement me pls :/
+                    $shares = [];
+                    foreach ($mainTable['records'] as $record) {
+                        $shares[] = self::parseShareRecord($record);
+                    }
+                    $subject->Shares = new VersionableGroup($shares);
                     break;
                 }
                 case 'Akcionár': {
-                    // TODO: Implement me pls :/
+                    $stockholders = [];
+                    foreach ($mainTable['records'] as $record) {
+                        $stockholders[] = self::parseStockholderRecord($record);
+                    }
+                    $subject->Stockholders = new VersionableGroup($stockholders);
                     break;
                 }
                 case 'Dozorná rada': {
-                    // TODO: Implement me pls :/
+                    $managers = [];
+                    foreach ($mainTable['records'] as $record) {
+                        if (count($record['lines']) === 1) continue; // ignore headers
+                        $managers[] = self::parseManagerArray($record);
+                    }
+                    $subject->SupervisoryBoard = new VersionableGroup($managers);
+                    break;
                     break;
                 }
                 case 'Ďalšie právne skutočnosti': {
-                    // TODO: Implement me pls :/
+                    $facts = [];
+                    foreach ($mainTable['records'] as $record) {
+                        $facts[] = self::parseLegalFact($record);
+                    }
+                    $subject->OtherLegalFacts = new VersionableGroup($facts);
                     break;
                 }
                 case 'Zlúčenie, splynutie, rozdelenie spoločnosti': {
-                    // TODO: Implement me pls :/
+                    $records = [];
+                    foreach ($mainTable['records'] as $record) {
+                        $records[] = self::parseMergerOrDivision($record);
+                    }
+                    $subject->MergerOrDivision = new VersionableGroup($records);
                     break;
                 }
                 case 'Spoločnosť zaniknutá zlúčením, splynutím alebo rozdelením': {
-                    // TODO: Implement me pls :/
+                    $coased = [];
+                    foreach ($mainTable['records'] as $record) {
+                        $coased[] = self::parseCoasedRecord($record);
+                    }
+                    $subject->CompaniesCoased = new VersionableGroup($coased);
                     break;
                 }
                 case 'Spoločníci': {
-                    // TODO: Implement me pls :/
+                    $partners = [];
+                    foreach ($mainTable['records'] as $record) {
+                        $partners[] = self::parsePersonArray($record);
+                    }
+                    $subject->Partners = new VersionableGroup($partners);
                     break;
                 }
                 case 'Výška vkladu každého spoločníka': {
@@ -293,7 +332,7 @@ class BusinessSubjectPageParser
                 $functionName = ltrim($nameLine[0], '- ');
             }
 
-            // (last name + degree after) in the same cell edge case fix
+            // Edge case fix: (last name + degree after) in the same cell
             if (StringHelper::str_contains($lastName, ',')) {
                 $explode = explode(',', $lastName);
                 $lastName = trim($explode[0]);
@@ -404,6 +443,138 @@ class BusinessSubjectPageParser
         return new VersionableGroup($branches);
     }
 
+    private static function parseCapitalRecord(array $record): Capital
+    {
+        $totally = null;
+        $currency = null;
+        $payed = null;
+
+        $cells = $record['lines'][0];
+
+        // Total amount
+        $maybeNumber = self::parseNumber($cells[0]);
+        if (!empty($cells) && !is_null($maybeNumber)) {
+            $totally = $maybeNumber;
+            $cells = array_slice($cells, 1);
+        }
+
+        // currency
+        $maybeNumber = self::parseNumber($cells[0]);
+        if (!empty($cells) && is_null($maybeNumber)) {
+            $currency = strtoupper($cells[0]);
+            $cells = array_slice($cells, 1);
+        }
+
+        // Payed
+        $maybeNumber = self::parseNumber(str_replace('Rozsah splatenia: ', '', $cells[0]));
+        if (!empty($cells) && !is_null($maybeNumber)) {
+            $payed = $maybeNumber;
+        }
+
+        if ($currency === 'SK') $currency = 'SKK'; // This should be more correct
+
+        $capital = new Capital($currency, $totally, $payed);
+        $validity = self::parseTableDate($record['date']);
+        $capital->setDates($validity->from, $validity->to);
+
+        return $capital;
+    }
+
+    private static function parseShareRecord(array $record): Shares
+    {
+        $nominalValue = null;
+        $quantity = null;
+        $currency = null;
+        $shape = null;
+        $type = null;
+        $form = null;
+
+        foreach ($record['lines'] as $line) {
+            $labelExplode = explode(': ', $line[0]);
+            $label = $labelExplode[0];
+            $value = $labelExplode[1];
+            switch($label) {
+                case 'Počet': $quantity = (int)self::parseNumber($value); break;
+                case 'Druh': $type = $value; break;
+                case 'Podoba': $shape = $value; break;
+                case 'Forma': $form = $value; break;
+                case 'Menovitá hodnota': $nominalValue = self::parseNumber($value); break;
+            }
+
+            // Has line second cell (currency)?
+            if (count($line) === 2) {
+                $currency = $line[1];
+            }
+        }
+
+        $shares = new Shares($quantity, $type, $form, $shape, $nominalValue, $currency);
+        $validity = self::parseTableDate($record['date']);
+        $shares->setDates($validity->from, $validity->to);
+
+        return $shares;
+    }
+
+    private static function parseStockholderRecord(array $record): Stockholder
+    {
+        $name = join(' ', $record['lines'][0]);
+        $addressArray = array_slice($record['lines'], 1);
+
+        $stockholder = new Stockholder($name, self::parseAddressArray($addressArray));
+        $validity = self::parseTableDate($record['date']);
+        $stockholder->setDates($validity->from, $validity->to);
+
+        return $stockholder;
+    }
+
+    private static function parseLegalFact(array $record): LegalFact
+    {
+        $fact = new LegalFact(StringHelper::paragraphText($record['lines'][0][0]));
+        $validity = self::parseTableDate($record['date']);
+        $fact->setDates($validity->from, $validity->to);
+
+        return $fact;
+    }
+
+    private static function parseMergerOrDivision(array $record): MergerOrDivision
+    {
+        $mergerOrDivision = new MergerOrDivision(StringHelper::paragraphText($record['lines'][0][0]));
+        $validity = self::parseTableDate($record['date']);
+        $mergerOrDivision->setDates($validity->from, $validity->to);
+
+        return $mergerOrDivision;
+    }
+
+    private static function parseCoasedRecord(array $record): CoasedCompany
+    {
+        $businessName = implode(' ', $record['lines'][0]);
+        $addressArray = array_slice($record['lines'], 1);
+
+        $coasedCompany = new CoasedCompany($businessName, self::parseAddressArray($addressArray));
+        $validity = self::parseTableDate($record['date']);
+        $coasedCompany->setDates($validity->from, $validity->to);
+
+        return $coasedCompany;
+    }
+
+    private static function parsePersonArray(array $record): Person
+    {
+        $parsedName = self::parseNameLine($record['lines'][0]);
+        $addressArray = array_slice($record['lines'], 1);
+
+        $partner = new Person(
+            $parsedName->business_name,
+            $parsedName->degree_before,
+            $parsedName->first_name,
+            $parsedName->last_name,
+            $parsedName->degree_after,
+            self::parseAddressArray($addressArray));
+
+        $validity = self::parseTableDate($record['date']);
+        $partner->setDates($validity->from, $validity->to);
+
+        return $partner;
+    }
+
 
     #
     # String parsers
@@ -431,6 +602,18 @@ class BusinessSubjectPageParser
             'from' => $validFrom,
             'to' => $validTo
         ];
+    }
+
+    private static function parseNumber(string $maybeNumber): ?float
+    {
+        if (is_null($maybeNumber)) {
+            return null;
+        }
+
+        $posibblyNumber = str_replace(',', '.', StringHelper::removeWhitespaces($maybeNumber));
+        return is_numeric($posibblyNumber)
+            ? (float)$posibblyNumber
+            : null;
     }
 
 
@@ -549,6 +732,7 @@ class BusinessSubjectPageParser
                 if ($isNestedSubtable) {
                     $title = trim($subtable->childNodes[0]->childNodes[0]->textContent, ': ');
 
+                    // There can be multiple subrecords in a record subtable (fuck me)
                     foreach ($subtable->childNodes[0]->childNodes[2]->childNodes as $subtableRecord) {
                         $date = trim($subtableRecord->childNodes[0]->childNodes[2]->textContent);
 
