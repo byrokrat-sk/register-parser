@@ -26,6 +26,7 @@ class BusinessSubject implements \JsonSerializable, Arrayable
     public ?VersionableGroup $ManagementBody = null;
     public ?VersionableGroup $Stockholders = null;
     public ?VersionableGroup $Procuration = null;
+    public ?VersionableGroup $ProcurationFacts = null;
     public ?VersionableGroup $Partners = null;
 
     public ?VersionableGroup $Capital = null;
@@ -39,6 +40,8 @@ class BusinessSubject implements \JsonSerializable, Arrayable
     public ?VersionableGroup $MergerOrDivision = null;
     public ?VersionableGroup $CompaniesCoased = null;
     public ?VersionableGroup $LegalSuccessors = null;
+    public ?VersionableGroup $EnterpriseSales = null;
+    public ?VersionableGroup $Liquidators = null;
 
     // Dates
     public ?\DateTime $EnteredAt = null;
@@ -66,6 +69,7 @@ class BusinessSubject implements \JsonSerializable, Arrayable
             'management_body' => $this->ManagementBody,
             'stockholders' => $this->Stockholders,
             'procuration' => $this->Procuration,
+            'procuration_facts' => $this->ProcurationFacts,
             'partners' => $this->Partners,
             'capital' => $this->Capital,
             'shares' => $this->Shares,
@@ -75,6 +79,8 @@ class BusinessSubject implements \JsonSerializable, Arrayable
             'merger_of_division' => $this->MergerOrDivision,
             'companies_coased' => $this->CompaniesCoased,
             'legal_successors' => $this->LegalSuccessors,
+            'enterprise_sales' => $this->EnterpriseSales,
+            'liquidators' => $this->Liquidators,
             'entered_at' => DateHelper::formatYmd($this->EnteredAt),
             'updated_at' => DateHelper::formatYmd($this->UpdatedAt),
             'extracted_at' => DateHelper::formatYmd($this->ExtractedAt),

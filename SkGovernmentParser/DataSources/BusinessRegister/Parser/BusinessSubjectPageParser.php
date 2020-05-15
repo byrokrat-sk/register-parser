@@ -10,12 +10,18 @@ use \SkGovernmentParser\DataSources\BusinessRegister\Model\BusinessSubject;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Capital;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\CoasedCompany;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\CompanyObject;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Contributor;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\EnterpriseBranch;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\EnterpriseSale;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\LegalFact;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\LegalForm;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\LegalSuccessor;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Liquidator;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Manager;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\MergerOrDivision;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Person;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Procuration;
+use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\ProcurationFact;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\RegisteredSeat;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Shares;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Stockholder;
@@ -200,23 +206,51 @@ class BusinessSubjectPageParser
                     break;
                 }
                 case 'Výška vkladu každého spoločníka': {
-                    // TODO: Implement me pls :/
+                    $contributors = [];
+                    foreach ($mainTable['records'] as $record) {
+                        $contributors[] = self::parseContributorRecord($record);
+                    }
+                    $subject->MemberContributions = new VersionableGroup($contributors);
                     break;
                 }
                 case 'Prokúra': {
-                    // TODO: Implement me pls :/
+                    $procuations = [];
+                    $facts = [];
+                    foreach ($mainTable['records'] as $record) {
+                        // After procuration lines there are also lines with facts about procuration
+                        if (count($record['lines']) === 1) {
+                            $facts[] = self::parseProcurationFactRecord($record);
+                        } else {
+                            $procuations[] = self::parseProcurationRecord($record);
+                        }
+                    }
+                    $subject->Procuration = new VersionableGroup($procuations);
+                    $subject->ProcurationFacts = new VersionableGroup($facts);
                     break;
                 }
                 case 'Právny nástupca': {
-                    // TODO: Implement me pls :/
+                    $successors = [];
+                    foreach ($mainTable['records'] as $record) {
+                        $successors[] = self::parseLegalSuccessorRecord($record);
+                    }
+                    $subject->LegalSuccessors = new VersionableGroup($successors);
                     break;
                 }
                 case 'Predaj': {
-                    // TODO: Implement me pls :/
+                    $sales = [];
+                    foreach ($mainTable['records'] as $record) {
+                        $sales[] = self::parseEnterpriseSaleRecord($record);
+                    }
+                    $subject->EnterpriseSales = new VersionableGroup($sales);
                     break;
                 }
-                case 'Likvidátor': {
-                    // TODO: Implement me pls :/
+                case 'Likvidátor':
+                case 'Likvidácia': {
+                    $liquidators = [];
+                    foreach ($mainTable['records'] as $record) {
+                        $liquidators[] = self::parseLiquidatorRecord($record);
+                    }
+                    $subject->Liquidators = new VersionableGroup($liquidators);
                     break;
                 }
             }
@@ -585,6 +619,121 @@ class BusinessSubjectPageParser
         return $partner;
     }
 
+    private static function parseContributorRecord(array $record): Contributor
+    {
+        $parsedName = self::parseNameLine($record['lines'][0]);
+
+        $amount = self::parseNumber(str_replace('Vklad: ', '', $record['lines'][1][0]));
+        $currency = $record['lines'][1][1];
+        $payed = null;
+        if (count($record['lines'][1]) > 2) {
+            $payed = self::parseNumber(str_replace('Splatené: ', '', $record['lines'][1][2]));
+        }
+
+        $contributor = new Contributor($parsedName->business_name, $parsedName->degree_before, $parsedName->first_name, $parsedName->last_name, $parsedName->degree_after, $currency, $amount, $payed);
+        $validity = self::parseTableDate($record['date']);
+        $contributor->setDates($validity->from, $validity->to);
+
+        return $contributor;
+    }
+
+    private static function parseProcurationRecord(array $record): Procuration
+    {
+        $parsedName = self::parseNameLine($record['lines'][0]);
+
+        $functionDates = (object)['from' => null, 'to' => null];
+        if (count($record['lines']) > 3) {
+            $functionLine = implode(' ', $record['lines'][count($record['lines']) - 1]);
+            $functionDates = self::parseFunctionLineDates($functionLine);
+        }
+
+        $addressArray = array_slice($record['lines'], 1, -1);
+
+        $procuration = new Procuration(
+            $parsedName->business_name,
+            $parsedName->degree_before,
+            $parsedName->first_name,
+            $parsedName->last_name,
+            $parsedName->degree_after,
+            self::parseAddressArray($addressArray),
+            $functionDates->from,
+            $functionDates->to);
+
+        $validity = self::parseTableDate($record['date']);
+        $procuration->setDates($validity->from, $validity->to);
+
+        return $procuration;
+    }
+
+    private static function parseProcurationFactRecord(array $record): ProcurationFact
+    {
+        $procurationFact = new ProcurationFact(StringHelper::paragraphText($record['lines'][0][0]));
+        $validity = self::parseTableDate($record['date']);
+        $procurationFact->setDates($validity->from, $validity->to);
+
+        return $procurationFact;
+    }
+
+    private static function parseLegalSuccessorRecord(array $record): LegalSuccessor
+    {
+        $businessName = implode(' ', $record['lines'][0]);
+        $addressArray = array_slice($record['lines'], 1);
+
+        $successor = new LegalSuccessor($businessName, self::parseAddressArray($addressArray));
+        $validity = self::parseTableDate($record['date']);
+        $successor->setDates($validity->from, $validity->to);
+
+        return $successor;
+    }
+
+    private static function parseEnterpriseSaleRecord(array $record): EnterpriseSale
+    {
+        $header = null;
+        $text = null;
+
+        if (count($record['lines']) === 1) {
+            $text = StringHelper::paragraphText($record['lines'][0][0]);
+        } else {
+            $header = StringHelper::paragraphText($record['lines'][0][0]);
+            $record['lines'] = array_slice($record['lines'], 1);
+            $text = StringHelper::paragraphText(implode(' ', $record['lines'][0]));
+        }
+
+        $sale = new EnterpriseSale($header, $text);
+        $validity = self::parseTableDate($record['date']);
+        $sale->setDates($validity->from, $validity->to);
+
+        return $sale;
+    }
+
+    private static function parseLiquidatorRecord(array $record): Liquidator
+    {
+        $parsedName = self::parseNameLine($record['lines'][0]);
+
+        $functionDates = (object)['from' => null, 'to' => null];
+        if (count($record['lines']) > 3) {
+            $functionLine = implode(' ', $record['lines'][count($record['lines']) - 1]);
+            $functionDates = self::parseFunctionLineDates($functionLine);
+        }
+
+        $addressArray = array_slice($record['lines'], 1, -1);
+
+        $procuration = new Liquidator(
+            $parsedName->business_name,
+            $parsedName->degree_before,
+            $parsedName->first_name,
+            $parsedName->last_name,
+            $parsedName->degree_after,
+            self::parseAddressArray($addressArray),
+            $functionDates->from,
+            $functionDates->to);
+
+        $validity = self::parseTableDate($record['date']);
+        $procuration->setDates($validity->from, $validity->to);
+
+        return $procuration;
+    }
+
 
     #
     # String parsers
@@ -736,6 +885,9 @@ class BusinessSubjectPageParser
             ];
 
             foreach ($bodyElement->childNodes[0]->childNodes[2]->childNodes as $subtable) {
+                if ($subtable->tagName !== 'table') {
+                    continue; // Fix for weird "Liquidators" empty section/header (CIN: 35738791)
+                }
 
                 // Detect if nested subtable or not
                 $isNestedSubtable = $subtable->childNodes[0]->childNodes[2]->childNodes[0]->tagName === 'table';
