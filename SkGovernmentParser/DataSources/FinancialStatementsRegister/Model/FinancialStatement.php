@@ -5,6 +5,8 @@ namespace SkGovernmentParser\DataSources\FinancialStatementsRegister\Model;
 
 
 use SkGovernmentParser\Helper\Arrayable;
+use SkGovernmentParser\Helper\DateHelper;
+
 
 class FinancialStatement implements \JsonSerializable, Arrayable
 {
@@ -58,11 +60,11 @@ class FinancialStatement implements \JsonSerializable, Arrayable
             'tin' => $this->Tin,
             'from_date' => $this->FromDate,
             'until_date' => $this->UntilDate,
-            'last_modification_date' => $this->LastModificationDate,
-            'assembled_at' => $this->AssembledAt,
-            'prepared_at' => $this->PreparedAt,
-            'approved_at' => $this->ApprovedAt,
-            'submitted_at' => $this->SubmittedAt,
+            'last_modification_date' => DateHelper::formatYmd($this->LastModificationDate),
+            'assembled_at' => DateHelper::formatYmd($this->AssembledAt),
+            'prepared_at' => DateHelper::formatYmd($this->PreparedAt),
+            'approved_at' => DateHelper::formatYmd($this->ApprovedAt),
+            'submitted_at' => DateHelper::formatYmd($this->SubmittedAt),
             'dataSource_code' => $this->DataSourceCode,
             'type' => $this->Type,
             'financial_report_ids' => $this->FinancialReportIds,

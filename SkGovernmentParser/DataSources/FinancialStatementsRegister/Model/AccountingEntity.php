@@ -5,6 +5,8 @@ namespace SkGovernmentParser\DataSources\FinancialStatementsRegister\Model;
 
 
 use SkGovernmentParser\Helper\Arrayable;
+use SkGovernmentParser\Helper\DateHelper;
+
 
 class AccountingEntity implements \JsonSerializable, Arrayable
 {
@@ -77,9 +79,9 @@ class AccountingEntity implements \JsonSerializable, Arrayable
             'financial_statements' => empty($this->FinancialStatements) ? null : array_map(function (FinancialStatement $statement) { return $statement->toArray(); }, $this->FinancialStatements),
             'annual_report_ids' => $this->AnnualReportIds,
             'data_source_code' => $this->DataSourceCode,
-            'established_at' => $this->EstablishedAt,
-            'canceled_at' => $this->CanceledAt,
-            'modified_at' => $this->ModifiedAt,
+            'established_at' => DateHelper::formatYmd($this->EstablishedAt),
+            'canceled_at' => DateHelper::formatYmd($this->CanceledAt),
+            'modified_at' => DateHelper::formatYmd($this->ModifiedAt),
         ];
     }
 
