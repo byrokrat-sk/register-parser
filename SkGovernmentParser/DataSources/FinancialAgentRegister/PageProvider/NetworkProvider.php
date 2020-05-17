@@ -5,6 +5,8 @@ namespace SkGovernmentParser\DataSources\FinancialAgentRegister\PageProvider;
 
 
 use SkGovernmentParser\DataSources\FinancialAgentRegister\FinanfialAgentRegisterPageProvider;
+use SkGovernmentParser\DataSources\FinancialAgentRegister\Model\Search\Item;
+use SkGovernmentParser\DataSources\FinancialAgentRegister\Model\Search\Result;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Parser\FinancialAgentPageParser;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Parser\SearchPageResultParser;
 use SkGovernmentParser\Exceptions\BadHttpRequestException;
@@ -57,22 +59,15 @@ class NetworkProvider implements FinanfialAgentRegisterPageProvider
         return $searchResponse->Response;
     }
 
-    public function getAgentPageHtml(string $registrationNumber): string
+    public function getAgentPageHtmlByNumber(string $registrationNumber): string
     {
         try {
             $matchedAgent = null;
-            $parsedResult = null;
-            $pageNumber = 1;
-
-            /*
-             * If register return multiple page result then parse will requests all pages until there is not match with
-             * registration number.
-             */
-            while (is_null($parsedResult) || (is_null($matchedAgent) && $parsedResult->hasNextPage())) {
-                $searchPageHtml = $this->getSearchPageHtml($registrationNumber, $pageNumber);
-                $parsedResult = SearchPageResultParser::parseHtml($searchPageHtml);
-                $matchedAgent = $parsedResult->withNumber($registrationNumber);
-                $pageNumber += 1;
+            foreach (self::querySearchItems($registrationNumber) as $searchItem) {
+                if ($searchItem->Number === $registrationNumber) {
+                    $matchedAgent = $searchItem;
+                    break;
+                }
             }
 
             if (is_null($matchedAgent)) {
@@ -95,7 +90,69 @@ class NetworkProvider implements FinanfialAgentRegisterPageProvider
         }
     }
 
+    public function getAgentPageHtmlByCin(string $cin): string
+    {
+        try {
+            $matchedAgent = null;
+            foreach (self::querySearchItems($cin) as $searchItem) {
+                // TODO: Rewrite to agent page parsing and check if CIN is equal to desired CIN number
+                $matchedAgent = $searchItem;
+                break;
+            }
+
+            if (is_null($matchedAgent)) {
+                throw new EmptySearchResultException("Financial agent with CIN [$cin] was not found");
+            }
+
+            $agentPageResponse = CurlHelper::get($this->RootUrl.self::SEARCH_PAGE_URL, [
+                'row' => $matchedAgent->Row
+            ], [
+                'Cookie: PHPSESSID='.self::$PhpSessionId
+            ]);
+
+            if (!$agentPageResponse->isOk()) {
+                throw new BadHttpRequestException("Requesting agent page was not succesfull. HTTP code [$agentPageResponse->HttpCode] was returned!");
+            }
+
+            return $agentPageResponse->Response;
+        } catch (AgentPageProvidedException $agentPageProvided) {
+            return $agentPageProvided->AgentPageHtml;
+        }
+    }
+
     # ~
+
+    /** @return \Generator|Item[] */
+    private function querySearchItems(string $searchQuery): \Generator
+    {
+        /** @var Result $pageResult */
+        foreach (self::querySearchPages($searchQuery) as $pageResult) {
+            foreach ($pageResult->getItems() as $searchItem) {
+                yield $searchItem;
+            }
+        }
+    }
+
+    /** @return \Generator|Result[] */
+    private function querySearchPages(string $searchQuery): \Generator
+    {
+        $matchedAgent = null;
+        $parsedResult = null;
+        $pageNumber = 1;
+
+        /*
+         * If register return multiple page result then parse will requests all pages until there is not match with
+         * registration number.
+         */
+        while (is_null($parsedResult) || $parsedResult->hasNextPage()) {
+            $searchPageHtml = $this->getSearchPageHtml($searchQuery, $pageNumber);
+            $parsedResult = SearchPageResultParser::parseHtml($searchPageHtml);
+
+            yield $parsedResult;
+
+            $pageNumber += 1;
+        }
+    }
 
     private function getAccessToken(): string
     {

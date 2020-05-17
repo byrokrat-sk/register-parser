@@ -4,11 +4,13 @@
 namespace SkGovernmentParser\DataSources\FinancialAgentRegister;
 
 
+use SkGovernmentParser\DataSources\BusinessRegister\CompanyIdValidator;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Model\FinancialAgent;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Model\Search\Result;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\PageProvider\NetworkProvider;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Parser\FinancialAgentPageParser;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Parser\SearchPageResultParser;
+use SkGovernmentParser\Exceptions\InvalidQueryException;
 use SkGovernmentParser\Helper\StringHelper;
 use SkGovernmentParser\ParserConfiguration;
 
@@ -42,7 +44,19 @@ class FinancialAgentRegisterQuery
     {
         $sanetisedNumber = StringHelper::removeWhitespaces($number);
 
-        $agentPageHtml = $this->Provider->getAgentPageHtml($sanetisedNumber);
+        $agentPageHtml = $this->Provider->getAgentPageHtmlByNumber($sanetisedNumber);
+        return FinancialAgentPageParser::parseHtml($agentPageHtml);
+    }
+
+    public function byCin(string $cin): FinancialAgent
+    {
+        $sanetisedCin = StringHelper::removeWhitespaces($cin);
+
+        if (!CompanyIdValidator::isValid($sanetisedCin)) {
+            throw new InvalidQueryException("Inputted CIN [$sanetisedCin] is not valid!");
+        }
+
+        $agentPageHtml = $this->Provider->getAgentPageHtmlByCin($sanetisedCin);
         return FinancialAgentPageParser::parseHtml($agentPageHtml);
     }
 }
