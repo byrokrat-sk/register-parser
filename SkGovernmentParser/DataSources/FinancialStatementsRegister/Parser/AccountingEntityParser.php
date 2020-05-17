@@ -27,6 +27,7 @@ class AccountingEntityParser
             $rawObject->druhVlastnictva,
             $rawObject->konsolidovana,
             $rawObject->idUctovnychZavierok,
+            null,
             $rawObject->idVyrocnychSprav,
             $rawObject->zdrojDat,
             DateHelper::parseYmdDate($rawObject->datumZalozenia),

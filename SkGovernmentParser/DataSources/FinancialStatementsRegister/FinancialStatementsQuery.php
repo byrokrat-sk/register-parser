@@ -6,7 +6,9 @@ namespace SkGovernmentParser\DataSources\FinancialStatementsRegister;
 
 use SkGovernmentParser\DataSources\BusinessRegister\CompanyIdValidator;
 use SkGovernmentParser\DataSources\FinancialStatementsRegister\Model\AccountingEntity;
+use SkGovernmentParser\DataSources\FinancialStatementsRegister\Model\FinancialStatement;
 use SkGovernmentParser\DataSources\FinancialStatementsRegister\Parser\AccountingEntityParser;
+use SkGovernmentParser\DataSources\FinancialStatementsRegister\Parser\FinancialStatementParser;
 use SkGovernmentParser\DataSources\FinancialStatementsRegister\Provider\NetworkProvider;
 use SkGovernmentParser\Exceptions\InvalidQueryException;
 use SkGovernmentParser\Helper\StringHelper;
@@ -30,7 +32,7 @@ class FinancialStatementsQuery
 
     # ~
 
-    public function byIdentificator(string $identificator): AccountingEntity
+    public function byIdentificator(string $identificator, bool $fetchFull = false): AccountingEntity
     {
         $sanetisedIdentificator = StringHelper::removeWhitespaces($identificator);
 
@@ -41,11 +43,20 @@ class FinancialStatementsQuery
         $companyObject = $this->Provider->getSubjectJsonByIdentificator($sanetisedIdentificator);
         $parsedSubject = AccountingEntityParser::parseObject($companyObject);
 
+        if ($fetchFull) {
+            $statements = [];
+            foreach ($parsedSubject->FinancialStatementIds as $statementId) {
+                $statements[] = self::fetchFinancialStatement($statementId);
+            }
+            $parsedSubject->FinancialStatements = $statements;
+        }
+
         return $parsedSubject;
     }
 
-    public function byName()
+    public function fetchFinancialStatement(int $id): FinancialStatement
     {
-
+        $statement = $this->Provider->getFinancialStatementJsonById($id);
+        return FinancialStatementParser::parseObject($statement);
     }
 }
