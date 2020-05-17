@@ -10,7 +10,7 @@ use SkGovernmentParser\Helper\DateHelper;
 
 class Procuration extends Person implements \JsonSerializable, Arrayable
 {
-    public \Datetime $PositionFrom;
+    public ?\Datetime $PositionFrom;
     public ?\DateTime $PositionTo;
 
     public function __construct($BusinessName, $DegreeBefore, $FirstName, $LastName, $DegreeAfter, $Address, $PositionFrom, $PositionTo)

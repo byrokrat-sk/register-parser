@@ -171,7 +171,6 @@ class BusinessSubjectPageParser
                     }
                     $subject->SupervisoryBoard = new VersionableGroup($managers);
                     break;
-                    break;
                 }
                 case 'Ďalšie právne skutočnosti': {
                     $facts = [];
@@ -362,10 +361,15 @@ class BusinessSubjectPageParser
                 $nameLine = array_slice($nameLine, 1); // remove first
             }
 
-            $firstName = $nameLine[0];
-            $lastName = $nameLine[1];
+            if (!empty($nameLine)) {
+                $firstName = $nameLine[0];
+                $nameLine = array_slice($nameLine, 1);
+            }
 
-            $nameLine = array_slice($nameLine, 2); // remove first and last name
+            if (!empty($nameLine)) {
+                $lastName = $nameLine[0];
+                $nameLine = array_slice($nameLine, 1);
+            }
 
             if (!empty($nameLine) && StringHelper::str_contains($nameLine[0], '.')) {
                 $degreeAfter = ltrim($nameLine[0], ', ');
@@ -377,7 +381,7 @@ class BusinessSubjectPageParser
             }
 
             // Edge case fix: (last name + degree after) in the same cell
-            if (StringHelper::str_contains($lastName, ',')) {
+            if (!empty($lastName) && StringHelper::str_contains($lastName, ',')) {
                 $explode = explode(',', $lastName);
                 $lastName = trim($explode[0]);
                 unset($explode[0]);
@@ -640,14 +644,15 @@ class BusinessSubjectPageParser
     private static function parseProcurationRecord(array $record): Procuration
     {
         $parsedName = self::parseNameLine($record['lines'][0]);
+        $lines = array_slice($record['lines'], 1);
 
         $functionDates = (object)['from' => null, 'to' => null];
-        if (count($record['lines']) > 3) {
-            $functionLine = implode(' ', $record['lines'][count($record['lines']) - 1]);
+        $lastIndex = count($lines) - 1;
+        if (StringHelper::str_contains($lines[$lastIndex][0], 'funkcie')) {
+            $functionLine = implode(' ', $lines[$lastIndex]);
             $functionDates = self::parseFunctionLineDates($functionLine);
+            $lines = array_slice($record['lines'], 1);
         }
-
-        $addressArray = array_slice($record['lines'], 1, -1);
 
         $procuration = new Procuration(
             $parsedName->business_name,
@@ -655,7 +660,7 @@ class BusinessSubjectPageParser
             $parsedName->first_name,
             $parsedName->last_name,
             $parsedName->degree_after,
-            self::parseAddressArray($addressArray),
+            self::parseAddressArray($lines),
             $functionDates->from,
             $functionDates->to);
 
