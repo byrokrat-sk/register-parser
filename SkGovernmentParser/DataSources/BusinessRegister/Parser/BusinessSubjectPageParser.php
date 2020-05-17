@@ -627,11 +627,27 @@ class BusinessSubjectPageParser
     {
         $parsedName = self::parseNameLine($record['lines'][0]);
 
-        $amount = self::parseNumber(str_replace('Vklad: ', '', $record['lines'][1][0]));
-        $currency = $record['lines'][1][1];
+        $parts = array_filter($record['lines'][1], function(string $part) {
+            return $part !== '( peňažný vklad )';
+        });
+
+        $currency = null;
+        $amount = null;
         $payed = null;
-        if (count($record['lines'][1]) > 2) {
-            $payed = self::parseNumber(str_replace('Splatené: ', '', $record['lines'][1][2]));
+
+        if (!empty($parts) && StringHelper::str_contains($parts[0], 'Vklad: ')) {
+            $amount = self::parseNumber(str_replace('Vklad: ', '', $parts[0]));
+            $parts = array_slice($parts, 1);
+        }
+
+        if (!empty($parts)) {
+            $currency = $parts[0];
+            $parts = array_slice($parts, 1);
+        }
+
+        if (!empty($parts) && StringHelper::str_contains($parts[0], 'Splatené: ')) {
+            $payed = self::parseNumber(str_replace('Splatené: ', '', $parts[0]));
+            // $parts = array_slice($parts, 1);
         }
 
         $contributor = new Contributor($parsedName->business_name, $parsedName->degree_before, $parsedName->first_name, $parsedName->last_name, $parsedName->degree_after, $currency, $amount, $payed);

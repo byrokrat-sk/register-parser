@@ -10,8 +10,8 @@ use SkGovernmentParser\Helper\DateHelper;
 
 class Contributor extends Person implements \JsonSerializable, Arrayable
 {
-    public string $Currency;
-    public float $Amount;
+    public ?string $Currency;
+    public ?float $Amount;
     public ?float $Payed;
 
     public function __construct($BusinessName, $DegreeBefore, $FirstName, $LastName, $DegreeAfter, $Currency, $Amount, $Payed)
