@@ -26,7 +26,8 @@ class FinancialStatementParser
             DateHelper::parseYmdDate($rawObject->datumPodania),
             $rawObject->zdrojDat,
             $rawObject->typ,
-            $rawObject->idUctovnychVykazov
+            $rawObject->idUctovnychVykazov,
+            null
         );
     }
 }

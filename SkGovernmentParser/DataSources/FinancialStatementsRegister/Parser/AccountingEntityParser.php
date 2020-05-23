@@ -5,6 +5,7 @@ namespace SkGovernmentParser\DataSources\FinancialStatementsRegister\Parser;
 
 
 use SkGovernmentParser\DataSources\FinancialStatementsRegister\Model\AccountingEntity;
+use SkGovernmentParser\DataSources\FinancialStatementsRegister\Model\AccountingEntityAddress;
 use SkGovernmentParser\DataSources\FinancialStatementsRegister\Model\Address;
 use SkGovernmentParser\Helper\DateHelper;
 use SkGovernmentParser\Helper\StringHelper;
@@ -36,14 +37,14 @@ class AccountingEntityParser
         );
     }
 
-    private static function parseAddress(string $rawStreet, string $rawCity, string $rawZip, string $region, string $district): Address
+    private static function parseAddress(string $rawStreet, string $rawCity, string $rawZip, string $region, string $district): AccountingEntityAddress
     {
         $streetExplode = explode(' ', $rawStreet);
         $streetNumber = $streetExplode[count($streetExplode) - 1];
         unset($streetExplode[count($streetExplode) - 1]);
         $streetName = implode(' ', $streetExplode);
 
-        return new Address(
+        return new AccountingEntityAddress(
             $streetName,
             $streetNumber,
             $rawCity,

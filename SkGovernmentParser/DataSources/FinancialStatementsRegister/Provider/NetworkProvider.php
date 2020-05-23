@@ -16,6 +16,10 @@ class NetworkProvider implements FinancialStatementsDataProvider
 {
     public const ACCOUNTING_ENTITIES_BY_IDENTIFICATOR = '/uctovne-jednotky?zmenene-od=2000-01-01&ico={identificator}';
     public const FINANCIAL_STATEMENT_BY_ID = '/uctovna-zavierka/?id={id}';
+    public const FINANCIAL_REPORT_BY_ID = '/uctovny-vykaz/?id={id}';
+    public const FINANCIAL_REPORT_TEMPLATE_BY_ID = '/sablona/?id={id}';
+
+    private static $TemplatesCache = [];
 
     private string $RootUrl;
 
@@ -54,5 +58,37 @@ class NetworkProvider implements FinancialStatementsDataProvider
         }
 
         return StringHelper::parseJson($response->Response);
+    }
+
+    public function getFinancialReportJsonById(int $reportId): object
+    {
+        $reportUrl = ParserConfiguration::$FinancialStatementsUrlRoot.str_replace('{id}', $reportId, self::FINANCIAL_REPORT_BY_ID);
+        $response = CurlHelper::get($reportUrl);
+
+        if (!$response->isOk()) {
+            throw new BadHttpRequestException("Financial statements register returned HTTP status [$response->HttpCode] when fetching financial report [$reportId].");
+        }
+
+        return StringHelper::parseJson($response->Response);
+    }
+
+    public function getFinancialReportTemplateJsonById(int $templateId): object
+    {
+        // Templates can be potentially hit in cache more times in single request
+        if (array_key_exists($templateId, self::$TemplatesCache)) {
+            return self::$TemplatesCache[$templateId];
+        }
+
+        $reportUrl = ParserConfiguration::$FinancialStatementsUrlRoot.str_replace('{id}', $templateId, self::FINANCIAL_REPORT_TEMPLATE_BY_ID);
+        $response = CurlHelper::get($reportUrl);
+
+        if (!$response->isOk()) {
+            throw new BadHttpRequestException("Financial statements register returned HTTP status [$response->HttpCode] when fetching financial report template [$templateId].");
+        }
+
+        $template = StringHelper::parseJson($response->Response);
+        self::$TemplatesCache[$templateId] = $template;
+
+        return $template;
     }
 }
