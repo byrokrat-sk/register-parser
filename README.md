@@ -92,7 +92,7 @@ use \SkGovernmentParser\DataSources\BusinessRegister\BusinessRegisterQuery;
 use \SkGovernmentParser\DataSources\BusinessRegister\CompanyIdValidator;
 use \SkGovernmentParser\Exceptions\EmptySearchResultException;
 
-$cin = $_POST['CIN'];
+$cin = $_POST['cin'];
 
 if (empty($cin) || !CompanyIdValidator::isValid($cin)) {
     return \json_encode([
@@ -109,12 +109,17 @@ try {
     return \json_encode([
         'message' => 'Company found by CIN ' . $cin,
         'company' => $company->toArray(),
-        'status' => 201,
+        'status' => 200,
     ]);
 } catch (EmptySearchResultException $ex) {
     return \json_encode([
         'message' => 'No records for CIN ' . $cin,
         'status' => 404,
+    ]);
+} catch (\Exception $ex) {
+    return \json_encode([
+        'message' => 'Error occurred during searching for CIN ' . $cin,
+        'status' => 505,
     ]);
 }
 ```
