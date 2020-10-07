@@ -151,3 +151,9 @@ This library is licensed under MIT license.
 ## Contributing
 
 I lost motivation for this project (at least for now) but you are welcome to open issues and send pull requests.
+
+## Some things to catch search engines attention (is this working?)
+
+EN: orsr, php, api, zrsr, registeruz, nbs, financial agent, data, library, composer
+
+SK: obchodný register, finančný agent, knižnica , register účtovných úzávierok, vyhľadávanie podľa IČO
