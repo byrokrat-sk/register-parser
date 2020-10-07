@@ -2,6 +2,10 @@
 
 This package provides acces to structured data from web pages of various slovak government sites without structured API access. This package is making requests to web servers of listed pages and parsing structured data from returned HTML code (with exception of financial statements register that is providing JSON REST API).
 
+## Compatibility warning
+
+This library is directly dependant on structure of HTML code for each data source. **Keep in mind that if any of these institutions do change their HTML structure this library will break!** If this happens you are welcome to create an issue or pull request.
+
 ## Use of library
 
 ### Register of financial agents
