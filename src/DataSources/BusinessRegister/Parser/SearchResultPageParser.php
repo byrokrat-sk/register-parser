@@ -6,7 +6,7 @@ namespace SkGovernmentParser\DataSources\BusinessRegister\Parser;
 
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Search\Item;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Search\Listing;
-use \SkGovernmentParser\DataSources\BusinessRegister\Model\Search\Result;
+use \src\DataSources\BusinessRegister\Model\Search\Result;
 use SkGovernmentParser\Helper\DomHelper;
 use SkGovernmentParser\Helper\StringHelper;
 use SkGovernmentParser\ParserConfiguration;

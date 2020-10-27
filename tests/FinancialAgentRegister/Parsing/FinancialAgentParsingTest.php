@@ -2,7 +2,7 @@
 
 
 use PHPUnit\Framework\TestCase;
-use \SkGovernmentParser\DataSources\FinancialAgentRegister\Parser\FinancialAgentPageParser;
+use SkGovernmentParser\DataSources\FinancialAgentRegister\Parser\FinancialAgentPageParser;
 
 
 class FinancialAgentParsingTest extends TestCase
@@ -12,6 +12,9 @@ class FinancialAgentParsingTest extends TestCase
     public const FINGO_SRO = '215683';
     public const FINPORTAL = '119713';
 
+    /**
+     * @covers SkGovernmentParser\DataSources\FinancialAgentRegister\Parser\FinancialAgentPageParser::parseHtml
+     */
     public function testCikesParsing()
     {
         $pageHtml = self::getPageHtmlFileByIdentificator(self::CIKES);
@@ -59,6 +62,9 @@ class FinancialAgentParsingTest extends TestCase
         $this->assertSame('2014-08-06', $subject->Registrations[1]->getTerminationDate()->format('Y-m-d'));
     }
 
+    /**
+     * @covers SkGovernmentParser\DataSources\FinancialAgentRegister\Parser\FinancialAgentPageParser::parseHtml
+     */
     public function testCikesSroParsing()
     {
         $pageHtml = self::getPageHtmlFileByIdentificator(self::CIKES_SRO);
@@ -112,6 +118,9 @@ class FinancialAgentParsingTest extends TestCase
         $this->assertSame('2018-01-09', $subject->Registrations[1]->getTerminationDate()->format('Y-m-d'));
     }
 
+    /**
+     * @covers SkGovernmentParser\DataSources\FinancialAgentRegister\Parser\FinancialAgentPageParser::parseHtml
+     */
     public function testFingoSroParsing()
     {
         $pageHtml = self::getPageHtmlFileByIdentificator(self::FINGO_SRO);
@@ -152,6 +161,9 @@ class FinancialAgentParsingTest extends TestCase
         $this->assertSame(null, $subject->Registrations[0]->SectorRegistrations[0]->LiabilityInsurance[0]->TerminatedAt);
     }
 
+    /**
+     * @covers SkGovernmentParser\DataSources\FinancialAgentRegister\Parser\FinancialAgentPageParser::parseHtml
+     */
     public function testFinportalParsing()
     {
         $pageHtml = self::getPageHtmlFileByIdentificator(self::FINPORTAL);

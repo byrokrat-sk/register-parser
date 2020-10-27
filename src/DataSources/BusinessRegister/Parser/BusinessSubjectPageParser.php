@@ -6,7 +6,7 @@ namespace SkGovernmentParser\DataSources\BusinessRegister\Parser;
 
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Acting;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\BusinessName;
-use \SkGovernmentParser\DataSources\BusinessRegister\Model\BusinessSubject;
+use \src\DataSources\BusinessRegister\Model\BusinessSubject;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\Capital;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\CoasedCompany;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable\CompanyObject;

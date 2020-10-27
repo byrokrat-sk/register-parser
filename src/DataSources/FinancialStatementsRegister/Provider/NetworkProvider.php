@@ -8,9 +8,9 @@ use SkGovernmentParser\Exceptions\BadHttpRequestException;
 use SkGovernmentParser\Exceptions\EmptySearchResultException;
 use SkGovernmentParser\Exceptions\InconclusiveSearchException;
 use SkGovernmentParser\Helper\StringHelper;
-use \SkGovernmentParser\ParserConfiguration;
+use \src\ParserConfiguration;
 use SkGovernmentParser\DataSources\FinancialStatementsRegister\FinancialStatementsDataProvider;
-use \SkGovernmentParser\Helper\CurlHelper;
+use \src\Helper\CurlHelper;
 
 class NetworkProvider implements FinancialStatementsDataProvider
 {
@@ -42,7 +42,7 @@ class NetworkProvider implements FinancialStatementsDataProvider
             throw new InconclusiveSearchException("Multiple accounting entities was returned for identificator [$identificator]!");
         }
 
-        $listResponse = CurlHelper::get(\SkGovernmentParser\ParserConfiguration::$FinancialStatementsUrlRoot.'/uctovna-jednotka/?id='.$idsList[0]);
+        $listResponse = CurlHelper::get(\src\ParserConfiguration::$FinancialStatementsUrlRoot.'/uctovna-jednotka/?id='.$idsList[0]);
         $rawObject = StringHelper::parseJson($listResponse->Response);
 
         return $rawObject;

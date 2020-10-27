@@ -7,7 +7,6 @@ namespace SkGovernmentParser\DataSources\FinancialAgentRegister\PageProvider;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\FinanfialAgentRegisterPageProvider;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Model\Search\Item;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Model\Search\Result;
-use SkGovernmentParser\DataSources\FinancialAgentRegister\Parser\FinancialAgentPageParser;
 use SkGovernmentParser\DataSources\FinancialAgentRegister\Parser\SearchPageResultParser;
 use SkGovernmentParser\Exceptions\BadHttpRequestException;
 use SkGovernmentParser\Exceptions\EmptySearchResultException;

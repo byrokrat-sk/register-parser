@@ -2,9 +2,9 @@
 
 
 use PHPUnit\Framework\TestCase;
-use \SkGovernmentParser\DataSources\TradeRegister\Parser\TradeSubjectPageParser;
-use \SkGovernmentParser\DataSources\TradeRegister\Model\Manager;
-use \SkGovernmentParser\DataSources\TradeRegister\Model\BusinessObject;
+use SkGovernmentParser\DataSources\TradeRegister\Parser\TradeSubjectPageParser;
+use SkGovernmentParser\DataSources\TradeRegister\Model\Manager;
+use SkGovernmentParser\DataSources\TradeRegister\Model\BusinessObject;
 
 
 class TradeSubjectParsingTest extends TestCase
@@ -14,6 +14,9 @@ class TradeSubjectParsingTest extends TestCase
     public const FINGO_SRO = '50230859';
     public const SRSEN = '52390641';
 
+    /**
+     * @covers SkGovernmentParser\DataSources\TradeRegister\Parser\TradeSubjectPageParser::parseHtml
+     */
     public function testSoftecParsing()
     {
         $pageHtml = self::getPageHtmlFileByIdentificator(self::SOFTEC);
@@ -71,6 +74,9 @@ class TradeSubjectParsingTest extends TestCase
         $this->assertObject($subject->BusinessObjects[9], 'Prenájom nehnuteľností spojený s poskytovaním iných než základných služieb spojených s prenájmom', '2014-01-29', $sameEstablishmentsGroup);
     }
 
+    /**
+     * @covers SkGovernmentParser\DataSources\TradeRegister\Parser\TradeSubjectPageParser::parseHtml
+     */
     public function testGombarcikParsing()
     {
         $pageHtml = self::getPageHtmlFileByIdentificator(self::GOMBARCIK);
@@ -102,6 +108,9 @@ class TradeSubjectParsingTest extends TestCase
         $this->assertObject($subject->BusinessObjects[7], 'Prenájom nehnuteľností, pokiaľ sa popri prenájme poskytujú aj iné než základné služby s ním spojené', '2005-02-23', [], null);
     }
 
+    /**
+     * @covers SkGovernmentParser\DataSources\TradeRegister\Parser\TradeSubjectPageParser::parseHtml
+     */
     public function testFingoSroParsing()
     {
         $pageHtml = self::getPageHtmlFileByIdentificator(self::FINGO_SRO);
@@ -137,6 +146,9 @@ class TradeSubjectParsingTest extends TestCase
         $this->assertSame('2020-04-24', $subject->ExtractedAt->format('Y-m-d'));
     }
 
+    /**
+     * @covers SkGovernmentParser\DataSources\TradeRegister\Parser\TradeSubjectPageParser::parseHtml
+     */
     public function testSrsenParsing()
     {
         $pageHtml = self::getPageHtmlFileByIdentificator(self::SRSEN);

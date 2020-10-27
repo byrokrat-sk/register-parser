@@ -22,8 +22,8 @@
         }
     ],
     "autoload": {
-        "psr-4": {
-            "SkGovernmentParser\\": "SkGovernmentParser"
+        "psr-4":{
+            "SkGovernmentParser\\": "src"
         }
     },
     "require-dev": {
