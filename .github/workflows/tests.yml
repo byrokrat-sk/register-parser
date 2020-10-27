@@ -15,9 +15,11 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '7.4'
+          coverage: none
           tools: composer:v2, phpunit:9
+          extensions: mbstring, xml
 
-      - name: Install dependencies
+      - name: Install composer dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
       - name: Test with phpunit

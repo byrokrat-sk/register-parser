@@ -49,8 +49,8 @@ class FinancialAgentPageParser
             ];
 
             foreach ($section as $sectionFields) {
-                $sectionName = $sectionFields[self::TITLE_KEY];
-                if (empty($sectionName) && $sectionFields[0] === 'Zrušený zápis') {
+                $sectionName = $sectionFields[self::TITLE_KEY] ?? null;
+                if (empty($sectionName) && isset($sectionFields[0]) && $sectionFields[0] === 'Zrušený zápis') {
                     continue; // ignore header
                 }
 
@@ -304,7 +304,11 @@ class FinancialAgentPageParser
         $registrationTables = [];
         /** @var \DOMElement $mainChild */
         foreach ($mainElement->childNodes as $mainChild) {
-            if ($mainChild->tagName === 'table' && $mainChild->getAttribute('class') === 'search_table') {
+            if (
+                $mainChild->nodeType === XML_ELEMENT_NODE
+                && $mainChild->tagName === 'table'
+                && $mainChild->getAttribute('class') === 'search_table'
+            ) {
                 $registrationTables[] = $mainChild;
             }
         }
@@ -334,7 +338,7 @@ class FinancialAgentPageParser
                 if (self::isListSection($propertyTitle)) {
                     // List-like parsing
                     $propertyValue = self::parseElementWithList($row->childNodes[1]);
-                } else {
+                } elseif($row->childNodes->length > 1) {
                     // "Plain-text" parsing
                     $propertyValue = trim($row->childNodes[1]->textContent);
                 }

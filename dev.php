@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(-1);
+
 // Global debug function
 function dd($val, $json = false) {
     if ($json) {
@@ -13,4 +15,4 @@ function dd($val, $json = false) {
 
 require_once __DIR__.'/vendor/autoload.php';
 
-echo ("Dev.");
+echo ("Dev.\n");
