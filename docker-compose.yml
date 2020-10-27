@@ -2,7 +2,7 @@ version: '3'
 
 services:
   php:
-    image: php:7.4-cli
+    build: .
     volumes:
       - .:/usr/src/app
     working_dir: /usr/src/app/
