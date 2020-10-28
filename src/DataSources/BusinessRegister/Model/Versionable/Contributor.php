@@ -4,9 +4,9 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable;
 
 
-use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable;
 use SkGovernmentParser\Helper\Arrayable;
 use SkGovernmentParser\Helper\DateHelper;
+
 
 class Contributor extends Person implements \JsonSerializable, Arrayable
 {

@@ -6,7 +6,6 @@ namespace SkGovernmentParser\DataSources\FinancialStatementsRegister\Parser;
 
 use SkGovernmentParser\DataSources\FinancialStatementsRegister\Model\AccountingEntity;
 use SkGovernmentParser\DataSources\FinancialStatementsRegister\Model\AccountingEntityAddress;
-use SkGovernmentParser\DataSources\FinancialStatementsRegister\Model\Address;
 use SkGovernmentParser\Helper\DateHelper;
 use SkGovernmentParser\Helper\StringHelper;
 

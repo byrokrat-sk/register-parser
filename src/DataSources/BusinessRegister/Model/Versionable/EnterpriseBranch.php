@@ -4,11 +4,9 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable;
 
 
-use SkGovernmentParser\DataSources\BusinessRegister\Model\Address;
-use SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable;
 use SkGovernmentParser\DataSources\BusinessRegister\Model\VersionableGroup;
 use SkGovernmentParser\Helper\Arrayable;
-use SkGovernmentParser\Helper\DateHelper;
+
 
 class EnterpriseBranch implements \JsonSerializable, Arrayable
 {

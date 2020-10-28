@@ -4,8 +4,6 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model\Search;
 
 
-use SkGovernmentParser\ParserConfiguration;
-
 class Item implements \JsonSerializable
 {
     public string $BusinessName;

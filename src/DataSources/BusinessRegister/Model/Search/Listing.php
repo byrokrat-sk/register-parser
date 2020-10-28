@@ -4,9 +4,8 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model\Search;
 
 
-use SkGovernmentParser\DataSources\BusinessRegister\BusinessRegisterQuery;
-use SkGovernmentParser\DataSources\BusinessRegister\Model\BusinessSubject;
 use SkGovernmentParser\ParserConfiguration;
+
 
 class Listing
 {

@@ -4,8 +4,8 @@
 namespace SkGovernmentParser\DataSources\BusinessRegister\Model\Versionable;
 
 
-use SkGovernmentParser\Helper\Arrayable;
 use SkGovernmentParser\Helper\DateHelper;
+
 
 class Liquidator extends Person
 {

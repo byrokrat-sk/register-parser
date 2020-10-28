@@ -8,9 +8,9 @@ use SkGovernmentParser\Exceptions\BadHttpRequestException;
 use SkGovernmentParser\Exceptions\EmptySearchResultException;
 use SkGovernmentParser\Exceptions\InconclusiveSearchException;
 use SkGovernmentParser\Helper\StringHelper;
-use \src\ParserConfiguration;
+use SkGovernmentParser\ParserConfiguration;
 use SkGovernmentParser\DataSources\FinancialStatementsRegister\FinancialStatementsDataProvider;
-use \src\Helper\CurlHelper;
+use SkGovernmentParser\Helper\CurlHelper;
 
 class NetworkProvider implements FinancialStatementsDataProvider
 {

@@ -4,7 +4,7 @@ namespace SkGovernmentParser\Helper;
 
 
 use SkGovernmentParser\Exceptions\HttpTimeoutException;
-use \src\ParserConfiguration;
+use SkGovernmentParser\ParserConfiguration;
 
 class CurlHelper
 {
