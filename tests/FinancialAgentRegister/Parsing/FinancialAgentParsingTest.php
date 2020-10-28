@@ -189,13 +189,13 @@ class FinancialAgentParsingTest extends TestCase
         $this->assertSame('Across Wealth Management, o.c.p., a.s.', $subject->Contracts[0]->InstitutionName);
         $this->assertSame('35763388', $subject->Contracts[0]->IdentificationNumber);
         $this->assertSame('2017-10-06', $subject->Contracts[0]->StartedAt->format('Y-m-d'));
-        $this->assertSame(null, $subject->Contracts[0]->EndedAt);
+        $this->assertSame(null, $subject->Contracts[0]->TerminatedAt);
 
         $this->assertSame('Society of Lloyd’s on behalf of the Association of Underwriters konwn as Lloyd’s', $subject->Contracts[57]->InstitutionName);
         $this->assertSame('LEI', $subject->Contracts[57]->IdentificatorType);
         $this->assertSame('213800O2FTUPFGPH3J11', $subject->Contracts[57]->IdentificationNumber);
         $this->assertSame('2016-06-24', $subject->Contracts[57]->StartedAt->format('Y-m-d'));
-        $this->assertSame(null, $subject->Contracts[57]->EndedAt);
+        $this->assertSame(null, $subject->Contracts[57]->TerminatedAt);
 
         $this->assertSame('Martina Klačmanová', $subject->Registrations[0]->SectorRegistrations[0]->Guarantors[0]->Name);
         $this->assertSame('Gazdovský rad', $subject->Registrations[0]->SectorRegistrations[0]->Guarantors[0]->Address->StreetName);
