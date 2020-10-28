@@ -20,7 +20,7 @@ class FinancialAgent implements \JsonSerializable
     public ?Address $BusinessAddress;
     /** @var AgentRegistration[] */
     public ?array $Registrations;
-    /** @var Contract[] */
+    /** @var LiabilityInsurance[] */
     public ?array $Contracts;
 
     public function __construct($LegalForm, $IdentificationNumber, $FirstName, $LastName, $BusinessName, $EmailAddress, $PhoneNumber, $ResidenceAddress, $BusinessAddress, $Registrations, $Contracts)
