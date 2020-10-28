@@ -259,15 +259,16 @@ class FinancialAgentPageParser
                 ];
 
                 $explode = explode('(', $group['title']);
-                $explode2 = explode(':', $explode[1]);
+                $explode2 = explode(':', $explode[count($explode) - 1]);
                 $contract['identification_type'] = trim($explode2[0]);
                 $contract['identification_number'] = trim($explode2[1], ') ');
                 $contract['institution_name'] = trim($explode[0]);
 
                 foreach ($group['sub_lines'] as $subline) {
                     if (StringHelper::str_contains($subline, 'začiatku platnosti')) {
-                        $date = explode(': ', $subline)[1];
-                        $contract['started_at'] = DateHelper::parseDmyDate($date);
+                        $dateExplode = explode(': ', $subline);
+                        // Date can be missing
+                        $contract['started_at'] = isset($dateExplode[1]) ? DateHelper::parseDmyDate($dateExplode[1]) : null;
                     } else if (StringHelper::str_contains($subline, 'začiatku účinnosti')) {
                         $date = explode(': ', $subline)[1];
                         $contract['started_at'] = DateHelper::parseDmyDate($date);
