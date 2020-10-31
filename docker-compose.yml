@@ -6,5 +6,5 @@ services:
     volumes:
       - .:/usr/src/app
     working_dir: /usr/src/app/
-    # command: php ./SkGovernmentParser/dev.php
-    command: tail -f /dev/null
+    command: php ./dev.php
+    # command: tail -f /dev/null
