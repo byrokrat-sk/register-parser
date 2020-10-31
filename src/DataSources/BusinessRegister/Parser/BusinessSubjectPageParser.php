@@ -646,6 +646,11 @@ class BusinessSubjectPageParser
 
         if (!empty($parts)) {
             $currency = $parts[0];
+
+            if (strtoupper($currency) === 'SK') {
+                $currency = 'SKK'; // This should be more correct
+            }
+
             $parts = array_slice($parts, 1);
         }
 
