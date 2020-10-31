@@ -272,7 +272,7 @@ class BusinessSubjectPageParser
     private static function parseManagerArray(array $managerArray): Manager
     {
         // Edge-case fix: second line contains function name so we move it to first line
-        if ($managerArray['lines'][1][0][0] === '-') {
+        if (isset($managerArray['lines'][1][0][0]) && $managerArray['lines'][1][0][0] === '-') {
             // TODO: Implement parsing of function name of institution
             //$managerArray['lines'][0][] = $managerArray['lines'][1][0]; // <- adding function name to name line
 
@@ -286,7 +286,8 @@ class BusinessSubjectPageParser
         $functionDateLine = null;
         // Last line can by: function mandate dates
         if (
-            !is_null($managerArray['lines'][count($managerArray['lines']) - 1])
+            !empty($managerArray['lines'])
+            && !is_null($managerArray['lines'][count($managerArray['lines']) - 1])
             && array_key_exists(0, $managerArray['lines'][count($managerArray['lines']) - 1])
             && StringHelper::str_contains($managerArray['lines'][count($managerArray['lines']) - 1][0], 'funkci')
         ) {
@@ -429,7 +430,7 @@ class BusinessSubjectPageParser
                     $address->StreetNumber = $arrayAddress[0][1];
                 }
                 $address->CityName = $arrayAddress[1][0];
-                $address->Zip = StringHelper::removeWhitespaces($arrayAddress[1][1]);
+                $address->Zip = StringHelper::removeWhitespaces($arrayAddress[1][1] ?? "");
                 break;
             }
         }
@@ -518,7 +519,7 @@ class BusinessSubjectPageParser
         }
 
         // Payed
-        $maybeNumber = self::parseNumber(str_replace('Rozsah splatenia: ', '', $cells[0]));
+        $maybeNumber = self::parseNumber(str_replace('Rozsah splatenia: ', '', $cells[0] ?? ""));
         if (!empty($cells) && !is_null($maybeNumber)) {
             $payed = $maybeNumber;
         }
@@ -832,7 +833,10 @@ class BusinessSubjectPageParser
 
         $bodyTables = [];
         foreach ($bodyElement->childNodes as $bodyElement) {
-            if ($bodyElement->tagName === 'table') {
+            if (
+                $bodyElement->nodeType === XML_ELEMENT_NODE
+                && $bodyElement->tagName === 'table'
+            ) {
                 $bodyTables[] = $bodyElement;
             }
         }
@@ -915,13 +919,18 @@ class BusinessSubjectPageParser
             ];
 
             foreach ($bodyElement->childNodes[0]->childNodes[2]->childNodes as $subtable) {
-                if ($subtable->tagName !== 'table') {
+                if (
+                    $subtable->nodeType !== XML_ELEMENT_NODE
+                    || $subtable->tagName !== 'table'
+                ) {
                     continue; // Fix for weird "Liquidators" empty section/header (CIN: 35738791)
                 }
 
                 // Detect if nested subtable or not
-                $isNestedSubtable = $subtable->childNodes[0]->childNodes[2]->childNodes[0]->tagName === 'table';
-                if ($isNestedSubtable) {
+                if (
+                    $subtable->childNodes[0]->childNodes[2]->childNodes[0]->nodeType === XML_ELEMENT_NODE
+                    && $subtable->childNodes[0]->childNodes[2]->childNodes[0]->tagName === 'table'
+                ) {
                     $title = trim($subtable->childNodes[0]->childNodes[0]->textContent, ': ');
 
                     // There can be multiple subrecords in a record subtable (fuck me)
