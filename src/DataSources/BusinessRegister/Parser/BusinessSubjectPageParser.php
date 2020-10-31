@@ -118,7 +118,7 @@ class BusinessSubjectPageParser
                 case 'Štatutárny orgán': {
                     $managers = [];
                     foreach ($mainTable['records'] as $record) {
-                        if (count($record['lines']) === 1) continue; // ignore headers
+                        if ($record['lines'][0][0] === "konatelia") continue; // ignore headers
                         $managers[] = self::parseManagerArray($record);
                     }
                     $subject->ManagementBody = new VersionableGroup($managers);
@@ -284,8 +284,12 @@ class BusinessSubjectPageParser
         $managerArray['lines'] = array_slice($managerArray['lines'], 1);
 
         $functionDateLine = null;
-        // LAst line can by function mandate dates
-        if (StringHelper::str_contains($managerArray['lines'][count($managerArray['lines']) - 1][0], 'funkci')) {
+        // Last line can by: function mandate dates
+        if (
+            !is_null($managerArray['lines'][count($managerArray['lines']) - 1])
+            && array_key_exists(0, $managerArray['lines'][count($managerArray['lines']) - 1])
+            && StringHelper::str_contains($managerArray['lines'][count($managerArray['lines']) - 1][0], 'funkci')
+        ) {
             $functionDateLine = $managerArray['lines'][count($managerArray['lines']) - 1][0];
             $managerArray['lines'] = array_slice($managerArray['lines'], 0, -1);
         }
