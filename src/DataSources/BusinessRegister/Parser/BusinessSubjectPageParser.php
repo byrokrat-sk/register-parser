@@ -376,7 +376,11 @@ class BusinessSubjectPageParser
                 $nameLine = array_slice($nameLine, 1);
             }
 
-            if (!empty($nameLine) && StringHelper::str_contains($nameLine[0], '.')) {
+            if (
+                !empty($nameLine)
+                && StringHelper::str_contains($nameLine[0], '.')
+                && !StringHelper::str_contains($nameLine[0], '- ') // If it contains "-" then it is manager function name
+            ) {
                 $degreeAfter = ltrim($nameLine[0], ', ');
                 $nameLine = array_slice($nameLine, 1); // remove first
             }
