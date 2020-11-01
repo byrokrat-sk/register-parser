@@ -411,7 +411,7 @@ class BusinessSubjectPageParser
     private static function parseAddressArray(array $arrayAddress): Address
     {
         // Filter out address description line
-        if ($arrayAddress[0][0] === "dlhodobý pobyt na území SR :") {
+        if (isset($arrayAddress[0][0]) && $arrayAddress[0][0] === "dlhodobý pobyt na území SR :") {
             $arrayAddress = array_slice($arrayAddress, 1);
         }
 
