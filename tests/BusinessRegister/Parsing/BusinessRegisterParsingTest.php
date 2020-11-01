@@ -120,4 +120,65 @@ class BusinessRegisterParsingTest extends TestCase
         $this->assertSame("2020-10-29", $subject->UpdatedAt->format("Y-m-d"));
         $this->assertSame("2020-10-31", $subject->ExtractedAt->format("Y-m-d"));
     }
+
+    /** @covers \SkGovernmentParser\DataSources\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
+    public function testLidlParsing() {
+        $htmlCode = file_get_contents(__DIR__."/page/lidl.html");
+        $subject = BusinessSubjectPageParser::parseHtml($htmlCode);
+
+        $this->assertSame("Sr", $subject->Section);
+        $this->assertSame("1160/B", $subject->InsertNumber);
+        $this->assertSame("Okresný súd Bratislava I", $subject->Court);
+
+        $this->assertSame("Lidl Slovenská republika, v.o.s.", $subject->BusinessName->getLatest()->BusinessName);
+
+        $this->assertSame("35793783", $subject->Cin);
+
+        $this->assertSame("Ružinovská 1E, Bratislava 82102", $subject->RegisteredSeat->getAll()[0]->Address->getFull());
+        $this->assertSame("2012-05-01", $subject->RegisteredSeat->getAll()[0]->ValidFrom->format('Y-m-d'));
+
+        $this->assertSame("Veľkosklad potravín, Púchovská", $subject->RegisteredSeat->getAll()[1]->Address->StreetName);
+        $this->assertSame("12", $subject->RegisteredSeat->getAll()[1]->Address->StreetNumber);
+        $this->assertSame("Veľkosklad potravín, Púchovská 12, Nemšová 91441", $subject->RegisteredSeat->getAll()[1]->Address->getFull());
+        $this->assertSame("2012-04-25", $subject->RegisteredSeat->getAll()[1]->ValidFrom->format('Y-m-d'));
+        $this->assertSame("2012-04-30", $subject->RegisteredSeat->getAll()[1]->ValidTo->format('Y-m-d'));
+
+        $this->assertSame("C E Beteiligungs-GmbH", $subject->Partners->getAll()[0]->BusinessName);
+        $this->assertSame("Stiftsbergstr.", $subject->Partners->getAll()[0]->Address->StreetName);
+        $this->assertSame("1", $subject->Partners->getAll()[0]->Address->StreetNumber);
+        $this->assertSame("Neckarsulm", $subject->Partners->getAll()[0]->Address->CityName);
+        $this->assertSame("74172", $subject->Partners->getAll()[0]->Address->Zip);
+        $this->assertSame("Nemecká spolková republika", $subject->Partners->getAll()[0]->Address->Country);
+
+        $this->assertSame("Filip", $subject->ManagementBody->getAll()[17]->FirstName);
+        $this->assertSame("Dvořák", $subject->ManagementBody->getAll()[17]->LastName);
+        $this->assertSame(null, $subject->ManagementBody->getAll()[17]->DegreeAfter);
+        $this->assertSame(null, $subject->ManagementBody->getAll()[17]->FunctionName);
+        $this->assertSame("Popovičky", $subject->ManagementBody->getAll()[17]->Address->StreetName);
+        $this->assertSame("51", $subject->ManagementBody->getAll()[17]->Address->StreetNumber);
+        $this->assertSame("Říčany", $subject->ManagementBody->getAll()[17]->Address->CityName);
+        $this->assertSame("25101", $subject->ManagementBody->getAll()[17]->Address->Zip);
+        $this->assertSame("Česká republika", $subject->ManagementBody->getAll()[17]->Address->Country);
+
+        $this->assertSame("Robert", $subject->ManagementBody->getAll()[18]->FirstName);
+        $this->assertSame("Pitt", $subject->ManagementBody->getAll()[18]->LastName);
+        $this->assertNull($subject->ManagementBody->getAll()[18]->DegreeAfter);
+        $this->assertSame("Konateľ spoločnosti Lidl Holding Slovenská republika, s.r.o.", $subject->ManagementBody->getAll()[18]->FunctionName);
+        $this->assertSame("The Rise", $subject->ManagementBody->getAll()[18]->Address->StreetName);
+        $this->assertSame("6", $subject->ManagementBody->getAll()[18]->Address->StreetNumber);
+        $this->assertSame("Dalkey, Co. Dublin", $subject->ManagementBody->getAll()[18]->Address->CityName);
+        $this->assertNull($subject->ManagementBody->getAll()[18]->Address->Zip);
+        $this->assertSame("Írsko", $subject->ManagementBody->getAll()[18]->Address->Country);
+
+        $this->assertSame("Jan Matthias Christian", $subject->ManagementBody->getAll()[25]->FirstName);
+        $this->assertSame("Siers", $subject->ManagementBody->getAll()[25]->LastName);
+        $this->assertNull($subject->ManagementBody->getAll()[25]->DegreeAfter);
+        $this->assertSame("Konateľ spoločnosti Lidl Holding Slovenská republika, s.r.o.", $subject->ManagementBody->getAll()[25]->FunctionName);
+        $this->assertSame("Pri Kríži", $subject->ManagementBody->getAll()[25]->Address->StreetName);
+        $this->assertSame("5", $subject->ManagementBody->getAll()[25]->Address->StreetNumber);
+        $this->assertSame("Bratislava", $subject->ManagementBody->getAll()[25]->Address->CityName);
+        $this->assertSame("84102", $subject->ManagementBody->getAll()[25]->Address->Zip);
+        $this->assertSame("2002-07-17", $subject->ManagementBody->getAll()[25]->ValidFrom->format("Y-m-d"));
+        $this->assertSame("2005-09-23", $subject->ManagementBody->getAll()[25]->ValidTo->format("Y-m-d"));
+    }
 }
