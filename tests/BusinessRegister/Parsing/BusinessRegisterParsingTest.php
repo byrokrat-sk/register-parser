@@ -248,4 +248,34 @@ class BusinessRegisterParsingTest extends TestCase
         $this->assertSame("CENTAUR, s. r. o.", $subject->CompaniesCoased->getAll()[0]->BusinessName);
         $this->assertSame("Jarošova 1, Bratislava - mestská časť Nové Mesto 83103", $subject->CompaniesCoased->getAll()[0]->Address->getFull());
     }
+
+    /** @covers \SkGovernmentParser\DataSources\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
+    public function testTescoParsing()
+    {
+        $htmlCode = file_get_contents(__DIR__ . "/page/tesco.html");
+        $subject = BusinessSubjectPageParser::parseHtml($htmlCode);
+
+        $this->assertSame("TESCO STORES SR, a.s.", $subject->BusinessName->getLatest()->BusinessName);
+        $this->assertSame("31321828", $subject->Cin);
+        $this->assertSame("Sa", $subject->Section);
+        $this->assertSame("366/B", $subject->InsertNumber);
+        $this->assertSame("Okresný súd Bratislava I", $subject->Court);
+        $this->assertSame("Cesta na Senec 2, Bratislava - mestská časť Ružinov 82104", $subject->RegisteredSeat->getLatest()->Address->getFull());
+        $this->assertSame("Akciová spoločnosť", $subject->LegalForm->getLatest()->Name);
+
+        $this->assertSame(14158, $subject->Shares->getAll()[0]->Quantity);
+        $this->assertSame(33193.918875, $subject->Shares->getAll()[0]->NominalValue);
+        $this->assertSame("EUR", $subject->Shares->getAll()[0]->Currency);
+        $this->assertSame("kmeňové", $subject->Shares->getAll()[0]->Type);
+        $this->assertSame("akcie na meno", $subject->Shares->getAll()[0]->Form);
+        $this->assertSame("listinné", $subject->Shares->getAll()[0]->Shape);
+        $this->assertSame("2009-01-22", $subject->Shares->getAll()[0]->ValidFrom->format("Y-m-d"));
+
+        $this->assertSame("Tesco Holdings B.V.", $subject->Stockholders->getAll()[0]->Name);
+        $this->assertSame("Willemsparkweg", $subject->Stockholders->getAll()[0]->Address->StreetName);
+        $this->assertSame("150 H", $subject->Stockholders->getAll()[0]->Address->StreetNumber);
+        $this->assertSame("Amsterdam", $subject->Stockholders->getAll()[0]->Address->CityName);
+        $this->assertSame("1071HS", $subject->Stockholders->getAll()[0]->Address->Zip);
+        $this->assertSame("Holandské kráľovstvo", $subject->Stockholders->getAll()[0]->Address->Country);
+    }
 }
