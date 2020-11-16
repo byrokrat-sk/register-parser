@@ -11,8 +11,9 @@ use SkGovernmentParser\DataSources\BusinessRegister\Parser\BusinessSubjectPagePa
 class BusinessRegisterParsingTest extends TestCase
 {
     /** @covers \SkGovernmentParser\DataSources\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
-    public function testEsetParsing() {
-        $htmlCode = file_get_contents(__DIR__."/page/eset.html");
+    public function testEsetParsing()
+    {
+        $htmlCode = file_get_contents(__DIR__ . "/page/eset.html");
         $subject = BusinessSubjectPageParser::parseHtml($htmlCode);
 
         $this->assertSame("Sro", $subject->Section);
@@ -122,8 +123,9 @@ class BusinessRegisterParsingTest extends TestCase
     }
 
     /** @covers \SkGovernmentParser\DataSources\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
-    public function testLidlParsing() {
-        $htmlCode = file_get_contents(__DIR__."/page/lidl.html");
+    public function testLidlParsing()
+    {
+        $htmlCode = file_get_contents(__DIR__ . "/page/lidl.html");
         $subject = BusinessSubjectPageParser::parseHtml($htmlCode);
 
         $this->assertSame("Sr", $subject->Section);
@@ -180,5 +182,70 @@ class BusinessRegisterParsingTest extends TestCase
         $this->assertSame("84102", $subject->ManagementBody->getAll()[25]->Address->Zip);
         $this->assertSame("2002-07-17", $subject->ManagementBody->getAll()[25]->ValidFrom->format("Y-m-d"));
         $this->assertSame("2005-09-23", $subject->ManagementBody->getAll()[25]->ValidTo->format("Y-m-d"));
+    }
+
+    /** @covers \SkGovernmentParser\DataSources\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
+    public function testSoftecParsing()
+    {
+        $htmlCode = file_get_contents(__DIR__ . "/page/softec.html");
+        $subject = BusinessSubjectPageParser::parseHtml($htmlCode);
+
+        $this->assertSame("SOFTEC, spoločnosť s ručením obmedzeným skrátene: SOFTEC, spol. s r.o.", $subject->BusinessName->getLatest()->BusinessName);
+        $this->assertSame("00683540", $subject->Cin);
+        $this->assertSame("Sro", $subject->Section);
+        $this->assertSame("140/B", $subject->InsertNumber);
+        $this->assertSame("Okresný súd Bratislava I", $subject->Court);
+        $this->assertSame("Jarošova 1, Bratislava 83103", $subject->RegisteredSeat->getLatest()->Address->getFull());
+
+        $this->assertSame("Ing.", $subject->MemberContributions->getAll()[0]->DegreeBefore);
+        $this->assertSame("Martin", $subject->MemberContributions->getAll()[0]->FirstName);
+        $this->assertSame("Melišek", $subject->MemberContributions->getAll()[0]->LastName);
+        $this->assertNull($subject->MemberContributions->getAll()[0]->DegreeAfter);
+        $this->assertSame(11712.0, $subject->MemberContributions->getAll()[0]->Amount);
+        $this->assertSame(11712.0, $subject->MemberContributions->getAll()[0]->Payed);
+        $this->assertSame("EUR", $subject->MemberContributions->getAll()[0]->Currency);
+
+        $this->assertSame("Ing.", $subject->MemberContributions->getAll()[4]->DegreeBefore);
+        $this->assertSame("Anton", $subject->MemberContributions->getAll()[4]->FirstName);
+        $this->assertSame("Scheber", $subject->MemberContributions->getAll()[4]->LastName);
+        $this->assertSame("CSc.", $subject->MemberContributions->getAll()[4]->DegreeAfter);
+        $this->assertSame(13908.0, $subject->MemberContributions->getAll()[4]->Amount);
+        $this->assertSame(13908.0, $subject->MemberContributions->getAll()[4]->Payed);
+        $this->assertSame("EUR", $subject->MemberContributions->getAll()[4]->Currency);
+
+        $this->assertSame("Ing.", $subject->MemberContributions->getAll()[5]->DegreeBefore);
+        $this->assertSame("Peter", $subject->MemberContributions->getAll()[5]->FirstName);
+        $this->assertSame("Morávek", $subject->MemberContributions->getAll()[5]->LastName);
+        $this->assertNull($subject->MemberContributions->getAll()[5]->DegreeAfter);
+        $this->assertNull($subject->MemberContributions->getAll()[5]->Amount);
+        $this->assertNull($subject->MemberContributions->getAll()[5]->Payed);
+        $this->assertNull($subject->MemberContributions->getAll()[5]->Currency);
+
+        $this->assertSame("Ing.", $subject->MemberContributions->getAll()[13]->DegreeBefore);
+        $this->assertSame("Anton", $subject->MemberContributions->getAll()[13]->FirstName);
+        $this->assertSame("Scheber", $subject->MemberContributions->getAll()[13]->LastName);
+        $this->assertSame("CSc.", $subject->MemberContributions->getAll()[13]->DegreeAfter);
+        $this->assertSame(500000.0, $subject->MemberContributions->getAll()[13]->Amount);
+        $this->assertSame(500000.0, $subject->MemberContributions->getAll()[13]->Payed);
+        $this->assertSame("SKK", $subject->MemberContributions->getAll()[13]->Currency);
+
+        $this->assertSame("Ing.", $subject->ManagementBody->getAll()[0]->DegreeBefore);
+        $this->assertSame("Karol", $subject->ManagementBody->getAll()[0]->FirstName);
+        $this->assertSame("Fischer", $subject->ManagementBody->getAll()[0]->LastName);
+        $this->assertNull($subject->ManagementBody->getAll()[0]->DegreeAfter);
+
+        $this->assertSame("Ing. Mgr.", $subject->Procuration->getAll()[0]->DegreeBefore);
+        $this->assertSame("Igor", $subject->Procuration->getAll()[0]->FirstName);
+        $this->assertSame("Baník", $subject->Procuration->getAll()[0]->LastName);
+        $this->assertNull($subject->Procuration->getAll()[0]->DegreeAfter);
+
+        $this->assertSame(73200.0, $subject->Capital->getAll()[0]->Total);
+        $this->assertSame(73200.0, $subject->Capital->getAll()[0]->Payed);
+        $this->assertSame("EUR", $subject->Capital->getAll()[0]->Currency);
+
+        $this->assertSame("Spoločnosť je právnym nástupcom v dôsledku zlúčenia", $subject->MergerOrDivision->getAll()[0]->Text);
+
+        $this->assertSame("CENTAUR, s. r. o.", $subject->CompaniesCoased->getAll()[0]->BusinessName);
+        $this->assertSame("Jarošova 1, Bratislava - mestská časť Nové Mesto 83103", $subject->CompaniesCoased->getAll()[0]->Address->getFull());
     }
 }
