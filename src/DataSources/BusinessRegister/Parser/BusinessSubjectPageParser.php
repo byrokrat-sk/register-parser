@@ -118,7 +118,10 @@ class BusinessSubjectPageParser
                 case 'Štatutárny orgán': {
                     $managers = [];
                     foreach ($mainTable['records'] as $record) {
-                        if ($record['lines'][0][0] === "konatelia") continue; // ignore headers
+                        if ($record['lines'][0][0] === "konatelia" || $record['lines'][0][0] === "konateľ") {
+                            continue; // ignore headers
+                        }
+
                         $managers[] = self::parseManagerArray($record);
                     }
                     $subject->ManagementBody = new VersionableGroup($managers);
