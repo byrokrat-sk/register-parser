@@ -640,7 +640,7 @@ class BusinessSubjectPageParser
     private static function parseContributorRecord(array $record): Contributor
     {
         $parsedName = self::parseNameLine($record['lines'][0]);
-        $parts = $record['lines'][1];
+        $parts = $record['lines'][1] ?? [];
 
         $currency = null;
         $amount = null;
