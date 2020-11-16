@@ -278,4 +278,35 @@ class BusinessRegisterParsingTest extends TestCase
         $this->assertSame("1071HS", $subject->Stockholders->getAll()[0]->Address->Zip);
         $this->assertSame("Holandské kráľovstvo", $subject->Stockholders->getAll()[0]->Address->Country);
     }
+
+    /** @covers \SkGovernmentParser\DataSources\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
+    public function testGoogleParsing()
+    {
+        $htmlCode = file_get_contents(__DIR__ . "/page/google.html");
+        $subject = BusinessSubjectPageParser::parseHtml($htmlCode);
+
+        $this->assertSame("Google Slovakia, s. r. o.", $subject->BusinessName->getLatest()->BusinessName);
+        $this->assertSame("45947597", $subject->Cin);
+        $this->assertSame("Sro", $subject->Section);
+        $this->assertSame("69098/B", $subject->InsertNumber);
+        $this->assertSame("Okresný súd Bratislava I", $subject->Court);
+        $this->assertSame("Karadžičova 8/A, Bratislava 82108", $subject->RegisteredSeat->getLatest()->Address->getFull());
+        $this->assertSame("Spoločnosť s ručením obmedzeným", $subject->LegalForm->getLatest()->Name);
+
+        $this->assertSame("Google International LLC", $subject->Partners->getAll()[0]->BusinessName);
+        $this->assertSame("Little Falls Drive", $subject->Partners->getAll()[0]->Address->StreetName);
+        $this->assertSame("251", $subject->Partners->getAll()[0]->Address->StreetNumber);
+        $this->assertSame("Wilmington", $subject->Partners->getAll()[0]->Address->CityName);
+        $this->assertSame("DE19808", $subject->Partners->getAll()[0]->Address->Zip);
+        $this->assertSame("Spojené štáty americké", $subject->Partners->getAll()[0]->Address->Country);
+
+        $this->assertSame("John Thomas", $subject->ManagementBody->getAll()[0]->FirstName);
+        $this->assertSame("Herlihy", $subject->ManagementBody->getAll()[0]->LastName);
+        $this->assertSame("Delbrook Manor, Ballinteer", $subject->ManagementBody->getAll()[0]->Address->StreetName);
+        $this->assertSame("15", $subject->ManagementBody->getAll()[0]->Address->StreetNumber);
+        $this->assertSame("Írsko", $subject->ManagementBody->getAll()[0]->Address->Country);
+        // TODO: Is this correct?
+        $this->assertSame("Dublin 16", $subject->ManagementBody->getAll()[0]->Address->CityName);
+        $this->assertNull($subject->ManagementBody->getAll()[0]->Address->Zip);
+    }
 }
