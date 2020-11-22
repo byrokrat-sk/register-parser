@@ -26,11 +26,15 @@ Currently, supported institutions are:
 - Financial Agent Register: [regfap.nbs.sk](https://regfap.nbs.sk/search.php); [registre.nbs.sk](https://registre.nbs.sk/odb-sposobilost/osoby)
 - Financial Statements Register: http://www.registeruz.sk/cruz-public/domain/accountingentity/simplesearch
 
-## Use of library
+## Documentation
+
+You can find more extensive documentation on: https://mrsrsen.github.io/sk-government-parser/
+
+### Some simple examples
 
 All examples are pure PHP with Composer.
 
-### Register of financial agents
+#### Register of financial agents
 
 ```php
 <?php
@@ -58,7 +62,7 @@ Podregister prijímania vkladov
 2017-02-16
 ```
 
-### Business register
+#### Business register
 
 ```php
 <?php
@@ -83,7 +87,7 @@ TESCO computers, s.r.o.
 106220.540397 EUR
 ```
 
-### Trade register
+#### Trade register
 
 ```php
 <?php
@@ -103,7 +107,7 @@ Lidl Holding Slovenská republika, s.r.o.
 Kúpa tovaru za účelom jeho predaja konečnému spotrebiteľovi (maloobchod)
 ```
 
-## Example: Use library for your own REST API
+#### Use library for your own REST API
 
 ```php
 <?php
