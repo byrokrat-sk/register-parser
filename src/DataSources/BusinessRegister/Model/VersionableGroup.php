@@ -21,6 +21,11 @@ class VersionableGroup implements \JsonSerializable, Arrayable
         return empty($this->Items);
     }
 
+    public function getLatest(): ?Versionable
+    {
+        return $this->Items[0] ?? null;
+    }
+
     /** @returns Versionable[] */
     public function getValid(\DateTime $now = null): array
     {

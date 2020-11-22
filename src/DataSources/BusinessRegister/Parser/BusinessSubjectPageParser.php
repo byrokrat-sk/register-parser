@@ -118,7 +118,10 @@ class BusinessSubjectPageParser
                 case 'Štatutárny orgán': {
                     $managers = [];
                     foreach ($mainTable['records'] as $record) {
-                        if (count($record['lines']) === 1) continue; // ignore headers
+                        if ($record['lines'][0][0] === "konatelia" || $record['lines'][0][0] === "konateľ") {
+                            continue; // ignore headers
+                        }
+
                         $managers[] = self::parseManagerArray($record);
                     }
                     $subject->ManagementBody = new VersionableGroup($managers);
@@ -272,7 +275,7 @@ class BusinessSubjectPageParser
     private static function parseManagerArray(array $managerArray): Manager
     {
         // Edge-case fix: second line contains function name so we move it to first line
-        if ($managerArray['lines'][1][0][0] === '-') {
+        if (isset($managerArray['lines'][1][0][0]) && $managerArray['lines'][1][0][0] === '-') {
             // TODO: Implement parsing of function name of institution
             //$managerArray['lines'][0][] = $managerArray['lines'][1][0]; // <- adding function name to name line
 
@@ -284,8 +287,13 @@ class BusinessSubjectPageParser
         $managerArray['lines'] = array_slice($managerArray['lines'], 1);
 
         $functionDateLine = null;
-        // LAst line can by function mandate dates
-        if (StringHelper::str_contains($managerArray['lines'][count($managerArray['lines']) - 1][0], 'funkci')) {
+        // Last line can by: function mandate dates
+        if (
+            !empty($managerArray['lines'])
+            && !is_null($managerArray['lines'][count($managerArray['lines']) - 1])
+            && array_key_exists(0, $managerArray['lines'][count($managerArray['lines']) - 1])
+            && StringHelper::str_contains($managerArray['lines'][count($managerArray['lines']) - 1][0], 'funkci')
+        ) {
             $functionDateLine = $managerArray['lines'][count($managerArray['lines']) - 1][0];
             $managerArray['lines'] = array_slice($managerArray['lines'], 0, -1);
         }
@@ -371,7 +379,11 @@ class BusinessSubjectPageParser
                 $nameLine = array_slice($nameLine, 1);
             }
 
-            if (!empty($nameLine) && StringHelper::str_contains($nameLine[0], '.')) {
+            if (
+                !empty($nameLine)
+                && StringHelper::str_contains($nameLine[0], '.')
+                && !StringHelper::str_contains($nameLine[0], '- ') // If it contains "-" then it is manager function name
+            ) {
                 $degreeAfter = ltrim($nameLine[0], ', ');
                 $nameLine = array_slice($nameLine, 1); // remove first
             }
@@ -401,6 +413,11 @@ class BusinessSubjectPageParser
 
     private static function parseAddressArray(array $arrayAddress): Address
     {
+        // Filter out address description line
+        if (isset($arrayAddress[0][0]) && $arrayAddress[0][0] === "dlhodobý pobyt na území SR :") {
+            $arrayAddress = array_slice($arrayAddress, 1);
+        }
+
         $linesCount = count($arrayAddress);
         $address = new Address();
 
@@ -425,7 +442,7 @@ class BusinessSubjectPageParser
                     $address->StreetNumber = $arrayAddress[0][1];
                 }
                 $address->CityName = $arrayAddress[1][0];
-                $address->Zip = StringHelper::removeWhitespaces($arrayAddress[1][1]);
+                $address->Zip = StringHelper::removeWhitespaces($arrayAddress[1][1] ?? "");
                 break;
             }
         }
@@ -514,7 +531,7 @@ class BusinessSubjectPageParser
         }
 
         // Payed
-        $maybeNumber = self::parseNumber(str_replace('Rozsah splatenia: ', '', $cells[0]));
+        $maybeNumber = self::parseNumber(str_replace('Rozsah splatenia: ', '', $cells[0] ?? ""));
         if (!empty($cells) && !is_null($maybeNumber)) {
             $payed = $maybeNumber;
         }
@@ -626,10 +643,7 @@ class BusinessSubjectPageParser
     private static function parseContributorRecord(array $record): Contributor
     {
         $parsedName = self::parseNameLine($record['lines'][0]);
-
-        $parts = array_filter($record['lines'][1], function(string $part) {
-            return $part !== '( peňažný vklad )';
-        });
+        $parts = $record['lines'][1] ?? [];
 
         $currency = null;
         $amount = null;
@@ -642,6 +656,11 @@ class BusinessSubjectPageParser
 
         if (!empty($parts)) {
             $currency = $parts[0];
+
+            if (strtoupper($currency) === 'SK') {
+                $currency = 'SKK'; // This should be more correct
+            }
+
             $parts = array_slice($parts, 1);
         }
 
@@ -823,7 +842,10 @@ class BusinessSubjectPageParser
 
         $bodyTables = [];
         foreach ($bodyElement->childNodes as $bodyElement) {
-            if ($bodyElement->tagName === 'table') {
+            if (
+                $bodyElement->nodeType === XML_ELEMENT_NODE
+                && $bodyElement->tagName === 'table'
+            ) {
                 $bodyTables[] = $bodyElement;
             }
         }
@@ -906,13 +928,18 @@ class BusinessSubjectPageParser
             ];
 
             foreach ($bodyElement->childNodes[0]->childNodes[2]->childNodes as $subtable) {
-                if ($subtable->tagName !== 'table') {
+                if (
+                    $subtable->nodeType !== XML_ELEMENT_NODE
+                    || $subtable->tagName !== 'table'
+                ) {
                     continue; // Fix for weird "Liquidators" empty section/header (CIN: 35738791)
                 }
 
                 // Detect if nested subtable or not
-                $isNestedSubtable = $subtable->childNodes[0]->childNodes[2]->childNodes[0]->tagName === 'table';
-                if ($isNestedSubtable) {
+                if (
+                    $subtable->childNodes[0]->childNodes[2]->childNodes[0]->nodeType === XML_ELEMENT_NODE
+                    && $subtable->childNodes[0]->childNodes[2]->childNodes[0]->tagName === 'table'
+                ) {
                     $title = trim($subtable->childNodes[0]->childNodes[0]->textContent, ': ');
 
                     // There can be multiple subrecords in a record subtable (fuck me)
