@@ -1,12 +1,34 @@
 # srsen/sk-government-parser
 
-This package provides acces to structured data from web pages of various slovak government sites without structured API access. This package is making requests to web servers of listed pages and parsing structured data from returned HTML code (with exception of financial statements register that is providing JSON REST API).
+This package provides access to structured data from web pages of various slovak government sites without structured API access. This package is making requests to web servers of listed pages and parsing structured data from returned HTML code (with exception to financial statements register that is providing JSON REST API).
 
 ## Compatibility warning
 
-This library is directly dependant on structure of HTML code for each data source. **Keep in mind that if any of these institutions do change their HTML structure this library will break!** If this happens you are welcome to create an issue or pull request.
+This library is directly dependent on structure of HTML code for each data source. **Keep in mind that if any of these institutions do change their HTML structures this library will break!** If this happens you are welcome to create an issue or pull request.
+
+
+## Install with composer
+
+You can install this library with composer:
+
+```shell script
+composer require srsen/sk-government-parser
+```
+
+## Sources of data
+
+This library is fetching data in real-time directly from websites of governments institutions.
+
+Currently, supported institutions are:
+
+- Business Register: http://orsr.sk/Default.asp?lan=en
+- Trade Register: http://www.zrsr.sk/default.aspx?LANG=en
+- Financial Agent Register: [regfap.nbs.sk](https://regfap.nbs.sk/search.php); [registre.nbs.sk](https://registre.nbs.sk/odb-sposobilost/osoby)
+- Financial Statements Register: http://www.registeruz.sk/cruz-public/domain/accountingentity/simplesearch
 
 ## Use of library
+
+All examples are pure PHP with Composer.
 
 ### Register of financial agents
 
@@ -81,7 +103,7 @@ Lidl Holding Slovenská republika, s.r.o.
 Kúpa tovaru za účelom jeho predaja konečnému spotrebiteľovi (maloobchod)
 ```
 
-## Example: use for API
+## Example: Use library for your own REST API
 
 ```php
 <?php
@@ -134,14 +156,9 @@ bash ./test.sh
 
 For now tests are just for parsing logic.
 
-## Sources of data
+## Future plans
 
-- Business Register: http://orsr.sk/Default.asp?lan=en
-- Trade Register: http://www.zrsr.sk/default.aspx?LANG=en
-- Financial Agent Register: [regfap.nbs.sk](https://regfap.nbs.sk/search.php); [registre.nbs.sk](https://registre.nbs.sk/odb-sposobilost/osoby)
-- Financial Statements Register: http://www.registeruz.sk/cruz-public/domain/accountingentity/simplesearch
-
-### Planned/possible future data sources
+### Possible future data sources
 
 - https://www.socpoist.sk/zoznam-dlznikov-emw/487s
 - https://www.financnasprava.sk/sk/elektronicke-sluzby/verejne-sluzby/zoznamy/exporty-z-online-informacnych
@@ -155,13 +172,13 @@ For now tests are just for parsing logic.
 
 ## License
 
-This library is licensed under MIT license.
+This library is licensed under MIT license. See *LICENSE* file for more information.
 
 ## Contributing
 
-I lost motivation for this project (at least for now) but you are welcome to open issues and send pull requests.
+I don't have enough motivation for some crazy rewrites of this library, or some big new features, but you are welcome to open issues and send pull requests for contributing to this library.
 
-## Some things to catch search engines attention (is this working?)
+## Some things to catch search engines attention (is this even working?)
 
 EN: orsr, php, api, zrsr, registeruz, nbs, financial agent, data, library, composer
 
