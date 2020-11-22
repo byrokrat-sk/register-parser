@@ -309,4 +309,43 @@ class BusinessRegisterParsingTest extends TestCase
         $this->assertSame("Dublin 16", $subject->ManagementBody->getAll()[0]->Address->CityName);
         $this->assertNull($subject->ManagementBody->getAll()[0]->Address->Zip);
     }
+
+    /** @covers \SkGovernmentParser\DataSources\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
+    public function testHbpParsing()
+    {
+        $htmlCode = file_get_contents(__DIR__ . "/page/hbp.html");
+        $subject = BusinessSubjectPageParser::parseHtml($htmlCode);
+
+        $this->assertSame("Hornonitrianske bane Prievidza, a.s. v skratke HBP, a.s.", $subject->BusinessName->getLatest()->BusinessName);
+        $this->assertSame("36005622", $subject->Cin);
+        $this->assertSame("Sa", $subject->Section);
+        $this->assertSame("318/R", $subject->InsertNumber);
+        $this->assertSame("Okresný súd Trenčín", $subject->Court);
+        $this->assertSame("Matice slovenskej 10, Prievidza 97101", $subject->RegisteredSeat->getLatest()->Address->getFull());
+        $this->assertSame("Akciová spoločnosť", $subject->LegalForm->getLatest()->Name);
+
+        $this->assertSame("Hornonitrianske bane Prievidza, a. s. v skratke HBP, a. s. Hlavná banská záchranná stanica, odštepný závod", $subject->EnterpriseBranches->getAll()[0]->BusinessName->getAll()[0]->BusinessName);
+        $this->assertSame("2015-06-30", $subject->EnterpriseBranches->getAll()[0]->RegisteredSeat->getAll()[0]->ValidFrom->format('Y-m-d'));
+        $this->assertSame("Priemyselná", $subject->EnterpriseBranches->getAll()[0]->RegisteredSeat->getAll()[0]->Address->StreetName);
+        $this->assertSame("3/66", $subject->EnterpriseBranches->getAll()[0]->RegisteredSeat->getAll()[0]->Address->StreetNumber);
+        $this->assertSame("Prievidza", $subject->EnterpriseBranches->getAll()[0]->RegisteredSeat->getAll()[0]->Address->CityName);
+        $this->assertSame("97101", $subject->EnterpriseBranches->getAll()[0]->RegisteredSeat->getAll()[0]->Address->Zip);
+        $this->assertSame("Slovensko", $subject->EnterpriseBranches->getAll()[0]->RegisteredSeat->getAll()[0]->Address->Country);
+
+        $this->assertSame("Ing.", $subject->EnterpriseBranches->getAll()[0]->Manager->getAll()[0]->DegreeBefore);
+        $this->assertSame("Stanislav", $subject->EnterpriseBranches->getAll()[0]->Manager->getAll()[0]->FirstName);
+        $this->assertSame("Paulík", $subject->EnterpriseBranches->getAll()[0]->Manager->getAll()[0]->LastName);
+        $this->assertNull($subject->EnterpriseBranches->getAll()[0]->Manager->getAll()[0]->DegreeAfter);
+        $this->assertNull($subject->EnterpriseBranches->getAll()[0]->Manager->getAll()[0]->Address->StreetName);
+        $this->assertSame("485", $subject->EnterpriseBranches->getAll()[0]->Manager->getAll()[0]->Address->StreetNumber);
+        $this->assertSame("Chrenovec - Brusno", $subject->EnterpriseBranches->getAll()[0]->Manager->getAll()[0]->Address->CityName);
+        $this->assertSame("97232", $subject->EnterpriseBranches->getAll()[0]->Manager->getAll()[0]->Address->Zip);
+        $this->assertSame("Slovensko", $subject->EnterpriseBranches->getAll()[0]->Manager->getAll()[0]->Address->Country);
+
+        $this->assertSame("Hornonitrianske bane Prievidza, a.s. v skratke HBP, a.s. Banská mechanizácia a elektrifikácia,  o.z.", $subject->EnterpriseBranches->getAll()[1]->BusinessName->getAll()[0]->BusinessName);
+        $this->assertSame("kovoobrábanie", $subject->EnterpriseBranches->getAll()[1]->BusinessScope->getAll()[0]->Title);
+        $this->assertSame("2020-02-01", $subject->EnterpriseBranches->getAll()[1]->BusinessScope->getAll()[0]->ValidFrom->format('Y-m-d'));
+        $this->assertSame("výroba stavebných a banských strojov", $subject->EnterpriseBranches->getAll()[1]->BusinessScope->getAll()[1]->Title);
+        $this->assertSame("2020-02-01", $subject->EnterpriseBranches->getAll()[1]->BusinessScope->getAll()[1]->ValidFrom->format('Y-m-d'));
+    }
 }
