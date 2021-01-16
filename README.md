@@ -12,12 +12,12 @@ This library is directly dependant on structure of HTML code for each data sourc
 
 ```php
 <?php
-require_once __DIR__.'/vendor/autoload.php';
+require_once './vendor/autoload.php';
 
-use \SkGovernmentParser\DataSources\FinancialAgentRegister\FinancialAgentRegisterQuery;
+use \SkGovernmentParser\RegisterFactory;
 
 // Allianz - Slovenská poisťovňa
-$allianz = FinancialAgentRegisterQuery::network()->byNumber('195970');
+$allianz = RegisterFactory::financialAgentRegister()->byNumber('195970');
 
 echo($allianz->BusinessName . "\n");
 echo($allianz->IdentificationNumber . "\n");
@@ -40,17 +40,19 @@ Podregister prijímania vkladov
 
 ```php
 <?php
-require_once __DIR__.'/vendor/autoload.php';
+require_once './vendor/autoload.php';
 
-use \SkGovernmentParser\DataSources\BusinessRegister\BusinessRegisterQuery;
+use \SkGovernmentParser\RegisterFactory;
 
-$tescoSearch = BusinessRegisterQuery::network()->byName("Tesco");
-$tescoListing = $tescoSearch->first()->FullListing;
-$tesco = BusinessRegisterQuery::network()->byListing($tescoListing);
+$registerQuery = RegisterFactory::businessRegister();
 
-echo($tesco->BusinessName->getAll()[0]->BusinessName . "\n");
-echo($tesco->BusinessName->getAll()[0]->ValidFrom->format('Y-m-d') . "\n");
-echo($tesco->Capital->getAll()[0]->Total . ' ' . $tesco->Capital->getAll()[0]->Currency . "\n");
+$searchResult = $registerQuery->byName("Tesco");
+$searchListing = $searchResult->first()->FullListing;
+$company = $registerQuery->byListing($searchListing);
+
+echo($company->BusinessName->getAll()[0]->BusinessName . "\n");
+echo($company->BusinessName->getAll()[0]->ValidFrom->format('Y-m-d') . "\n");
+echo($company->Capital->getAll()[0]->Total . ' ' . $company->Capital->getAll()[0]->Currency . "\n");
 ```
 
 with output:
@@ -65,13 +67,13 @@ TESCO computers, s.r.o.
 
 ```php
 <?php
-require_once __DIR__.'/vendor/autoload.php';
+require_once './vendor/autoload.php';
 
-use \SkGovernmentParser\DataSources\TradeRegister\TradeRegisterQuery;
+use \SkGovernmentParser\RegisterFactory;
 
-$lidl = TradeRegisterQuery::network()->byIdentificator('35790563');
-echo($lidl->BusinessName . "\n");
-echo($lidl->BusinessObjects[0]->Name . "\n");
+$company = RegisterFactory::tradeRegister()->byIdentificator('35790563');
+echo($company->BusinessName . "\n");
+echo($company->BusinessObjects[0]->Name . "\n");
 ```
 
 with output:
@@ -81,16 +83,16 @@ Lidl Holding Slovenská republika, s.r.o.
 Kúpa tovaru za účelom jeho predaja konečnému spotrebiteľovi (maloobchod)
 ```
 
-## Example: use for API
+## Example: make yours own API end-point
 
 ```php
 <?php
 
-require_once __DIR__.'/vendor/autoload.php';
+require_once './vendor/autoload.php';
 
-use \SkGovernmentParser\DataSources\BusinessRegister\BusinessRegisterQuery;
-use \SkGovernmentParser\DataSources\BusinessRegister\CompanyIdValidator;
 use \SkGovernmentParser\Exception\EmptySearchResultException;
+use \SkGovernmentParser\BusinessRegister\CompanyIdValidator;
+use \SkGovernmentParser\RegisterFactory;
 
 $cin = $_POST['cin'];
 
@@ -102,9 +104,8 @@ if (empty($cin) || !CompanyIdValidator::isValid($cin)) {
 }
 
 try {
-    $companySearch = BusinessRegisterQuery::network()->byIdentificator($cin);
-    $companyListing = $companySearch->first()->FullListing;
-    $company = BusinessRegisterQuery::network()->byListing($companyListing);
+    $registerQuery = RegisterFactory::businessRegister();
+    $company = $registerQuery->byIdentifier($cin);
     
     return \json_encode([
         'message' => 'Company found by CIN ' . $cin,
