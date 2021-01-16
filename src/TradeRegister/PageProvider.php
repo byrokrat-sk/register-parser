@@ -6,7 +6,7 @@ namespace SkGovernmentParser\TradeRegister;
 
 interface PageProvider
 {
-    public function getIdentificatorSearchPageHtml(string $identificator): string;
+    public function getIdentifierSearchPageHtml(string $identificator): string;
 
     public function getBusinessSubjectSearchPageHtml(?string $businessName = null, ?string $municipality = null, ?string $streetName = null, ?string $streetNumber = null, ?string $disctrictId = null): string;
 

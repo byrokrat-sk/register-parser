@@ -30,7 +30,7 @@ class RegisterQuery
 
     # ~
 
-    public function byIdentificator(string $query): TradeSubject
+    public function byIdentifier(string $query): TradeSubject
     {
         $trimmedQuery = StringHelper::removeWhitespaces($query);
 
@@ -38,7 +38,7 @@ class RegisterQuery
             throw new InvalidQueryException("Passed identificator [$query]->[$trimmedQuery] is not valid identificator number!");
         }
 
-        $searchPageHtml = $this->Provider->getIdentificatorSearchPageHtml($trimmedQuery);
+        $searchPageHtml = $this->Provider->getIdentifierSearchPageHtml($trimmedQuery);
         $searchResult = SearchResultPageParser::parseHtml($searchPageHtml);
 
         if ($searchResult->isEmpty()) {

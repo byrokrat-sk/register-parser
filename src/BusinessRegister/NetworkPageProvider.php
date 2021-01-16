@@ -6,20 +6,22 @@ namespace SkGovernmentParser\BusinessRegister;
 
 use SkGovernmentParser\BusinessRegister\Model\Search\Listing;
 use SkGovernmentParser\Exception\BadHttpRequestException;
-use SkGovernmentParser\Helper\CurlHelper;
+use GuzzleHttp\Client;
 
 
 class NetworkPageProvider implements PageProvider
 {
     public const NAME_QUERY_URL = '/hladaj_subjekt.asp?lan=en&OBMENO={query}&PF=0&R=on';
     public const IDENTIFICATOR_QUERY_URL = '/hladaj_ico.asp?ICO={query}&SID=0';
-    public const ACTUAL_PAGE_URL = "/vypis.asp?lan=en&ID={query}&SID=2&P=0";
     public const FULL_PAGE_URL = "/vypis.asp?lan=en&ID={query}&SID=2&P=1";
+
+    private Client $HttpClient;
 
     private string $RootAddress;
 
-    public function __construct(string $rootAddress)
+    public function __construct(Client $httpClient, string $rootAddress)
     {
+        $this->HttpClient = $httpClient;
         $this->RootAddress = $rootAddress;
     }
 
@@ -44,12 +46,12 @@ class NetworkPageProvider implements PageProvider
 
     private function fetchPage(string $url): string
     {
-        $response = CurlHelper::get($url);
+        $response = $this->HttpClient->get($url);
 
-        if (!$response->isOk()) {
-            throw new BadHttpRequestException("Page request on URL [$url] was not succesfull! HTTP code [$response->HttpCode] was returned.");
+        if ($response->getStatusCode() !== 200) {
+            throw new BadHttpRequestException("Page request on URL [{$url}] was not succesfull! HTTP code [{$response->getStatusCode()}] was returned.");
         }
 
-        return $response->Response;
+        return $response->getBody()->getContents();
     }
 }

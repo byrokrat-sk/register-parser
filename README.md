@@ -71,7 +71,7 @@ require_once './vendor/autoload.php';
 
 use \SkGovernmentParser\RegisterFactory;
 
-$company = RegisterFactory::tradeRegister()->byIdentificator('35790563');
+$company = RegisterFactory::tradeRegister()->byIdentifier('35790563');
 echo($company->BusinessName . "\n");
 echo($company->BusinessObjects[0]->Name . "\n");
 ```

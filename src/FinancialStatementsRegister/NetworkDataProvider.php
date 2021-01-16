@@ -8,8 +8,7 @@ use SkGovernmentParser\Exception\InconclusiveSearchException;
 use SkGovernmentParser\Exception\EmptySearchResultException;
 use SkGovernmentParser\Exception\BadHttpRequestException;
 use SkGovernmentParser\Helper\StringHelper;
-use SkGovernmentParser\Helper\CurlHelper;
-use SkGovernmentParser\Configuration;
+use GuzzleHttp\Client;
 
 
 class NetworkDataProvider implements DataProvider
@@ -19,20 +18,23 @@ class NetworkDataProvider implements DataProvider
     public const FINANCIAL_REPORT_BY_ID = '/uctovny-vykaz/?id={id}';
     public const FINANCIAL_REPORT_TEMPLATE_BY_ID = '/sablona/?id={id}';
 
-    private static $TemplatesCache = [];
+    private static array $TemplatesCache = [];
 
-    private Configuration $Configuration;
+    private Client $HttpClient;
 
-    public function __construct(Configuration $configuration)
+    private string $RootUrl;
+
+    public function __construct(Client $httpClient, string $rootUrl)
     {
-        $this->Configuration = $configuration;
+        $this->HttpClient = $httpClient;
+        $this->RootUrl = $rootUrl;
     }
 
     public function getSubjectJsonByIdentificator(string $identificator): object
     {
-        $listUrl = $this->Configuration->FinancialStatementsUrlRoot . str_replace('{identificator}', $identificator, self::ACCOUNTING_ENTITIES_BY_IDENTIFICATOR);
-        $listResponse = CurlHelper::get($listUrl);
-        $idsList = StringHelper::parseJson($listResponse->Response)->id;
+        $listUrl = $this->RootUrl . str_replace('{identificator}', $identificator, self::ACCOUNTING_ENTITIES_BY_IDENTIFICATOR);
+        $listResponse = $this->HttpClient->get($listUrl);
+        $idsList = StringHelper::parseJson($listResponse->getBody()->getContents())->id;
 
         if (empty($idsList)) {
             throw new EmptySearchResultException("Accounting entity with identificator [$identificator] was not found!");
@@ -42,34 +44,37 @@ class NetworkDataProvider implements DataProvider
             throw new InconclusiveSearchException("Multiple accounting entities was returned for identificator [$identificator]!");
         }
 
-        $listResponse = CurlHelper::get($this->Configuration->FinancialStatementsUrlRoot . '/uctovna-jednotka/?id=' . $idsList[0]);
-        $rawObject = StringHelper::parseJson($listResponse->Response);
+        $listResponse = $this->HttpClient->get($this->RootUrl . '/uctovna-jednotka/', [
+            'query' => [
+                'id' => $idsList[0],
+            ],
+        ]);
 
-        return $rawObject;
+        return StringHelper::parseJson($listResponse->getBody()->getContents());
     }
 
     public function getFinancialStatementJsonById(int $statementId): object
     {
-        $statementUrl = $this->Configuration->FinancialStatementsUrlRoot . str_replace('{id}', $statementId, self::FINANCIAL_STATEMENT_BY_ID);
-        $response = CurlHelper::get($statementUrl);
+        $statementUrl = $this->RootUrl . str_replace('{id}', $statementId, self::FINANCIAL_STATEMENT_BY_ID);
+        $response = $this->HttpClient->get($statementUrl);
 
-        if (!$response->isOk()) {
-            throw new BadHttpRequestException("Financial statements register returned HTTP status [$response->HttpCode] when fetching financial statement [$statementId].");
+        if ($response->getStatusCode() !== 200) {
+            throw new BadHttpRequestException("Financial statements register returned HTTP status [{$response->getStatusCode()}] when fetching financial statement [$statementId].");
         }
 
-        return StringHelper::parseJson($response->Response);
+        return StringHelper::parseJson($response->getBody()->getContents());
     }
 
     public function getFinancialReportJsonById(int $reportId): object
     {
-        $reportUrl = $this->Configuration->FinancialStatementsUrlRoot . str_replace('{id}', $reportId, self::FINANCIAL_REPORT_BY_ID);
-        $response = CurlHelper::get($reportUrl);
+        $reportUrl = $this->RootUrl . str_replace('{id}', $reportId, self::FINANCIAL_REPORT_BY_ID);
+        $response = $this->HttpClient->get($reportUrl);
 
-        if (!$response->isOk()) {
-            throw new BadHttpRequestException("Financial statements register returned HTTP status [$response->HttpCode] when fetching financial report [$reportId].");
+        if ($response->getStatusCode() !== 200) {
+            throw new BadHttpRequestException("Financial statements register returned HTTP status [{$response->getStatusCode()}] when fetching financial report [$reportId].");
         }
 
-        return StringHelper::parseJson($response->Response);
+        return StringHelper::parseJson($response->getBody()->getContents());
     }
 
     public function getFinancialReportTemplateJsonById(int $templateId): object
@@ -79,14 +84,14 @@ class NetworkDataProvider implements DataProvider
             return self::$TemplatesCache[$templateId];
         }
 
-        $reportUrl = $this->Configuration->FinancialStatementsUrlRoot . str_replace('{id}', $templateId, self::FINANCIAL_REPORT_TEMPLATE_BY_ID);
-        $response = CurlHelper::get($reportUrl);
+        $reportUrl = $this->RootUrl . str_replace('{id}', $templateId, self::FINANCIAL_REPORT_TEMPLATE_BY_ID);
+        $response = $this->HttpClient->get($reportUrl);
 
-        if (!$response->isOk()) {
-            throw new BadHttpRequestException("Financial statements register returned HTTP status [$response->HttpCode] when fetching financial report template [$templateId].");
+        if ($response->getStatusCode() !== 200) {
+            throw new BadHttpRequestException("Financial statements register returned HTTP status [{$response->getStatusCode()}] when fetching financial report template [$templateId].");
         }
 
-        $template = StringHelper::parseJson($response->Response);
+        $template = StringHelper::parseJson($response->getBody()->getContents());
         self::$TemplatesCache[$templateId] = $template;
 
         return $template;

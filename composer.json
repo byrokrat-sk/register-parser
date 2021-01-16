@@ -8,7 +8,7 @@
         "php": "^7.4",
         "ext-json": "^7.4",
         "ext-dom": "20031129",
-        "ext-curl": "^7.4"
+        "guzzlehttp/guzzle": "^7.0"
     },
     "support": {
         "source": "https://github.com/MrSrsen/sk-government-parser",
