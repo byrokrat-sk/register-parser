@@ -4,33 +4,27 @@
 namespace SkGovernmentParser\BusinessRegister;
 
 
-use SkGovernmentParser\BusinessRegister\Model\BusinessSubject;
-use SkGovernmentParser\BusinessRegister\Model\Search\Listing;
-use SkGovernmentParser\BusinessRegister\Model\Search\Result;
-use SkGovernmentParser\BusinessRegister\PageProvider\NetworkProvider;
 use SkGovernmentParser\BusinessRegister\Parser\BusinessSubjectPageParser;
 use SkGovernmentParser\BusinessRegister\Parser\SearchResultPageParser;
-use SkGovernmentParser\Exception\EmptySearchResultException;
+use SkGovernmentParser\BusinessRegister\Model\BusinessSubject;
+use SkGovernmentParser\BusinessRegister\Model\Search\Listing;
 use SkGovernmentParser\Exception\InconclusiveSearchException;
+use SkGovernmentParser\BusinessRegister\Model\Search\Result;
+use SkGovernmentParser\Exception\EmptySearchResultException;
 use SkGovernmentParser\Exception\InvalidQueryException;
 use SkGovernmentParser\Helper\StringHelper;
-use SkGovernmentParser\ParserConfiguration;
 
 
-class BusinessRegisterQuery
+class RegisterQuery
 {
-    private BusinessRegisterPageProvider $Provider;
+    private PageProvider $Provider;
 
-    public function __construct(BusinessRegisterPageProvider $driver)
+    private bool $AllowMultipleResults;
+
+    public function __construct(PageProvider $provider, bool $allowMultipleResults = false)
     {
-        $this->Provider = $driver;
-    }
-
-    # ~
-
-    public static function network(): BusinessRegisterQuery
-    {
-        return new BusinessRegisterQuery(new NetworkProvider(ParserConfiguration::$BusinessRegisterUrlRoot));
+        $this->Provider = $provider;
+        $this->AllowMultipleResults = $allowMultipleResults;
     }
 
     # ~
@@ -50,7 +44,7 @@ class BusinessRegisterQuery
             throw new EmptySearchResultException("Business register returned empty result for query [$query]!");
         }
 
-        if (!ParserConfiguration::$BusinessRegisterAllowMultipleIdsResult && $searchResult->isMultiple()) {
+        if (!$this->AllowMultipleResults && $searchResult->isMultiple()) {
             throw new InconclusiveSearchException("Business register returned multiple results [{$searchResult->count()}] from query [$query]!");
         }
 

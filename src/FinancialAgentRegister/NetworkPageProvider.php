@@ -1,19 +1,19 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialAgentRegister\PageProvider;
+namespace SkGovernmentParser\FinancialAgentRegister;
 
 
-use SkGovernmentParser\FinancialAgentRegister\FinanfialAgentRegisterPageProvider;
-use SkGovernmentParser\FinancialAgentRegister\Model\Search\Item;
-use SkGovernmentParser\FinancialAgentRegister\Model\Search\Result;
 use SkGovernmentParser\FinancialAgentRegister\Parser\SearchPageResultParser;
-use SkGovernmentParser\Exception\BadHttpRequestException;
+use SkGovernmentParser\FinancialAgentRegister\Model\Search\Result;
+use SkGovernmentParser\FinancialAgentRegister\Model\Search\Item;
 use SkGovernmentParser\Exception\EmptySearchResultException;
-use SkGovernmentParser\Helper\CurlHelper;
+use SkGovernmentParser\Exception\BadHttpRequestException;
 use SkGovernmentParser\Helper\StringHelper;
+use SkGovernmentParser\Helper\CurlHelper;
 
-class NetworkProvider implements FinanfialAgentRegisterPageProvider
+
+class NetworkPageProvider implements PageProvider
 {
     public const SEARCH_PAGE_URL = '/search.php';
 
@@ -30,7 +30,7 @@ class NetworkProvider implements FinanfialAgentRegisterPageProvider
     public function getSearchPageHtml(string $query, int $pageNumber = 1): string
     {
         $accessToken = $this->getAccessToken();
-        $searchResponse = CurlHelper::post($this->RootUrl.self::SEARCH_PAGE_URL.'?pg='.$pageNumber, [
+        $searchResponse = CurlHelper::post($this->RootUrl . self::SEARCH_PAGE_URL . '?pg=' . $pageNumber, [
             'search_val' => $query,
             'token' => $accessToken,
             'search_set' => 'Hľadaj',
@@ -73,10 +73,10 @@ class NetworkProvider implements FinanfialAgentRegisterPageProvider
                 throw new EmptySearchResultException("Financial agent with registration number [$registrationNumber] was not found");
             }
 
-            $agentPageResponse = CurlHelper::get($this->RootUrl.self::SEARCH_PAGE_URL, [
+            $agentPageResponse = CurlHelper::get($this->RootUrl . self::SEARCH_PAGE_URL, [
                 'row' => $matchedAgent->Row
             ], [
-                'Cookie: PHPSESSID='.self::$PhpSessionId
+                'Cookie: PHPSESSID=' . self::$PhpSessionId
             ]);
 
             if (!$agentPageResponse->isOk()) {
@@ -103,10 +103,10 @@ class NetworkProvider implements FinanfialAgentRegisterPageProvider
                 throw new EmptySearchResultException("Financial agent with CIN [$cin] was not found");
             }
 
-            $agentPageResponse = CurlHelper::get($this->RootUrl.self::SEARCH_PAGE_URL, [
+            $agentPageResponse = CurlHelper::get($this->RootUrl . self::SEARCH_PAGE_URL, [
                 'row' => $matchedAgent->Row
             ], [
-                'Cookie: PHPSESSID='.self::$PhpSessionId
+                'Cookie: PHPSESSID=' . self::$PhpSessionId
             ]);
 
             if (!$agentPageResponse->isOk()) {
@@ -156,7 +156,7 @@ class NetworkProvider implements FinanfialAgentRegisterPageProvider
     private function getAccessToken(): string
     {
         if (is_null(self::$SearchToken)) {
-            $registerIndexResponse = CurlHelper::get($this->RootUrl.self::SEARCH_PAGE_URL);
+            $registerIndexResponse = CurlHelper::get($this->RootUrl . self::SEARCH_PAGE_URL);
 
             if (!$registerIndexResponse->isOk()) {
                 throw new BadHttpRequestException("Request for getting access token was not succesfull. HTTP code [$registerIndexResponse->HttpCode] returned!");

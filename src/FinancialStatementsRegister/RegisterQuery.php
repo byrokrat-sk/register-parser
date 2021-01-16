@@ -4,32 +4,24 @@
 namespace SkGovernmentParser\FinancialStatementsRegister;
 
 
-use SkGovernmentParser\BusinessRegister\CompanyIdValidator;
-use SkGovernmentParser\FinancialStatementsRegister\Model\AccountingEntity;
 use SkGovernmentParser\FinancialStatementsRegister\Model\FinancialReport\FinancialReport;
-use SkGovernmentParser\FinancialStatementsRegister\Model\FinancialStatement;
+use SkGovernmentParser\FinancialStatementsRegister\Parser\FinancialStatementParser;
 use SkGovernmentParser\FinancialStatementsRegister\Parser\AccountingEntityParser;
 use SkGovernmentParser\FinancialStatementsRegister\Parser\FinancialReportParser;
-use SkGovernmentParser\FinancialStatementsRegister\Parser\FinancialStatementParser;
-use SkGovernmentParser\FinancialStatementsRegister\Provider\NetworkProvider;
+use SkGovernmentParser\FinancialStatementsRegister\Model\FinancialStatement;
+use SkGovernmentParser\FinancialStatementsRegister\Model\AccountingEntity;
+use SkGovernmentParser\BusinessRegister\CompanyIdValidator;
 use SkGovernmentParser\Exception\InvalidQueryException;
 use SkGovernmentParser\Helper\StringHelper;
-use SkGovernmentParser\ParserConfiguration;
 
-class FinancialStatementsQuery
+
+class RegisterQuery
 {
-    private FinancialStatementsDataProvider $Provider;
+    private DataProvider $Provider;
 
-    public function __construct(FinancialStatementsDataProvider $provider)
+    public function __construct(DataProvider $provider)
     {
         $this->Provider = $provider;
-    }
-
-    # ~
-
-    public static function network(): FinancialStatementsQuery
-    {
-        return new FinancialStatementsQuery(new NetworkProvider(ParserConfiguration::$FinancialStatementsUrlRoot));
     }
 
     # ~

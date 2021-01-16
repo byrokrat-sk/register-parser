@@ -4,30 +4,22 @@
 namespace SkGovernmentParser\FinancialAgentRegister;
 
 
-use SkGovernmentParser\BusinessRegister\CompanyIdValidator;
-use SkGovernmentParser\FinancialAgentRegister\Model\FinancialAgent;
-use SkGovernmentParser\FinancialAgentRegister\Model\Search\Result;
-use SkGovernmentParser\FinancialAgentRegister\PageProvider\NetworkProvider;
 use SkGovernmentParser\FinancialAgentRegister\Parser\FinancialAgentPageParser;
 use SkGovernmentParser\FinancialAgentRegister\Parser\SearchPageResultParser;
+use SkGovernmentParser\FinancialAgentRegister\Model\FinancialAgent;
+use SkGovernmentParser\FinancialAgentRegister\Model\Search\Result;
+use SkGovernmentParser\BusinessRegister\CompanyIdValidator;
 use SkGovernmentParser\Exception\InvalidQueryException;
 use SkGovernmentParser\Helper\StringHelper;
-use SkGovernmentParser\ParserConfiguration;
 
-class FinancialAgentRegisterQuery
+
+class RegisterQuery
 {
-    private FinanfialAgentRegisterPageProvider $Provider;
+    private PageProvider $Provider;
 
-    public function __construct(FinanfialAgentRegisterPageProvider $pageProvider)
+    public function __construct(PageProvider $pageProvider)
     {
         $this->Provider = $pageProvider;
-    }
-
-    # ~
-
-    public static function network(): FinancialAgentRegisterQuery
-    {
-        return new FinancialAgentRegisterQuery(new NetworkProvider(ParserConfiguration::$FinancialAgentRegisterUrlRoot));
     }
 
     # ~

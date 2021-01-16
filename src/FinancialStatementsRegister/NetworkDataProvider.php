@@ -1,18 +1,18 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialStatementsRegister\Provider;
+namespace SkGovernmentParser\FinancialStatementsRegister;
 
 
-use SkGovernmentParser\Exception\BadHttpRequestException;
-use SkGovernmentParser\Exception\EmptySearchResultException;
 use SkGovernmentParser\Exception\InconclusiveSearchException;
+use SkGovernmentParser\Exception\EmptySearchResultException;
+use SkGovernmentParser\Exception\BadHttpRequestException;
 use SkGovernmentParser\Helper\StringHelper;
-use SkGovernmentParser\ParserConfiguration;
-use SkGovernmentParser\FinancialStatementsRegister\FinancialStatementsDataProvider;
 use SkGovernmentParser\Helper\CurlHelper;
+use SkGovernmentParser\Configuration;
 
-class NetworkProvider implements FinancialStatementsDataProvider
+
+class NetworkDataProvider implements DataProvider
 {
     public const ACCOUNTING_ENTITIES_BY_IDENTIFICATOR = '/uctovne-jednotky?zmenene-od=2000-01-01&ico={identificator}';
     public const FINANCIAL_STATEMENT_BY_ID = '/uctovna-zavierka/?id={id}';
@@ -21,16 +21,16 @@ class NetworkProvider implements FinancialStatementsDataProvider
 
     private static $TemplatesCache = [];
 
-    private string $RootUrl;
+    private Configuration $Configuration;
 
-    public function __construct($rootUrl)
+    public function __construct(Configuration $configuration)
     {
-        $this->RootUrl = $rootUrl;
+        $this->Configuration = $configuration;
     }
 
     public function getSubjectJsonByIdentificator(string $identificator): object
     {
-        $listUrl = ParserConfiguration::$FinancialStatementsUrlRoot.str_replace('{identificator}', $identificator, self::ACCOUNTING_ENTITIES_BY_IDENTIFICATOR);
+        $listUrl = $this->Configuration->FinancialStatementsUrlRoot . str_replace('{identificator}', $identificator, self::ACCOUNTING_ENTITIES_BY_IDENTIFICATOR);
         $listResponse = CurlHelper::get($listUrl);
         $idsList = StringHelper::parseJson($listResponse->Response)->id;
 
@@ -42,7 +42,7 @@ class NetworkProvider implements FinancialStatementsDataProvider
             throw new InconclusiveSearchException("Multiple accounting entities was returned for identificator [$identificator]!");
         }
 
-        $listResponse = CurlHelper::get(\src\ParserConfiguration::$FinancialStatementsUrlRoot.'/uctovna-jednotka/?id='.$idsList[0]);
+        $listResponse = CurlHelper::get($this->Configuration->FinancialStatementsUrlRoot . '/uctovna-jednotka/?id=' . $idsList[0]);
         $rawObject = StringHelper::parseJson($listResponse->Response);
 
         return $rawObject;
@@ -50,7 +50,7 @@ class NetworkProvider implements FinancialStatementsDataProvider
 
     public function getFinancialStatementJsonById(int $statementId): object
     {
-        $statementUrl = ParserConfiguration::$FinancialStatementsUrlRoot.str_replace('{id}', $statementId, self::FINANCIAL_STATEMENT_BY_ID);
+        $statementUrl = $this->Configuration->FinancialStatementsUrlRoot . str_replace('{id}', $statementId, self::FINANCIAL_STATEMENT_BY_ID);
         $response = CurlHelper::get($statementUrl);
 
         if (!$response->isOk()) {
@@ -62,7 +62,7 @@ class NetworkProvider implements FinancialStatementsDataProvider
 
     public function getFinancialReportJsonById(int $reportId): object
     {
-        $reportUrl = ParserConfiguration::$FinancialStatementsUrlRoot.str_replace('{id}', $reportId, self::FINANCIAL_REPORT_BY_ID);
+        $reportUrl = $this->Configuration->FinancialStatementsUrlRoot . str_replace('{id}', $reportId, self::FINANCIAL_REPORT_BY_ID);
         $response = CurlHelper::get($reportUrl);
 
         if (!$response->isOk()) {
@@ -79,7 +79,7 @@ class NetworkProvider implements FinancialStatementsDataProvider
             return self::$TemplatesCache[$templateId];
         }
 
-        $reportUrl = ParserConfiguration::$FinancialStatementsUrlRoot.str_replace('{id}', $templateId, self::FINANCIAL_REPORT_TEMPLATE_BY_ID);
+        $reportUrl = $this->Configuration->FinancialStatementsUrlRoot . str_replace('{id}', $templateId, self::FINANCIAL_REPORT_TEMPLATE_BY_ID);
         $response = CurlHelper::get($reportUrl);
 
         if (!$response->isOk()) {

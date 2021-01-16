@@ -32,6 +32,6 @@ class CompanyIdValidator
             $c = 11 - $a;
         }
 
-        return (int) $identificator[7] === $c;
+        return (int)$identificator[7] === $c;
     }
 }

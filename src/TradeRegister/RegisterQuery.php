@@ -4,34 +4,28 @@
 namespace SkGovernmentParser\TradeRegister;
 
 
-use SkGovernmentParser\BusinessRegister\CompanyIdValidator;
-use SkGovernmentParser\TradeRegister\Enum\DistrictEnum;
-use SkGovernmentParser\TradeRegister\Model\Search\Result;
-use SkGovernmentParser\TradeRegister\Model\TradeSubject;
-use SkGovernmentParser\TradeRegister\PageProvider\NetworkProvider;
 use SkGovernmentParser\TradeRegister\Parser\SearchResultPageParser;
 use SkGovernmentParser\TradeRegister\Parser\TradeSubjectPageParser;
-use SkGovernmentParser\Exception\EmptySearchResultException;
 use SkGovernmentParser\Exception\InconclusiveSearchException;
+use SkGovernmentParser\Exception\EmptySearchResultException;
+use SkGovernmentParser\BusinessRegister\CompanyIdValidator;
+use SkGovernmentParser\TradeRegister\Model\Search\Result;
+use SkGovernmentParser\TradeRegister\Model\TradeSubject;
 use SkGovernmentParser\Exception\InvalidQueryException;
+use SkGovernmentParser\TradeRegister\Enum\DistrictEnum;
 use SkGovernmentParser\Helper\StringHelper;
-use SkGovernmentParser\ParserConfiguration;
 
 
-class TradeRegisterQuery
+class RegisterQuery
 {
-    private TradeRegisterPageProvider $Provider;
+    private PageProvider $Provider;
 
-    public function __construct(TradeRegisterPageProvider $provider)
+    private bool $AllowMultipleResults;
+
+    public function __construct(PageProvider $provider, bool $allowMultipleResults)
     {
         $this->Provider = $provider;
-    }
-
-    # ~
-
-    public static function network(): TradeRegisterQuery
-    {
-        return new TradeRegisterQuery(new NetworkProvider(ParserConfiguration::$TradeRegisterUrlRoot));
+        $this->AllowMultipleResults = $allowMultipleResults;
     }
 
     # ~
@@ -51,7 +45,7 @@ class TradeRegisterQuery
             throw new EmptySearchResultException("Trade register returned empty result for query [$query]!");
         }
 
-        if (!ParserConfiguration::$BusinessRegisterAllowMultipleIdsResult && $searchResult->isMultiple()) {
+        if (!$this->AllowMultipleResults && $searchResult->isMultiple()) {
             throw new InconclusiveSearchException("Business register returned multiple results [{$searchResult->count()}] from query [$query]!");
         }
 

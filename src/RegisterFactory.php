@@ -1,0 +1,41 @@
+<?php
+
+
+namespace SkGovernmentParser;
+
+
+use SkGovernmentParser\FinancialStatementsRegister\NetworkDataProvider;
+use SkGovernmentParser\TradeRegister\PageProvider\NetworkPageProvider;
+use SkGovernmentParser\TradeRegister\RegisterQuery;
+
+
+class RegisterFactory
+{
+    public static function businessRegister(): BusinessRegister\RegisterQuery
+    {
+        $defaultConfiguration = Configuration::getDefault();
+        $pageProvider = new BusinessRegister\NetworkPageProvider($defaultConfiguration->BusinessRegisterUrlRoot);
+        return new BusinessRegister\RegisterQuery($pageProvider, $defaultConfiguration->BusinessRegisterAllowMultipleIdsResult);
+    }
+
+    public static function financialAgentRegister(): FinancialAgentRegister\RegisterQuery
+    {
+        $defaultConfiguration = Configuration::getDefault();
+        $pageProvider = new FinancialAgentRegister\NetworkPageProvider($defaultConfiguration);
+        return new FinancialAgentRegister\RegisterQuery($pageProvider);
+    }
+
+    public static function financialStatementsRegister(): FinancialStatementsRegister\RegisterQuery
+    {
+        $defaultConfiguration = Configuration::getDefault();
+        $dataProvider = new NetworkDataProvider($defaultConfiguration);
+        return new FinancialStatementsRegister\RegisterQuery($dataProvider);
+    }
+
+    public static function tradeRegister(): RegisterQuery
+    {
+        $defaultConfiguration = Configuration::getDefault();
+        $pageProvider = new NetworkPageProvider($defaultConfiguration->TradeRegisterUrlRoot);
+        return new RegisterQuery($pageProvider, $defaultConfiguration->TradeRegisterAllowMultipleIdsResult);
+    }
+}

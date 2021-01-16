@@ -4,9 +4,11 @@
 namespace SkGovernmentParser\FinancialAgentRegister;
 
 
-interface FinanfialAgentRegisterPageProvider
+interface PageProvider
 {
     public function getSearchPageHtml(string $query): string;
+
     public function getAgentPageHtmlByNumber(string $number): string;
+
     public function getAgentPageHtmlByCin(string $cin): string;
 }

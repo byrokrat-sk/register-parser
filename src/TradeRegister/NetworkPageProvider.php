@@ -3,14 +3,14 @@
 namespace SkGovernmentParser\TradeRegister\PageProvider;
 
 
-use SkGovernmentParser\TradeRegister\TradeRegisterPageProvider;
+use SkGovernmentParser\TradeRegister\PageProvider;
 use SkGovernmentParser\Exception\BadHttpRequestException;
 use SkGovernmentParser\Helper\CurlHelper;
 use SkGovernmentParser\Helper\CurlResult;
 use SkGovernmentParser\Helper\StringHelper;
 
 
-class NetworkProvider implements TradeRegisterPageProvider
+class NetworkPageProvider implements PageProvider
 {
     public const SESSION_URL_IDENTIFICATOR = '/zr_ico.aspx'; // "IČO"
     public const SESSION_URL_BUSINESS_NAME = '/zr_om.aspx'; // "Obchodné Meno"
@@ -37,7 +37,7 @@ class NetworkProvider implements TradeRegisterPageProvider
         $session = $this->getSession(self::SESSION_URL_IDENTIFICATOR);
 
         // 1. First we need to set session with desired identificator
-        $sessionSetUrl = $this->RootAddress.self::SESSION_URL_IDENTIFICATOR;
+        $sessionSetUrl = $this->RootAddress . self::SESSION_URL_IDENTIFICATOR;
         $this->setSession($session, $sessionSetUrl, [
             'tico' => $identificator,
             'cmdVyhladat' => 'Vyhľadať'
@@ -52,7 +52,7 @@ class NetworkProvider implements TradeRegisterPageProvider
         $session = $this->getSession(self::SESSION_URL_BUSINESS_NAME);
 
         // 1. First we need to set session with desired identificator
-        $sessionSetUrl = $this->RootAddress.self::SESSION_URL_BUSINESS_NAME;
+        $sessionSetUrl = $this->RootAddress . self::SESSION_URL_BUSINESS_NAME;
         $this->setSession($session, $sessionSetUrl, [
             'txtFirma' => $businessName,
             'txtObec' => $municipality,
@@ -75,7 +75,7 @@ class NetworkProvider implements TradeRegisterPageProvider
         $session = $this->getSession(self::SESSION_URL_PERSON);
 
         // 1. First we need to set session with desired identificator
-        $sessionSetUrl = $this->RootAddress.self::SESSION_URL_PERSON;
+        $sessionSetUrl = $this->RootAddress . self::SESSION_URL_PERSON;
         $this->setSession($session, $sessionSetUrl, [
             'txtPriezvisko' => $lastName,
             'txtMeno' => $firstName,
@@ -98,7 +98,7 @@ class NetworkProvider implements TradeRegisterPageProvider
     {
         $session = $this->getSession(self::SESSION_URL_IDENTIFICATOR);
 
-        $subjectPageUrl = str_replace('{order}', $searchOrder, $this->RootAddress.self::BROWSE_SUBJECT_URL);
+        $subjectPageUrl = str_replace('{order}', $searchOrder, $this->RootAddress . self::BROWSE_SUBJECT_URL);
         $subjectResponse = $this->getWithSession($session, $subjectPageUrl);
 
         // Session set is returning 302 on success
@@ -118,8 +118,8 @@ class NetworkProvider implements TradeRegisterPageProvider
     private function requestResultsPage(object $session): string
     {
         // We send GET request that will return search results
-        $searchPageUrl = $this->RootAddress.self::BROWSE_RESULTS_URL;
-        $searchResponse = CurlHelper::get($searchPageUrl, [], ['Cookie: ASP.NET_SessionId='.$session->session_id]);
+        $searchPageUrl = $this->RootAddress . self::BROWSE_RESULTS_URL;
+        $searchResponse = CurlHelper::get($searchPageUrl, [], ['Cookie: ASP.NET_SessionId=' . $session->session_id]);
 
         if (!$searchResponse->isOk()) {
             throw new BadHttpRequestException("Failed to set search session on url [$searchPageUrl]! HTTP code [$searchResponse->HttpCode] was returned.");
@@ -133,7 +133,7 @@ class NetworkProvider implements TradeRegisterPageProvider
     {
         if (!array_key_exists($forUrl, self::$SessionCache)) {
             // Session can be obtained from any URL so we choose page with identificator form
-            $sessionSetUrl = $this->RootAddress.$forUrl;
+            $sessionSetUrl = $this->RootAddress . $forUrl;
             $response = CurlHelper::get($sessionSetUrl);
             $pageHtml = $response->Response;
 
@@ -164,7 +164,7 @@ class NetworkProvider implements TradeRegisterPageProvider
             '__EVENTVALIDATION' => $session->event_validation,
         ];
 
-        $sessionResponse = CurlHelper::post($url, array_merge($sessionHeaders, $parameters), ['Cookie: ASP.NET_SessionId='.$session->session_id]);
+        $sessionResponse = CurlHelper::post($url, array_merge($sessionHeaders, $parameters), ['Cookie: ASP.NET_SessionId=' . $session->session_id]);
 
         // Session set is returning 302 on success
         if ($sessionResponse->HttpCode !== '302') {
@@ -174,6 +174,6 @@ class NetworkProvider implements TradeRegisterPageProvider
 
     private function getWithSession(object $session, string $url): CurlResult
     {
-        return CurlHelper::get($url, [], ['Cookie: ASP.NET_SessionId='.$session->session_id]);
+        return CurlHelper::get($url, [], ['Cookie: ASP.NET_SessionId=' . $session->session_id]);
     }
 }

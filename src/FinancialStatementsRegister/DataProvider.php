@@ -4,10 +4,13 @@
 namespace SkGovernmentParser\FinancialStatementsRegister;
 
 
-interface FinancialStatementsDataProvider
+interface DataProvider
 {
     public function getSubjectJsonByIdentificator(string $identificator): object;
+
     public function getFinancialStatementJsonById(int $id): object;
+
     public function getFinancialReportJsonById(int $id): object;
+
     public function getFinancialReportTemplateJsonById(int $id): object;
 }

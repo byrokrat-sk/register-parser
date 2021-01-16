@@ -1,16 +1,15 @@
 <?php
 
 
-namespace SkGovernmentParser\BusinessRegister\PageProvider;
+namespace SkGovernmentParser\BusinessRegister;
 
 
-use SkGovernmentParser\BusinessRegister\BusinessRegisterPageProvider;
 use SkGovernmentParser\BusinessRegister\Model\Search\Listing;
 use SkGovernmentParser\Exception\BadHttpRequestException;
 use SkGovernmentParser\Helper\CurlHelper;
 
 
-class NetworkProvider implements BusinessRegisterPageProvider
+class NetworkPageProvider implements PageProvider
 {
     public const NAME_QUERY_URL = '/hladaj_subjekt.asp?lan=en&OBMENO={query}&PF=0&R=on';
     public const IDENTIFICATOR_QUERY_URL = '/hladaj_ico.asp?ICO={query}&SID=0';
@@ -26,13 +25,13 @@ class NetworkProvider implements BusinessRegisterPageProvider
 
     public function getIdentificatorSearchPageHtml(string $identificator): string
     {
-        $searchPageUrl = str_replace('{query}', $identificator, $this->RootAddress.self::IDENTIFICATOR_QUERY_URL);
+        $searchPageUrl = str_replace('{query}', $identificator, $this->RootAddress . self::IDENTIFICATOR_QUERY_URL);
         return $this->fetchPage($searchPageUrl);
     }
 
     public function getNameSearchPageHtml(string $query): string
     {
-        $searchPageUrl = str_replace('{query}', $query, $this->RootAddress.self::NAME_QUERY_URL);
+        $searchPageUrl = str_replace('{query}', $query, $this->RootAddress . self::NAME_QUERY_URL);
         return $this->fetchPage($searchPageUrl);
     }
 
@@ -43,7 +42,8 @@ class NetworkProvider implements BusinessRegisterPageProvider
 
     # ~
 
-    private function fetchPage(string $url): string {
+    private function fetchPage(string $url): string
+    {
         $response = CurlHelper::get($url);
 
         if (!$response->isOk()) {

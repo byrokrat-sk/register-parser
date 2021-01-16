@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialAgentRegister\PageProvider;
+namespace SkGovernmentParser\FinancialAgentRegister;
 
 
 class AgentPageProvidedException extends \RuntimeException
