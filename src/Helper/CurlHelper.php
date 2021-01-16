@@ -1,14 +1,17 @@
 <?php
 
+
 namespace SkGovernmentParser\Helper;
 
 
-use SkGovernmentParser\Exceptions\HttpTimeoutException;
-use SkGovernmentParser\ParserConfiguration;
+use SkGovernmentParser\Exception\HttpTimeoutException;
+
 
 class CurlHelper
 {
     private const CURL_TIMEOUT_ERR_CODE = 28;
+
+    public static int $timeout = 30; // sec
 
     public static function fetch(string $methode, string $url, array $data = [], array $headers = [], callable $setupCurl = null): CurlResult
     {
@@ -19,7 +22,7 @@ class CurlHelper
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $methode);
         curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_TIMEOUT, ParserConfiguration::$RequestTimeoutSeconds);
+        curl_setopt($curl, CURLOPT_TIMEOUT, self::$timeout);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
@@ -29,7 +32,7 @@ class CurlHelper
 
         // Parse headers from HTTP response
         $responseHeaders = [];
-        curl_setopt($curl, CURLOPT_HEADERFUNCTION, function($curl, $header) use (&$responseHeaders) {
+        curl_setopt($curl, CURLOPT_HEADERFUNCTION, function ($curl, $header) use (&$responseHeaders) {
             $len = strlen($header);
             $header = explode(':', $header, 2);
             if (count($header) < 2) {
@@ -47,8 +50,8 @@ class CurlHelper
         $requestStartTime = microtime(true);
         $response = curl_exec($curl);
 
-        if(curl_errno($curl) == self::CURL_TIMEOUT_ERR_CODE) {
-            throw new HttpTimeoutException("Request to URL [$url] with [$methode] methode timeouted after [".ParserConfiguration::$RequestTimeoutSeconds."] seconds.");
+        if (curl_errno($curl) == self::CURL_TIMEOUT_ERR_CODE) {
+            throw new HttpTimeoutException("Request to URL [$url] with [$methode] methode timeouted after [" . self::$timeout . "] seconds.");
         }
 
         $requestEndTime = microtime(true);
@@ -72,7 +75,7 @@ class CurlHelper
     public static function get(string $url, array $data = [], $headers = []): CurlResult
     {
         if (!empty($data)) {
-            $url .= '?'.http_build_query($data);
+            $url .= '?' . http_build_query($data);
         }
         return self::fetch('GET', $url, [], $headers);
     }
