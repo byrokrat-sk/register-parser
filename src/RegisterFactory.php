@@ -22,7 +22,7 @@ class RegisterFactory
     public static function financialAgentRegister(): FinancialAgentRegister\RegisterQuery
     {
         $defaultConfiguration = Configuration::getDefault();
-        $pageProvider = new FinancialAgentRegister\NetworkPageProvider($defaultConfiguration);
+        $pageProvider = new FinancialAgentRegister\NetworkPageProvider($defaultConfiguration->FinancialAgentRegisterUrlRoot);
         return new FinancialAgentRegister\RegisterQuery($pageProvider);
     }
 
