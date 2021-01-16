@@ -27,7 +27,14 @@ class SearchResultPageParser
     public function parseHtml(string $rawHtml): Result
     {
         $doc = new \DOMDocument();
-        @$doc->loadHTML($rawHtml); // Do not throw notices
+
+        /*
+         * This line has suspended notice throwing.
+         *
+         * There is A LOT of invalid HTML code in registers HTML code. It is enormous pain in the ass to deal with them.
+         * Just ignoring notices on any invalid HTML code will improve your life by at least 20%. Do not worry about it.
+         */
+        @$doc->loadHTML($rawHtml);
 
         # ~
 
