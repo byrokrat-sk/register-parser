@@ -1,10 +1,10 @@
 # srsen/sk-government-parser
 
-This package provides acces to structured data from web pages of various slovak government sites without structured API access. This package is making requests to web servers of listed pages and parsing structured data from returned HTML code (with exception of financial statements register that is providing JSON REST API).
+This package provides access to structured data from web pages of various slovak government sites without structured API access. This package is making requests to web servers of listed pages and parsing structured data from returned HTML code (with exception to financial statements register that is providing JSON REST API).
 
 ## Compatibility warning
 
-This library is directly dependant on structure of HTML code for each data source. **Keep in mind that if any of these institutions do change their HTML structure this library will break!** If this happens you are welcome to create an issue or pull request.
+This library is directly dependent on structure of HTML code for each data source. **Keep in mind that if any of these institutions do change their HTML code structure this library will break!** If this happens you are welcome to create an issue or pull request.
 
 ## Use of library
 
@@ -166,6 +166,6 @@ This library is licensed under MIT license.
 
 ## Some things to catch search engines attention (is this working?)
 
-EN: orsr, php, api, zrsr, registeruz, nbs, financial agent, data, library, composer
+EN: PHP, API, REST, financial agent, data, library, composer
 
-SK: obchodný register, finančný agent, knižnica , register účtovných úzávierok, vyhľadávanie podľa IČO
+SK: orsr, obchodný register, nbs, zrsr, živnostenský register SR, slovenská národná banka, finančný agent, knižnica, registeruz, register účtovných úzávierok, vyhľadávanie podľa IČO
