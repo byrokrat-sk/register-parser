@@ -4,9 +4,6 @@
 namespace SkGovernmentParser\BusinessRegister\Model\Search;
 
 
-use SkGovernmentParser\ParserConfiguration;
-
-
 class Listing
 {
     const LISTING_URL = '/vypis.asp?ID={id}&SID={sid}&P={p}';
@@ -19,20 +16,24 @@ class Listing
     public int $Sid;
     public int $P;
 
-    public function __construct($Id, $Sid, $P)
+    public string $RootUrl;
+
+    public function __construct($Id, $Sid, $P, $rootUrl)
     {
         $this->Id = $Id;
         $this->Sid = $Sid;
         $this->P = $P;
+        $this->RootUrl = $rootUrl;
     }
 
     public function getUrl(): string
     {
-        return self::formatListingUrl($this->Id, $this->Sid, $this->P);
+        return $this->formatListingUrl($this->Id, $this->Sid, $this->P);
     }
 
-    public static function formatListingUrl(int $id, int $sid, int $p): string {
-        $url = str_replace('{id}', $id, ParserConfiguration::$BusinessRegisterUrlRoot.self::LISTING_URL);
+    public function formatListingUrl(int $id, int $sid, int $p): string
+    {
+        $url = str_replace('{id}', $id, $this->RootUrl . self::LISTING_URL);
         $url = str_replace('{sid}', $sid, $url);
         $url = str_replace('{p}', $p, $url);
         return $url;

@@ -19,17 +19,20 @@ class RegisterQuery
 {
     private PageProvider $Provider;
 
+    private SearchResultPageParser $PageParser;
+
     private bool $AllowMultipleResults;
 
-    public function __construct(PageProvider $provider, bool $allowMultipleResults = false)
+    public function __construct(PageProvider $provider, SearchResultPageParser $pageParser, bool $allowMultipleResults = false)
     {
         $this->Provider = $provider;
+        $this->PageParser = $pageParser;
         $this->AllowMultipleResults = $allowMultipleResults;
     }
 
     # ~
 
-    public function byIdentificator(string $query): BusinessSubject
+    public function byIdentifier(string $query): BusinessSubject
     {
         $trimmedQuery = StringHelper::removeWhitespaces($query);
 
@@ -38,7 +41,7 @@ class RegisterQuery
         }
 
         $searchPageHtml = $this->Provider->getIdentificatorSearchPageHtml($trimmedQuery);
-        $searchResult = SearchResultPageParser::parseHtml($searchPageHtml);
+        $searchResult = $this->PageParser->parseHtml($searchPageHtml);
 
         if ($searchResult->isEmpty()) {
             throw new EmptySearchResultException("Business register returned empty result for query [$query]!");
@@ -66,6 +69,6 @@ class RegisterQuery
         }
 
         $searchPageHtml = $this->Provider->getNameSearchPageHtml($trimmedQuery);
-        return SearchResultPageParser::parseHtml($searchPageHtml);
+        return $this->PageParser->parseHtml($searchPageHtml);
     }
 }

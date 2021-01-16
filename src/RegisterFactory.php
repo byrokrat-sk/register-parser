@@ -6,6 +6,7 @@ namespace SkGovernmentParser;
 
 use SkGovernmentParser\FinancialStatementsRegister\NetworkDataProvider;
 use SkGovernmentParser\TradeRegister\PageProvider\NetworkPageProvider;
+use SkGovernmentParser\BusinessRegister\Parser\SearchResultPageParser;
 use SkGovernmentParser\TradeRegister\RegisterQuery;
 
 
@@ -15,7 +16,8 @@ class RegisterFactory
     {
         $defaultConfiguration = Configuration::getDefault();
         $pageProvider = new BusinessRegister\NetworkPageProvider($defaultConfiguration->BusinessRegisterUrlRoot);
-        return new BusinessRegister\RegisterQuery($pageProvider, $defaultConfiguration->BusinessRegisterAllowMultipleIdsResult);
+        $pageParser = new SearchResultPageParser($defaultConfiguration->BusinessRegisterUrlRoot);
+        return new BusinessRegister\RegisterQuery($pageProvider, $pageParser, $defaultConfiguration->BusinessRegisterAllowMultipleIdsResult);
     }
 
     public static function financialAgentRegister(): FinancialAgentRegister\RegisterQuery
