@@ -5,7 +5,6 @@ namespace SkGovernmentParser;
 
 
 use SkGovernmentParser\FinancialStatementsRegister\NetworkDataProvider;
-use SkGovernmentParser\TradeRegister\PageProvider\NetworkPageProvider;
 use SkGovernmentParser\BusinessRegister\Parser\SearchResultPageParser;
 use SkGovernmentParser\TradeRegister\RegisterQuery;
 
@@ -37,7 +36,7 @@ class RegisterFactory
     public static function tradeRegister(): RegisterQuery
     {
         $defaultConfiguration = Configuration::getDefault();
-        $pageProvider = new NetworkPageProvider($defaultConfiguration->TradeRegisterUrlRoot);
+        $pageProvider = new TradeRegister\NetworkPageProvider($defaultConfiguration->TradeRegisterUrlRoot);
         return new RegisterQuery($pageProvider, $defaultConfiguration->TradeRegisterAllowMultipleIdsResult);
     }
 }

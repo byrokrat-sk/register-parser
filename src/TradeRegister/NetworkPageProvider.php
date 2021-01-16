@@ -1,13 +1,12 @@
 <?php
 
-namespace SkGovernmentParser\TradeRegister\PageProvider;
+namespace SkGovernmentParser\TradeRegister;
 
 
-use SkGovernmentParser\TradeRegister\PageProvider;
 use SkGovernmentParser\Exception\BadHttpRequestException;
+use SkGovernmentParser\Helper\StringHelper;
 use SkGovernmentParser\Helper\CurlHelper;
 use SkGovernmentParser\Helper\CurlResult;
-use SkGovernmentParser\Helper\StringHelper;
 
 
 class NetworkPageProvider implements PageProvider
