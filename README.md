@@ -90,7 +90,7 @@ require_once __DIR__.'/vendor/autoload.php';
 
 use \SkGovernmentParser\DataSources\BusinessRegister\BusinessRegisterQuery;
 use \SkGovernmentParser\DataSources\BusinessRegister\CompanyIdValidator;
-use \SkGovernmentParser\Exceptions\EmptySearchResultException;
+use \SkGovernmentParser\Exception\EmptySearchResultException;
 
 $cin = $_POST['cin'];
 
@@ -126,10 +126,16 @@ try {
 
 ## Tests
 
-Run tests with:
+Run tests native:
 
 ```
 bash ./test.sh 
+```
+
+, or with docker-compose:
+
+```
+docker-compose up
 ```
 
 For now tests are just for parsing logic.
@@ -156,10 +162,6 @@ For now tests are just for parsing logic.
 ## License
 
 This library is licensed under MIT license.
-
-## Contributing
-
-I lost motivation for this project (at least for now) but you are welcome to open issues and send pull requests.
 
 ## Some things to catch search engines attention (is this working?)
 
