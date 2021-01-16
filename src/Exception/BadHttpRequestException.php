@@ -3,4 +3,6 @@
 namespace SkGovernmentParser\Exception;
 
 
-class BadHttpRequestException extends \RuntimeException {}
+class BadHttpRequestException extends \RuntimeException
+{
+}

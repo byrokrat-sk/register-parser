@@ -8,6 +8,7 @@ use SkGovernmentParser\BusinessRegister\Model\Versionable;
 use SkGovernmentParser\Helper\Arrayable;
 use SkGovernmentParser\Helper\DateHelper;
 
+
 class CompanyObject extends Versionable implements \JsonSerializable, Arrayable
 {
     public string $Title;

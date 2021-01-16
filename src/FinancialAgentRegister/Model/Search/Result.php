@@ -24,7 +24,7 @@ class Result implements \JsonSerializable
         return new Result([]);
     }
 
-    # ~
+    # ~
 
     public function hasNextPage(): bool
     {

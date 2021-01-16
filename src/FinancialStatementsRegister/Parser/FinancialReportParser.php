@@ -19,7 +19,7 @@ class FinancialReportParser
 {
     public static function parseObject(object $rawReport, object $rawTemplate): FinancialReport
     {
-        $attachments = array_map(function(object $rawAttachment) {
+        $attachments = array_map(function (object $rawAttachment) {
             return new ReportAttachment(
                 $rawAttachment->id,
                 $rawAttachment->meno,
@@ -53,7 +53,7 @@ class FinancialReportParser
     {
         $tables = null;
         if (!empty($rawContent->tabulky)) {
-            $tables = array_map(function(object $rawTable) {
+            $tables = array_map(function (object $rawTable) {
                 return new ContentTable(
                     $rawTable->nazov->sk,
                     $rawTable->data

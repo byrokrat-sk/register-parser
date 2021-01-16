@@ -4,4 +4,6 @@
 namespace SkGovernmentParser\Exception;
 
 
-class InvalidQueryException extends \InvalidArgumentException {}
+class InvalidQueryException extends \InvalidArgumentException
+{
+}

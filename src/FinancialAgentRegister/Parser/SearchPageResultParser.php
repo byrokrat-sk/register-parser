@@ -10,6 +10,7 @@ use SkGovernmentParser\Exception\InvalidQueryException;
 use SkGovernmentParser\Helper\DomHelper;
 use SkGovernmentParser\Helper\StringHelper;
 
+
 class SearchPageResultParser
 {
     public static function parseHtml(string $rawHtml): Result

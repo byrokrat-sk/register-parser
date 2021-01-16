@@ -9,6 +9,7 @@ use SkGovernmentParser\FinancialStatementsRegister\Model\AccountingEntityAddress
 use SkGovernmentParser\Helper\DateHelper;
 use SkGovernmentParser\Helper\StringHelper;
 
+
 class AccountingEntityParser
 {
     public static function parseObject(object $rawObject): AccountingEntity

@@ -12,7 +12,7 @@ class FinancialAgent implements \JsonSerializable
     public ?string $LastName;
     public ?string $BusinessName;
     public ?string $EmailAddress;
-    public ?String $PhoneNumber;
+    public ?string $PhoneNumber;
     public ?Address $ResidenceAddress;
     public ?Address $BusinessAddress;
     /** @var AgentRegistration[] */

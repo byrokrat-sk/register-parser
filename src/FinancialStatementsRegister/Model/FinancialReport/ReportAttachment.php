@@ -6,6 +6,7 @@ namespace SkGovernmentParser\FinancialStatementsRegister\Model\FinancialReport;
 
 use SkGovernmentParser\Helper\Arrayable;
 
+
 class ReportAttachment implements \JsonSerializable, Arrayable
 {
     public int $Id;

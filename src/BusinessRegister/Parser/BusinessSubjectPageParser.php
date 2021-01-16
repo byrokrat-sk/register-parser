@@ -42,35 +42,43 @@ class BusinessSubjectPageParser
 
         foreach ($parsedTables as $mainTable) {
             switch ($mainTable['title']) {
-                case 'Okresný súd': {
+                case 'Okresný súd':
+                {
                     $subject->Court = self::getFirstLine($mainTable);
                     break;
                 }
-                case 'Oddiel': {
+                case 'Oddiel':
+                {
                     $subject->Section = self::getFirstLine($mainTable);
                     break;
                 }
-                case 'Vložka číslo': {
+                case 'Vložka číslo':
+                {
                     $subject->InsertNumber = self::getFirstLine($mainTable);
                     break;
                 }
-                case 'IČO': {
+                case 'IČO':
+                {
                     $subject->Cin = StringHelper::removeWhitespaces(self::getFirstLine($mainTable));
                     break;
                 }
-                case 'Deň zápisu': {
+                case 'Deň zápisu':
+                {
                     $subject->EnteredAt = DateHelper::parseDmyDate(self::getFirstLine($mainTable));
                     break;
                 }
-                case 'Dátum aktualizácie údajov': {
+                case 'Dátum aktualizácie údajov':
+                {
                     $subject->UpdatedAt = DateHelper::parseDmyDate(self::getFirstLine($mainTable));
                     break;
                 }
-                case 'Dátum výpisu': {
+                case 'Dátum výpisu':
+                {
                     $subject->ExtractedAt = DateHelper::parseDmyDate(self::getFirstLine($mainTable));
                     break;
                 }
-                case 'Obchodné meno': {
+                case 'Obchodné meno':
+                {
                     $names = [];
                     foreach ($mainTable['records'] as $record) {
                         $name = new BusinessName($record['lines'][0][0]);
@@ -81,7 +89,8 @@ class BusinessSubjectPageParser
                     $subject->BusinessName = new VersionableGroup($names);
                     break;
                 }
-                case 'Sídlo': {
+                case 'Sídlo':
+                {
                     $addresses = [];
                     foreach ($mainTable['records'] as $record) {
                         $address = self::parseAddressArray($record['lines']);
@@ -93,7 +102,8 @@ class BusinessSubjectPageParser
                     $subject->RegisteredSeat = new VersionableGroup($addresses);
                     break;
                 }
-                case 'Predmet činnosti': {
+                case 'Predmet činnosti':
+                {
                     $objects = [];
                     foreach ($mainTable['records'] as $record) {
                         $object = new CompanyObject($record['lines'][0][0]);
@@ -104,7 +114,8 @@ class BusinessSubjectPageParser
                     $subject->CompanyObjects = new VersionableGroup($objects);
                     break;
                 }
-                case 'Právna forma': {
+                case 'Právna forma':
+                {
                     $forms = [];
                     foreach ($mainTable['records'] as $record) {
                         $form = new LegalForm($record['lines'][0][0]);
@@ -115,7 +126,8 @@ class BusinessSubjectPageParser
                     $subject->LegalForm = new VersionableGroup($forms);
                     break;
                 }
-                case 'Štatutárny orgán': {
+                case 'Štatutárny orgán':
+                {
                     $managers = [];
                     foreach ($mainTable['records'] as $record) {
                         if ($record['lines'][0][0] === "konatelia" || $record['lines'][0][0] === "konateľ") {
@@ -127,7 +139,8 @@ class BusinessSubjectPageParser
                     $subject->ManagementBody = new VersionableGroup($managers);
                     break;
                 }
-                case 'Konanie menom spoločnosti': {
+                case 'Konanie menom spoločnosti':
+                {
                     $texts = [];
                     foreach ($mainTable['records'] as $record) {
                         $text = new Acting(StringHelper::paragraphText($record['lines'][0][0]));
@@ -138,11 +151,13 @@ class BusinessSubjectPageParser
                     $subject->ActingInTheName = new VersionableGroup($texts);
                     break;
                 }
-                case 'Odštepný závod': {
+                case 'Odštepný závod':
+                {
                     $subject->EnterpriseBranches = self::parseEnterpriseBranches($mainTable);
                     break;
                 }
-                case 'Základné imanie': {
+                case 'Základné imanie':
+                {
                     $capitalRecords = [];
                     foreach ($mainTable['records'] as $record) {
                         $capitalRecords[] = self::parseCapitalRecord($record);
@@ -150,7 +165,8 @@ class BusinessSubjectPageParser
                     $subject->Capital = new VersionableGroup($capitalRecords);
                     break;
                 }
-                case 'Akcie': {
+                case 'Akcie':
+                {
                     $shares = [];
                     foreach ($mainTable['records'] as $record) {
                         $shares[] = self::parseShareRecord($record);
@@ -158,7 +174,8 @@ class BusinessSubjectPageParser
                     $subject->Shares = new VersionableGroup($shares);
                     break;
                 }
-                case 'Akcionár': {
+                case 'Akcionár':
+                {
                     $stockholders = [];
                     foreach ($mainTable['records'] as $record) {
                         $stockholders[] = self::parseStockholderRecord($record);
@@ -166,7 +183,8 @@ class BusinessSubjectPageParser
                     $subject->Stockholders = new VersionableGroup($stockholders);
                     break;
                 }
-                case 'Dozorná rada': {
+                case 'Dozorná rada':
+                {
                     $managers = [];
                     foreach ($mainTable['records'] as $record) {
                         if (count($record['lines']) === 1) continue; // ignore headers
@@ -175,7 +193,8 @@ class BusinessSubjectPageParser
                     $subject->SupervisoryBoard = new VersionableGroup($managers);
                     break;
                 }
-                case 'Ďalšie právne skutočnosti': {
+                case 'Ďalšie právne skutočnosti':
+                {
                     $facts = [];
                     foreach ($mainTable['records'] as $record) {
                         $facts[] = self::parseLegalFact($record);
@@ -183,7 +202,8 @@ class BusinessSubjectPageParser
                     $subject->OtherLegalFacts = new VersionableGroup($facts);
                     break;
                 }
-                case 'Zlúčenie, splynutie, rozdelenie spoločnosti': {
+                case 'Zlúčenie, splynutie, rozdelenie spoločnosti':
+                {
                     $records = [];
                     foreach ($mainTable['records'] as $record) {
                         $records[] = self::parseMergerOrDivision($record);
@@ -191,7 +211,8 @@ class BusinessSubjectPageParser
                     $subject->MergerOrDivision = new VersionableGroup($records);
                     break;
                 }
-                case 'Spoločnosť zaniknutá zlúčením, splynutím alebo rozdelením': {
+                case 'Spoločnosť zaniknutá zlúčením, splynutím alebo rozdelením':
+                {
                     $coased = [];
                     foreach ($mainTable['records'] as $record) {
                         $coased[] = self::parseCoasedRecord($record);
@@ -199,7 +220,8 @@ class BusinessSubjectPageParser
                     $subject->CompaniesCoased = new VersionableGroup($coased);
                     break;
                 }
-                case 'Spoločníci': {
+                case 'Spoločníci':
+                {
                     $partners = [];
                     foreach ($mainTable['records'] as $record) {
                         $partners[] = self::parsePersonArray($record);
@@ -207,7 +229,8 @@ class BusinessSubjectPageParser
                     $subject->Partners = new VersionableGroup($partners);
                     break;
                 }
-                case 'Výška vkladu každého spoločníka': {
+                case 'Výška vkladu každého spoločníka':
+                {
                     $contributors = [];
                     foreach ($mainTable['records'] as $record) {
                         $contributors[] = self::parseContributorRecord($record);
@@ -215,7 +238,8 @@ class BusinessSubjectPageParser
                     $subject->MemberContributions = new VersionableGroup($contributors);
                     break;
                 }
-                case 'Prokúra': {
+                case 'Prokúra':
+                {
                     $procuations = [];
                     $facts = [];
                     foreach ($mainTable['records'] as $record) {
@@ -230,7 +254,8 @@ class BusinessSubjectPageParser
                     $subject->ProcurationFacts = new VersionableGroup($facts);
                     break;
                 }
-                case 'Právny nástupca': {
+                case 'Právny nástupca':
+                {
                     $successors = [];
                     foreach ($mainTable['records'] as $record) {
                         $successors[] = self::parseLegalSuccessorRecord($record);
@@ -238,7 +263,8 @@ class BusinessSubjectPageParser
                     $subject->LegalSuccessors = new VersionableGroup($successors);
                     break;
                 }
-                case 'Predaj': {
+                case 'Predaj':
+                {
                     $sales = [];
                     foreach ($mainTable['records'] as $record) {
                         $sales[] = self::parseEnterpriseSaleRecord($record);
@@ -247,7 +273,8 @@ class BusinessSubjectPageParser
                     break;
                 }
                 case 'Likvidátor':
-                case 'Likvidácia': {
+                case 'Likvidácia':
+                {
                     $liquidators = [];
                     foreach ($mainTable['records'] as $record) {
                         $liquidators[] = self::parseLiquidatorRecord($record);
@@ -422,13 +449,15 @@ class BusinessSubjectPageParser
         $address = new Address();
 
         // How much lines there is in array address?
-        switch($linesCount) {
-            case 3: {
+        switch ($linesCount) {
+            case 3:
+            {
                 // 3: country
                 $address->Country = $arrayAddress[2][0];
                 // break; <- this is intentional!
             }
-            case 2: {
+            case 2:
+            {
                 // 1: street, 2: city
                 if (count($arrayAddress[0]) === 1) {
                     // If street line has just name or number
@@ -476,26 +505,30 @@ class BusinessSubjectPageParser
                 continue;
             }
 
-            switch($record['title']) {
-                case 'Názov': {
+            switch ($record['title']) {
+                case 'Názov':
+                {
                     $name = new BusinessName($record['lines'][0][0]);
                     $validity = self::parseTableDate($record['date']);
                     $name->setDates($validity->from, $validity->to);
                     $names[] = $name;
                     break;
                 }
-                case 'Sídlo': {
+                case 'Sídlo':
+                {
                     $seat = new RegisteredSeat(self::parseAddressArray($record['lines']));
                     $validity = self::parseTableDate($record['date']);
                     $seat->setDates($validity->from, $validity->to);
                     $seats[] = $seat;
                     break;
                 }
-                case 'Vedúci': {
+                case 'Vedúci':
+                {
                     $managers[] = self::parseManagerArray($record);
                     break;
                 }
-                case 'Predmet činnosti': {
+                case 'Predmet činnosti':
+                {
                     $object = new CompanyObject($record['lines'][0][0]);
                     $validity = self::parseTableDate($record['date']);
                     $object->setDates($validity->from, $validity->to);
@@ -558,12 +591,22 @@ class BusinessSubjectPageParser
             $labelExplode = explode(': ', $line[0]);
             $label = $labelExplode[0];
             $value = $labelExplode[1];
-            switch($label) {
-                case 'Počet': $quantity = (int)self::parseNumber($value); break;
-                case 'Druh': $type = $value; break;
-                case 'Podoba': $shape = $value; break;
-                case 'Forma': $form = $value; break;
-                case 'Menovitá hodnota': $nominalValue = self::parseNumber($value); break;
+            switch ($label) {
+                case 'Počet':
+                    $quantity = (int)self::parseNumber($value);
+                    break;
+                case 'Druh':
+                    $type = $value;
+                    break;
+                case 'Podoba':
+                    $shape = $value;
+                    break;
+                case 'Forma':
+                    $form = $value;
+                    break;
+                case 'Menovitá hodnota':
+                    $nominalValue = self::parseNumber($value);
+                    break;
             }
 
             // Has line second cell (currency)?
@@ -861,7 +904,7 @@ class BusinessSubjectPageParser
             'records' => [
                 [
                     'title' => null,
-                    'lines' => [['Okresný súd '.str_replace('Výpis z Obchodného registra Okresného súdu ', '', trim($bodyTables[1]->childNodes[0]->textContent))]],
+                    'lines' => [['Okresný súd ' . str_replace('Výpis z Obchodného registra Okresného súdu ', '', trim($bodyTables[1]->childNodes[0]->textContent))]],
                     'date' => null
                 ]
             ]

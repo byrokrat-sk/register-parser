@@ -2,4 +2,6 @@
 
 namespace SkGovernmentParser\Exception;
 
-class InconclusiveSearchException extends \RuntimeException {}
+class InconclusiveSearchException extends \RuntimeException
+{
+}

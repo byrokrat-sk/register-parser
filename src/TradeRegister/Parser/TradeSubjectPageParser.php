@@ -53,29 +53,34 @@ class TradeSubjectPageParser
                     if ($listItem->tagName === 'dt') {
                         $header = trim($listItem->textContent);
                     } else {
-                        switch($header) {
-                            case 'Obchodné meno': {
+                        switch ($header) {
+                            case 'Obchodné meno':
+                            {
                                 $tradeSubject['business_name'] = trim($listItem->textContent);
                                 break;
                             }
-                            case 'IČO': {
+                            case 'IČO':
+                            {
                                 $tradeSubject['identification_number'] = trim($listItem->textContent);
                                 break;
                             }
                             case 'Sídlo':
-                            case 'Miesto podnikania': {
+                            case 'Miesto podnikania':
+                            {
                                 $rawAddress = trim($listItem->textContent);
                                 $tradeSubject['registered_seat'] = self::parseAddress($rawAddress);
                                 break;
                             }
-                            case 'Štatutárny orgán': {
+                            case 'Štatutárny orgán':
+                            {
                                 $tradeSubject['management'][] = new Manager(
                                     trim($listItem->childNodes[0]->textContent),
                                     self::parseAddress(trim($listItem->childNodes[1]->textContent))
                                 );
                                 break;
                             }
-                            default: {
+                            default:
+                            {
                                 // ignore, not implemented
                                 break;
                             }
@@ -93,7 +98,8 @@ class TradeSubjectPageParser
                     if (isset($listNode->childNodes[2])) {
                         $subListHeader = trim($listNode->childNodes[2]->childNodes[0]->textContent);
                         switch ($subListHeader) {
-                            case 'Prevádzkarne': {
+                            case 'Prevádzkarne':
+                            {
                                 foreach ($listNode->childNodes[2]->childNodes as $index_2 => $establishment) {
                                     if ($index_2 === 0) {
                                         continue; // ignore header
@@ -102,7 +108,8 @@ class TradeSubjectPageParser
                                 }
                                 break;
                             }
-                            case 'Zodpovedný zástupca': {
+                            case 'Zodpovedný zástupca':
+                            {
                                 $manager = trim($listNode->childNodes[2]->childNodes[1]->textContent);
                                 break;
                             }

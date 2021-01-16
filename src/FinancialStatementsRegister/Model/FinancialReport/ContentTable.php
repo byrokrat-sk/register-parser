@@ -6,6 +6,7 @@ namespace SkGovernmentParser\FinancialStatementsRegister\Model\FinancialReport;
 
 use SkGovernmentParser\Helper\Arrayable;
 
+
 class ContentTable implements \JsonSerializable, Arrayable
 {
     public string $Name;

@@ -7,6 +7,7 @@ namespace SkGovernmentParser\FinancialStatementsRegister\Model\FinancialReport;
 use SkGovernmentParser\Helper\Arrayable;
 use SkGovernmentParser\Helper\DateHelper;
 
+
 class FinancialReport implements \JsonSerializable, Arrayable
 {
     public int $Id;

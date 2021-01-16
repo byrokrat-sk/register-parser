@@ -9,6 +9,7 @@ use SkGovernmentParser\BusinessRegister\Model\Versionable;
 use SkGovernmentParser\Helper\Arrayable;
 use SkGovernmentParser\Helper\DateHelper;
 
+
 class LegalSuccessor extends Versionable implements \JsonSerializable, Arrayable
 {
     public string $BusinessName;

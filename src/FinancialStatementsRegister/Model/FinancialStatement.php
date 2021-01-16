@@ -73,7 +73,9 @@ class FinancialStatement implements \JsonSerializable, Arrayable
             //'dataSource_code' => $this->DataSourceCode,
             //'type' => $this->Type,
             //'financial_report_ids' => $this->FinancialReportIds,
-            'financial_reports' => empty($this->FinancialReports) ? null : array_map(function(FinancialReport $report) { return $report->toArray(); }, $this->FinancialReports)
+            'financial_reports' => empty($this->FinancialReports) ? null : array_map(function (FinancialReport $report) {
+                return $report->toArray();
+            }, $this->FinancialReports)
         ];
     }
 

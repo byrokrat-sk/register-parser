@@ -6,6 +6,7 @@ namespace SkGovernmentParser\FinancialStatementsRegister\Model;
 
 use SkGovernmentParser\Helper\Arrayable;
 
+
 class Address implements \JsonSerializable, Arrayable
 {
     const DEFAULT_COUNTRY = 'Slovensko';

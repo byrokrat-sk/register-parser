@@ -7,6 +7,7 @@ namespace SkGovernmentParser\FinancialStatementsRegister\Model\FinancialReport;
 use SkGovernmentParser\FinancialStatementsRegister\Model\Address;
 use SkGovernmentParser\Helper\Arrayable;
 
+
 class ReportContent implements \JsonSerializable, Arrayable
 {
     public string $Cin;

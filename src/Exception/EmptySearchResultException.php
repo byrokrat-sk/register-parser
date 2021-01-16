@@ -4,4 +4,6 @@
 namespace SkGovernmentParser\Exception;
 
 
-class EmptySearchResultException extends \RuntimeException {}
+class EmptySearchResultException extends \RuntimeException
+{
+}

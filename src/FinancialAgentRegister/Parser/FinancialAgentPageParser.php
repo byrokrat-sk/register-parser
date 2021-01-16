@@ -54,33 +54,54 @@ class FinancialAgentPageParser
                 }
 
                 switch ($sectionName) {
-                    case 'Identifikačné údaje': {
+                    case 'Identifikačné údaje':
+                    {
                         foreach ($sectionFields as $key => $value) {
                             switch ($key) {
-                                case 'Registračné číslo': $registration['registration_number'] = $value; break;
-                                case 'Typ osoby': $agentData['legal_form'] = $value; break;
-                                case 'IČO': $agentData['identification_number'] = $value; break;
-                                case 'Meno': $agentData['first_name'] = $value; break;
-                                case 'Priezvisko': $agentData['last_name'] = $value; break;
-                                case 'Číslo rozhodnutia': $registration['decision_number'] = $value; break;
-                                case 'Obchodné meno': $agentData['business_name'] = $value; break;
+                                case 'Registračné číslo':
+                                    $registration['registration_number'] = $value;
+                                    break;
+                                case 'Typ osoby':
+                                    $agentData['legal_form'] = $value;
+                                    break;
+                                case 'IČO':
+                                    $agentData['identification_number'] = $value;
+                                    break;
+                                case 'Meno':
+                                    $agentData['first_name'] = $value;
+                                    break;
+                                case 'Priezvisko':
+                                    $agentData['last_name'] = $value;
+                                    break;
+                                case 'Číslo rozhodnutia':
+                                    $registration['decision_number'] = $value;
+                                    break;
+                                case 'Obchodné meno':
+                                    $agentData['business_name'] = $value;
+                                    break;
                             }
                         }
                         break;
                     }
-                    case 'Adresa trvalého pobytu': {
-                        $agentData['residence_address'] = self::parseAddressArray($sectionFields); break;
+                    case 'Adresa trvalého pobytu':
+                    {
+                        $agentData['residence_address'] = self::parseAddressArray($sectionFields);
+                        break;
                     }
-                    case 'Miesto podnikania': {
-                        $agentData['business_address'] = self::parseAddressArray($sectionFields); break;
+                    case 'Miesto podnikania':
+                    {
+                        $agentData['business_address'] = self::parseAddressArray($sectionFields);
+                        break;
                     }
-                    case 'Adresa sídla': {
+                    case 'Adresa sídla':
+                    {
                         $agentData['business_address'] = self::parseAddressArray($sectionFields);
                         if (isset($sectionFields['telefónne číslo'])) $agentData['phone_number'] = StringHelper::removeWhitespaces($sectionFields['telefónne číslo']);
                         if (isset($sectionFields['adresa elektronickej pošty'])) $agentData['email'] = $sectionFields['adresa elektronickej pošty'];
                         break;
                     }
-                    case 'Zmluvy s finančnou inštitúciou': {
+                    case 'Zmluvy s finančnou inštitúciou':
+                    {
                         if (isset($sectionFields['Zoznam'])) {
                             $agentData['contracts'] = self::parseInstitutionsListArray($sectionFields['Zoznam']);
                         }
@@ -91,7 +112,8 @@ class FinancialAgentPageParser
                     case 'Podregister poistenia alebo zaistenia':
                     case 'Podregister prijímania vkladov':
                     case 'Podregister poskytovania úverov, úverov na bývanie a spotrebiteľských úverov':
-                    case 'Podregister kapitálového trhu': {
+                    case 'Podregister kapitálového trhu':
+                    {
                         $sectors[] = self::parseSectorArray($sectionFields);
                         break;
                     }
@@ -148,11 +170,11 @@ class FinancialAgentPageParser
         }
 
         $startedAt = isset($sector['Dátum vzniku oprávnenia']) ? $sector['Dátum vzniku oprávnenia'] : (
-            isset($sector['Dátum zápisu do registra']) ? $sector['Dátum zápisu do registra'] : null
+        isset($sector['Dátum zápisu do registra']) ? $sector['Dátum zápisu do registra'] : null
         );
 
         $endedAt = isset($sector['Dátum zániku oprávnenia']) ? $sector['Dátum zániku oprávnenia'] : (
-            isset($sector['Dátum zrušenia zápisu v registri']) ? $sector['Dátum zrušenia zápisu v registri'] : null
+        isset($sector['Dátum zrušenia zápisu v registri']) ? $sector['Dátum zrušenia zápisu v registri'] : null
         );
 
         return new SectorRegistration(
@@ -338,7 +360,7 @@ class FinancialAgentPageParser
                 if (self::isListSection($propertyTitle)) {
                     // List-like parsing
                     $propertyValue = self::parseElementWithList($row->childNodes[1]);
-                } elseif($row->childNodes->length > 1) {
+                } elseif ($row->childNodes->length > 1) {
                     // "Plain-text" parsing
                     $propertyValue = trim($row->childNodes[1]->textContent);
                 }
@@ -402,7 +424,7 @@ class FinancialAgentPageParser
             $sectionIndex = -1;
 
             foreach ($linesGroup as $line) {
-                if (!StringHelper::str_contains($line, StringHelper::NON_BREAKING_SPACE.StringHelper::NON_BREAKING_SPACE)) {
+                if (!StringHelper::str_contains($line, StringHelper::NON_BREAKING_SPACE . StringHelper::NON_BREAKING_SPACE)) {
                     $sectionIndex += 1;
                     $betterParsedList[$groupType][$sectionIndex] = [
                         'title' => $line,
@@ -455,7 +477,7 @@ class FinancialAgentPageParser
                 // Address do not contain ZIP
                 $city = $citySplit[0];
             } else {
-                $zip = trim($citySplit[0].$citySplit[1]); // First two parts of "city" is zip
+                $zip = trim($citySplit[0] . $citySplit[1]); // First two parts of "city" is zip
                 unset($citySplit[0]);
                 unset($citySplit[1]);
                 $city = implode(' ', $citySplit);

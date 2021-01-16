@@ -4,4 +4,6 @@
 namespace SkGovernmentParser\Exception;
 
 
-class HttpTimeoutException extends \RuntimeException {}
+class HttpTimeoutException extends \RuntimeException
+{
+}

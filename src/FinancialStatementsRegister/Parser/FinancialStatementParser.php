@@ -7,6 +7,7 @@ namespace SkGovernmentParser\FinancialStatementsRegister\Parser;
 use SkGovernmentParser\FinancialStatementsRegister\Model\FinancialStatement;
 use SkGovernmentParser\Helper\DateHelper;
 
+
 class FinancialStatementParser
 {
     public static function parseObject(object $rawObject): FinancialStatement

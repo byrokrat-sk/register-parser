@@ -6,6 +6,7 @@ namespace SkGovernmentParser\FinancialStatementsRegister\Model;
 
 use SkGovernmentParser\Helper\Arrayable;
 
+
 class AccountingEntityAddress extends Address implements Arrayable
 {
     public ?string $RegionCode;
