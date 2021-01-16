@@ -1,5 +1,5 @@
 <?php
 
-namespace SkGovernmentParser\Exceptions;
+namespace SkGovernmentParser\Exception;
 
 class InconclusiveSearchException extends \RuntimeException {}

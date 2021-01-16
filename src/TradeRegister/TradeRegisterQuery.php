@@ -11,9 +11,9 @@ use SkGovernmentParser\TradeRegister\Model\TradeSubject;
 use SkGovernmentParser\TradeRegister\PageProvider\NetworkProvider;
 use SkGovernmentParser\TradeRegister\Parser\SearchResultPageParser;
 use SkGovernmentParser\TradeRegister\Parser\TradeSubjectPageParser;
-use SkGovernmentParser\Exceptions\EmptySearchResultException;
-use SkGovernmentParser\Exceptions\InconclusiveSearchException;
-use SkGovernmentParser\Exceptions\InvalidQueryException;
+use SkGovernmentParser\Exception\EmptySearchResultException;
+use SkGovernmentParser\Exception\InconclusiveSearchException;
+use SkGovernmentParser\Exception\InvalidQueryException;
 use SkGovernmentParser\Helper\StringHelper;
 use SkGovernmentParser\ParserConfiguration;
 

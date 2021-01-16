@@ -4,9 +4,9 @@
 namespace SkGovernmentParser\FinancialStatementsRegister\Provider;
 
 
-use SkGovernmentParser\Exceptions\BadHttpRequestException;
-use SkGovernmentParser\Exceptions\EmptySearchResultException;
-use SkGovernmentParser\Exceptions\InconclusiveSearchException;
+use SkGovernmentParser\Exception\BadHttpRequestException;
+use SkGovernmentParser\Exception\EmptySearchResultException;
+use SkGovernmentParser\Exception\InconclusiveSearchException;
 use SkGovernmentParser\Helper\StringHelper;
 use SkGovernmentParser\ParserConfiguration;
 use SkGovernmentParser\FinancialStatementsRegister\FinancialStatementsDataProvider;

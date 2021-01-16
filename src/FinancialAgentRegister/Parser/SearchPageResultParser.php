@@ -6,7 +6,7 @@ namespace SkGovernmentParser\FinancialAgentRegister\Parser;
 
 use SkGovernmentParser\FinancialAgentRegister\Model\Search\Item;
 use SkGovernmentParser\FinancialAgentRegister\Model\Search\Result;
-use SkGovernmentParser\Exceptions\InvalidQueryException;
+use SkGovernmentParser\Exception\InvalidQueryException;
 use SkGovernmentParser\Helper\DomHelper;
 use SkGovernmentParser\Helper\StringHelper;
 

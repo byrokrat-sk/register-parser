@@ -4,7 +4,7 @@ namespace SkGovernmentParser\TradeRegister\PageProvider;
 
 
 use SkGovernmentParser\TradeRegister\TradeRegisterPageProvider;
-use SkGovernmentParser\Exceptions\BadHttpRequestException;
+use SkGovernmentParser\Exception\BadHttpRequestException;
 use SkGovernmentParser\Helper\CurlHelper;
 use SkGovernmentParser\Helper\CurlResult;
 use SkGovernmentParser\Helper\StringHelper;

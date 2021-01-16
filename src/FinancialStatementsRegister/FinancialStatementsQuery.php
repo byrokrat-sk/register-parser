@@ -12,7 +12,7 @@ use SkGovernmentParser\FinancialStatementsRegister\Parser\AccountingEntityParser
 use SkGovernmentParser\FinancialStatementsRegister\Parser\FinancialReportParser;
 use SkGovernmentParser\FinancialStatementsRegister\Parser\FinancialStatementParser;
 use SkGovernmentParser\FinancialStatementsRegister\Provider\NetworkProvider;
-use SkGovernmentParser\Exceptions\InvalidQueryException;
+use SkGovernmentParser\Exception\InvalidQueryException;
 use SkGovernmentParser\Helper\StringHelper;
 use SkGovernmentParser\ParserConfiguration;
 

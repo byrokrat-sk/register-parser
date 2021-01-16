@@ -8,8 +8,8 @@ use SkGovernmentParser\FinancialAgentRegister\FinanfialAgentRegisterPageProvider
 use SkGovernmentParser\FinancialAgentRegister\Model\Search\Item;
 use SkGovernmentParser\FinancialAgentRegister\Model\Search\Result;
 use SkGovernmentParser\FinancialAgentRegister\Parser\SearchPageResultParser;
-use SkGovernmentParser\Exceptions\BadHttpRequestException;
-use SkGovernmentParser\Exceptions\EmptySearchResultException;
+use SkGovernmentParser\Exception\BadHttpRequestException;
+use SkGovernmentParser\Exception\EmptySearchResultException;
 use SkGovernmentParser\Helper\CurlHelper;
 use SkGovernmentParser\Helper\StringHelper;
 

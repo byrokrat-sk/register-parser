@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser\Exceptions;
+namespace SkGovernmentParser\Exception;
 
 
 class InvalidQueryException extends \InvalidArgumentException {}

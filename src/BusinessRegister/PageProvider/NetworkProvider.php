@@ -6,7 +6,7 @@ namespace SkGovernmentParser\BusinessRegister\PageProvider;
 
 use SkGovernmentParser\BusinessRegister\BusinessRegisterPageProvider;
 use SkGovernmentParser\BusinessRegister\Model\Search\Listing;
-use SkGovernmentParser\Exceptions\BadHttpRequestException;
+use SkGovernmentParser\Exception\BadHttpRequestException;
 use SkGovernmentParser\Helper\CurlHelper;
 
 

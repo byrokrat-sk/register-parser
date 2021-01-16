@@ -10,9 +10,9 @@ use SkGovernmentParser\BusinessRegister\Model\Search\Result;
 use SkGovernmentParser\BusinessRegister\PageProvider\NetworkProvider;
 use SkGovernmentParser\BusinessRegister\Parser\BusinessSubjectPageParser;
 use SkGovernmentParser\BusinessRegister\Parser\SearchResultPageParser;
-use SkGovernmentParser\Exceptions\EmptySearchResultException;
-use SkGovernmentParser\Exceptions\InconclusiveSearchException;
-use SkGovernmentParser\Exceptions\InvalidQueryException;
+use SkGovernmentParser\Exception\EmptySearchResultException;
+use SkGovernmentParser\Exception\InconclusiveSearchException;
+use SkGovernmentParser\Exception\InvalidQueryException;
 use SkGovernmentParser\Helper\StringHelper;
 use SkGovernmentParser\ParserConfiguration;
 

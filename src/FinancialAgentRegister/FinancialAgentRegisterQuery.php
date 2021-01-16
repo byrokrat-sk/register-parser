@@ -10,7 +10,7 @@ use SkGovernmentParser\FinancialAgentRegister\Model\Search\Result;
 use SkGovernmentParser\FinancialAgentRegister\PageProvider\NetworkProvider;
 use SkGovernmentParser\FinancialAgentRegister\Parser\FinancialAgentPageParser;
 use SkGovernmentParser\FinancialAgentRegister\Parser\SearchPageResultParser;
-use SkGovernmentParser\Exceptions\InvalidQueryException;
+use SkGovernmentParser\Exception\InvalidQueryException;
 use SkGovernmentParser\Helper\StringHelper;
 use SkGovernmentParser\ParserConfiguration;
 
