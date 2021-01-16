@@ -2,9 +2,9 @@
 
 
 use PHPUnit\Framework\TestCase;
-use SkGovernmentParser\DataSources\TradeRegister\Parser\TradeSubjectPageParser;
-use SkGovernmentParser\DataSources\TradeRegister\Model\Manager;
-use SkGovernmentParser\DataSources\TradeRegister\Model\BusinessObject;
+use SkGovernmentParser\TradeRegister\Parser\TradeSubjectPageParser;
+use SkGovernmentParser\TradeRegister\Model\Manager;
+use SkGovernmentParser\TradeRegister\Model\BusinessObject;
 
 
 class TradeSubjectParsingTest extends TestCase
@@ -15,7 +15,7 @@ class TradeSubjectParsingTest extends TestCase
     public const SRSEN = '52390641';
 
     /**
-     * @covers SkGovernmentParser\DataSources\TradeRegister\Parser\TradeSubjectPageParser::parseHtml
+     * @covers SkGovernmentParser\TradeRegister\Parser\TradeSubjectPageParser::parseHtml
      */
     public function testSoftecParsing()
     {
@@ -75,7 +75,7 @@ class TradeSubjectParsingTest extends TestCase
     }
 
     /**
-     * @covers SkGovernmentParser\DataSources\TradeRegister\Parser\TradeSubjectPageParser::parseHtml
+     * @covers SkGovernmentParser\TradeRegister\Parser\TradeSubjectPageParser::parseHtml
      */
     public function testGombarcikParsing()
     {
@@ -109,7 +109,7 @@ class TradeSubjectParsingTest extends TestCase
     }
 
     /**
-     * @covers SkGovernmentParser\DataSources\TradeRegister\Parser\TradeSubjectPageParser::parseHtml
+     * @covers SkGovernmentParser\TradeRegister\Parser\TradeSubjectPageParser::parseHtml
      */
     public function testFingoSroParsing()
     {
@@ -147,7 +147,7 @@ class TradeSubjectParsingTest extends TestCase
     }
 
     /**
-     * @covers SkGovernmentParser\DataSources\TradeRegister\Parser\TradeSubjectPageParser::parseHtml
+     * @covers SkGovernmentParser\TradeRegister\Parser\TradeSubjectPageParser::parseHtml
      */
     public function testSrsenParsing()
     {
