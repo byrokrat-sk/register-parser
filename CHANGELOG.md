@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.0
+
+- Refactored namespaces and codebase structure
+- Replaced custom cURL helper with [GuzzleHttp](https://docs.guzzlephp.org/)
+- Removed static configuration
+- Added factory for all registers for better configuration
+
 ## 1.1.0
 
 - Fixed a lot of parsing bugs

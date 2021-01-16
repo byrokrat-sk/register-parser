@@ -2,13 +2,13 @@
     "name": "srsen/sk-government-parser",
     "description": "Package for requesting structured data about business subjects from pages of slovak government without API.",
     "type": "library",
-    "version": "1.0.1",
+    "version": "2.0.0",
     "minimum-stability": "stable",
     "require": {
         "php": "^7.4",
         "ext-json": "^7.4",
         "ext-dom": "20031129",
-        "ext-curl": "^7.4"
+        "guzzlehttp/guzzle": "^7.0"
     },
     "support": {
         "source": "https://github.com/MrSrsen/sk-government-parser",
