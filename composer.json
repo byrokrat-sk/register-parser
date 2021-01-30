@@ -1,8 +1,8 @@
 {
-    "name": "srsen/sk-government-parser",
+    "name": "byrokrat-sk/register-parser",
     "description": "Package for requesting structured data about business subjects from pages of slovak government without API.",
     "type": "library",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "minimum-stability": "stable",
     "require": {
         "php": "^7.4",
@@ -11,8 +11,8 @@
         "guzzlehttp/guzzle": "^7.0"
     },
     "support": {
-        "source": "https://github.com/MrSrsen/sk-government-parser",
-        "issues": "https://github.com/MrSrsen/sk-government-parser/issues"
+        "source": "https://github.com/byrokrat-sk/register-parser",
+        "issues": "https://github.com/byrokrat-sk/register-parser/issues"
     },
     "license": "MIT",
     "authors": [
@@ -23,7 +23,7 @@
     ],
     "autoload": {
         "psr-4":{
-            "SkGovernmentParser\\": "src"
+            "ByrokratSk\\": "src"
         }
     },
     "require-dev": {

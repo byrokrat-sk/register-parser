@@ -1,6 +1,6 @@
 <?php
 
-namespace SkGovernmentParser\Exception;
+namespace ByrokratSk\Exception;
 
 
 class BadHttpRequestException extends \RuntimeException

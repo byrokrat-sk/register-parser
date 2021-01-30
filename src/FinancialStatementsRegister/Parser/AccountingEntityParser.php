@@ -1,13 +1,13 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialStatementsRegister\Parser;
+namespace ByrokratSk\FinancialStatementsRegister\Parser;
 
 
-use SkGovernmentParser\FinancialStatementsRegister\Model\AccountingEntity;
-use SkGovernmentParser\FinancialStatementsRegister\Model\AccountingEntityAddress;
-use SkGovernmentParser\Helper\DateHelper;
-use SkGovernmentParser\Helper\StringHelper;
+use ByrokratSk\FinancialStatementsRegister\Model\AccountingEntity;
+use ByrokratSk\FinancialStatementsRegister\Model\AccountingEntityAddress;
+use ByrokratSk\Helper\DateHelper;
+use ByrokratSk\Helper\StringHelper;
 
 
 class AccountingEntityParser

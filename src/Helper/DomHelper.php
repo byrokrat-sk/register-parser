@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser\Helper;
+namespace ByrokratSk\Helper;
 
 
 class DomHelper

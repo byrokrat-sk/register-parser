@@ -1,10 +1,10 @@
 <?php
 
 
-namespace SkGovernmentParser\BusinessRegister\Model\Versionable;
+namespace ByrokratSk\BusinessRegister\Model\Versionable;
 
 
-use SkGovernmentParser\Helper\DateHelper;
+use ByrokratSk\Helper\DateHelper;
 
 
 class Manager extends Person

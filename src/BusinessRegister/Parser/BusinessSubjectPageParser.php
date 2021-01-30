@@ -1,34 +1,34 @@
 <?php
 
 
-namespace SkGovernmentParser\BusinessRegister\Parser;
+namespace ByrokratSk\BusinessRegister\Parser;
 
 
-use SkGovernmentParser\BusinessRegister\Model\Versionable\Acting;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\BusinessName;
-use SkGovernmentParser\BusinessRegister\Model\BusinessSubject;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\Capital;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\CoasedCompany;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\CompanyObject;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\Contributor;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\EnterpriseBranch;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\EnterpriseSale;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\LegalFact;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\LegalForm;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\LegalSuccessor;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\Liquidator;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\Manager;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\MergerOrDivision;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\Person;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\Procuration;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\ProcurationFact;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\RegisteredSeat;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\Shares;
-use SkGovernmentParser\BusinessRegister\Model\Versionable\Stockholder;
-use SkGovernmentParser\BusinessRegister\Model\VersionableGroup;
-use SkGovernmentParser\BusinessRegister\Model\Address;
-use SkGovernmentParser\Helper\StringHelper;
-use SkGovernmentParser\Helper\DateHelper;
+use ByrokratSk\BusinessRegister\Model\Versionable\Acting;
+use ByrokratSk\BusinessRegister\Model\Versionable\BusinessName;
+use ByrokratSk\BusinessRegister\Model\BusinessSubject;
+use ByrokratSk\BusinessRegister\Model\Versionable\Capital;
+use ByrokratSk\BusinessRegister\Model\Versionable\CoasedCompany;
+use ByrokratSk\BusinessRegister\Model\Versionable\CompanyObject;
+use ByrokratSk\BusinessRegister\Model\Versionable\Contributor;
+use ByrokratSk\BusinessRegister\Model\Versionable\EnterpriseBranch;
+use ByrokratSk\BusinessRegister\Model\Versionable\EnterpriseSale;
+use ByrokratSk\BusinessRegister\Model\Versionable\LegalFact;
+use ByrokratSk\BusinessRegister\Model\Versionable\LegalForm;
+use ByrokratSk\BusinessRegister\Model\Versionable\LegalSuccessor;
+use ByrokratSk\BusinessRegister\Model\Versionable\Liquidator;
+use ByrokratSk\BusinessRegister\Model\Versionable\Manager;
+use ByrokratSk\BusinessRegister\Model\Versionable\MergerOrDivision;
+use ByrokratSk\BusinessRegister\Model\Versionable\Person;
+use ByrokratSk\BusinessRegister\Model\Versionable\Procuration;
+use ByrokratSk\BusinessRegister\Model\Versionable\ProcurationFact;
+use ByrokratSk\BusinessRegister\Model\Versionable\RegisteredSeat;
+use ByrokratSk\BusinessRegister\Model\Versionable\Shares;
+use ByrokratSk\BusinessRegister\Model\Versionable\Stockholder;
+use ByrokratSk\BusinessRegister\Model\VersionableGroup;
+use ByrokratSk\BusinessRegister\Model\Address;
+use ByrokratSk\Helper\StringHelper;
+use ByrokratSk\Helper\DateHelper;
 
 
 class BusinessSubjectPageParser

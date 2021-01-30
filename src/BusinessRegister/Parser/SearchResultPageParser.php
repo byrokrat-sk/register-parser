@@ -1,14 +1,14 @@
 <?php
 
 
-namespace SkGovernmentParser\BusinessRegister\Parser;
+namespace ByrokratSk\BusinessRegister\Parser;
 
 
-use SkGovernmentParser\BusinessRegister\Model\Search\Item;
-use SkGovernmentParser\BusinessRegister\Model\Search\Listing;
-use SkGovernmentParser\BusinessRegister\Model\Search\Result;
-use SkGovernmentParser\Helper\DomHelper;
-use SkGovernmentParser\Helper\StringHelper;
+use ByrokratSk\BusinessRegister\Model\Search\Item;
+use ByrokratSk\BusinessRegister\Model\Search\Listing;
+use ByrokratSk\BusinessRegister\Model\Search\Result;
+use ByrokratSk\Helper\DomHelper;
+use ByrokratSk\Helper\StringHelper;
 
 
 class SearchResultPageParser

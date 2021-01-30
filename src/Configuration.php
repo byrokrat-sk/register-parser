@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser;
+namespace ByrokratSk;
 
 
 class Configuration

@@ -1,11 +1,11 @@
 <?php
 
 
-namespace SkGovernmentParser\BusinessRegister\Model\Versionable;
+namespace ByrokratSk\BusinessRegister\Model\Versionable;
 
 
-use SkGovernmentParser\BusinessRegister\Model\VersionableGroup;
-use SkGovernmentParser\Helper\Arrayable;
+use ByrokratSk\BusinessRegister\Model\VersionableGroup;
+use ByrokratSk\Helper\Arrayable;
 
 
 class EnterpriseBranch implements \JsonSerializable, Arrayable

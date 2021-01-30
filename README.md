@@ -1,4 +1,4 @@
-# srsen/sk-government-parser
+# byrokrat-sk/register-parser
 
 This package provides access to structured data from web pages of various slovak government sites without structured API access. This package is making requests to web servers of listed pages and parsing structured data from returned HTML code (with exception to financial statements register that is providing JSON REST API).
 
@@ -14,7 +14,7 @@ This library is directly dependent on structure of HTML code for each data sourc
 <?php
 require_once './vendor/autoload.php';
 
-use \SkGovernmentParser\RegisterFactory;
+use \ByrokratSk\RegisterFactory;
 
 // Allianz - Slovenská poisťovňa
 $allianz = RegisterFactory::financialAgentRegister()->byNumber('195970');
@@ -42,7 +42,7 @@ Podregister prijímania vkladov
 <?php
 require_once './vendor/autoload.php';
 
-use \SkGovernmentParser\RegisterFactory;
+use \ByrokratSk\RegisterFactory;
 
 $registerQuery = RegisterFactory::businessRegister();
 
@@ -69,7 +69,7 @@ TESCO computers, s.r.o.
 <?php
 require_once './vendor/autoload.php';
 
-use \SkGovernmentParser\RegisterFactory;
+use \ByrokratSk\RegisterFactory;
 
 $company = RegisterFactory::tradeRegister()->byIdentifier('35790563');
 echo($company->BusinessName . "\n");
@@ -90,9 +90,9 @@ Kúpa tovaru za účelom jeho predaja konečnému spotrebiteľovi (maloobchod)
 
 require_once './vendor/autoload.php';
 
-use \SkGovernmentParser\Exception\EmptySearchResultException;
-use \SkGovernmentParser\BusinessRegister\CompanyIdValidator;
-use \SkGovernmentParser\RegisterFactory;
+use \ByrokratSk\Exception\EmptySearchResultException;
+use \ByrokratSk\BusinessRegister\CompanyIdValidator;
+use \ByrokratSk\RegisterFactory;
 
 $cin = $_POST['cin'];
 

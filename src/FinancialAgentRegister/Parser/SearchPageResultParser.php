@@ -1,14 +1,14 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialAgentRegister\Parser;
+namespace ByrokratSk\FinancialAgentRegister\Parser;
 
 
-use SkGovernmentParser\FinancialAgentRegister\Model\Search\Item;
-use SkGovernmentParser\FinancialAgentRegister\Model\Search\Result;
-use SkGovernmentParser\Exception\InvalidQueryException;
-use SkGovernmentParser\Helper\DomHelper;
-use SkGovernmentParser\Helper\StringHelper;
+use ByrokratSk\FinancialAgentRegister\Model\Search\Item;
+use ByrokratSk\FinancialAgentRegister\Model\Search\Result;
+use ByrokratSk\Exception\InvalidQueryException;
+use ByrokratSk\Helper\DomHelper;
+use ByrokratSk\Helper\StringHelper;
 
 
 class SearchPageResultParser

@@ -1,12 +1,12 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialStatementsRegister\Model;
+namespace ByrokratSk\FinancialStatementsRegister\Model;
 
 
-use SkGovernmentParser\FinancialStatementsRegister\Model\FinancialReport\FinancialReport;
-use SkGovernmentParser\Helper\Arrayable;
-use SkGovernmentParser\Helper\DateHelper;
+use ByrokratSk\FinancialStatementsRegister\Model\FinancialReport\FinancialReport;
+use ByrokratSk\Helper\Arrayable;
+use ByrokratSk\Helper\DateHelper;
 
 
 class FinancialStatement implements \JsonSerializable, Arrayable

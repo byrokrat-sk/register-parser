@@ -1,15 +1,15 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialAgentRegister;
+namespace ByrokratSk\FinancialAgentRegister;
 
 
-use SkGovernmentParser\FinancialAgentRegister\Parser\SearchPageResultParser;
-use SkGovernmentParser\FinancialAgentRegister\Model\Search\Result;
-use SkGovernmentParser\FinancialAgentRegister\Model\Search\Item;
-use SkGovernmentParser\Exception\EmptySearchResultException;
-use SkGovernmentParser\Exception\BadHttpRequestException;
-use SkGovernmentParser\Helper\StringHelper;
+use ByrokratSk\FinancialAgentRegister\Parser\SearchPageResultParser;
+use ByrokratSk\FinancialAgentRegister\Model\Search\Result;
+use ByrokratSk\FinancialAgentRegister\Model\Search\Item;
+use ByrokratSk\Exception\EmptySearchResultException;
+use ByrokratSk\Exception\BadHttpRequestException;
+use ByrokratSk\Helper\StringHelper;
 use GuzzleHttp\Client;
 
 

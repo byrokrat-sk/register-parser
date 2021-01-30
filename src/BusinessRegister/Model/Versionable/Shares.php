@@ -1,12 +1,12 @@
 <?php
 
 
-namespace SkGovernmentParser\BusinessRegister\Model\Versionable;
+namespace ByrokratSk\BusinessRegister\Model\Versionable;
 
 
-use SkGovernmentParser\BusinessRegister\Model\Versionable;
-use SkGovernmentParser\Helper\Arrayable;
-use SkGovernmentParser\Helper\DateHelper;
+use ByrokratSk\BusinessRegister\Model\Versionable;
+use ByrokratSk\Helper\Arrayable;
+use ByrokratSk\Helper\DateHelper;
 
 class Shares extends Versionable implements \JsonSerializable, Arrayable
 {

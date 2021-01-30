@@ -1,18 +1,18 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialStatementsRegister;
+namespace ByrokratSk\FinancialStatementsRegister;
 
 
-use SkGovernmentParser\FinancialStatementsRegister\Model\FinancialReport\FinancialReport;
-use SkGovernmentParser\FinancialStatementsRegister\Parser\FinancialStatementParser;
-use SkGovernmentParser\FinancialStatementsRegister\Parser\AccountingEntityParser;
-use SkGovernmentParser\FinancialStatementsRegister\Parser\FinancialReportParser;
-use SkGovernmentParser\FinancialStatementsRegister\Model\FinancialStatement;
-use SkGovernmentParser\FinancialStatementsRegister\Model\AccountingEntity;
-use SkGovernmentParser\BusinessRegister\CompanyIdValidator;
-use SkGovernmentParser\Exception\InvalidQueryException;
-use SkGovernmentParser\Helper\StringHelper;
+use ByrokratSk\FinancialStatementsRegister\Model\FinancialReport\FinancialReport;
+use ByrokratSk\FinancialStatementsRegister\Parser\FinancialStatementParser;
+use ByrokratSk\FinancialStatementsRegister\Parser\AccountingEntityParser;
+use ByrokratSk\FinancialStatementsRegister\Parser\FinancialReportParser;
+use ByrokratSk\FinancialStatementsRegister\Model\FinancialStatement;
+use ByrokratSk\FinancialStatementsRegister\Model\AccountingEntity;
+use ByrokratSk\BusinessRegister\CompanyIdValidator;
+use ByrokratSk\Exception\InvalidQueryException;
+use ByrokratSk\Helper\StringHelper;
 
 
 class RegisterQuery

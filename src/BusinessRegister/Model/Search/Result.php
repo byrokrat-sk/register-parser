@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser\BusinessRegister\Model\Search;
+namespace ByrokratSk\BusinessRegister\Model\Search;
 
 
 class Result implements \JsonSerializable

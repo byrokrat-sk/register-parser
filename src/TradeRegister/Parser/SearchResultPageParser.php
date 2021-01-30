@@ -1,12 +1,12 @@
 <?php
 
 
-namespace SkGovernmentParser\TradeRegister\Parser;
+namespace ByrokratSk\TradeRegister\Parser;
 
 
-use SkGovernmentParser\TradeRegister\Model\Search\Item;
-use SkGovernmentParser\TradeRegister\Model\Search\Result;
-use SkGovernmentParser\Helper\DomHelper;
+use ByrokratSk\TradeRegister\Model\Search\Item;
+use ByrokratSk\TradeRegister\Model\Search\Result;
+use ByrokratSk\Helper\DomHelper;
 
 class SearchResultPageParser
 {

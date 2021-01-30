@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser\BusinessRegister\Model;
+namespace ByrokratSk\BusinessRegister\Model;
 
 
 abstract class Versionable

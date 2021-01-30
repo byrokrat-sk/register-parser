@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser\TradeRegister\Model;
+namespace ByrokratSk\TradeRegister\Model;
 
 
 class TradeSubject implements \JsonSerializable

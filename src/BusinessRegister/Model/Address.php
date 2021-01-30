@@ -1,10 +1,10 @@
 <?php
 
 
-namespace SkGovernmentParser\BusinessRegister\Model;
+namespace ByrokratSk\BusinessRegister\Model;
 
 
-use SkGovernmentParser\Helper\Arrayable;
+use ByrokratSk\Helper\Arrayable;
 
 
 class Address implements \JsonSerializable, Arrayable

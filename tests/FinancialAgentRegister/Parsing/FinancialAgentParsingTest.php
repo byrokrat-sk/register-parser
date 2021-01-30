@@ -2,7 +2,7 @@
 
 
 use PHPUnit\Framework\TestCase;
-use SkGovernmentParser\FinancialAgentRegister\Parser\FinancialAgentPageParser;
+use ByrokratSk\FinancialAgentRegister\Parser\FinancialAgentPageParser;
 
 
 class FinancialAgentParsingTest extends TestCase
@@ -13,7 +13,7 @@ class FinancialAgentParsingTest extends TestCase
     public const FINPORTAL = '119713';
 
     /**
-     * @covers SkGovernmentParser\FinancialAgentRegister\Parser\FinancialAgentPageParser::parseHtml
+     * @covers ByrokratSk\FinancialAgentRegister\Parser\FinancialAgentPageParser::parseHtml
      */
     public function testCikesParsing()
     {
@@ -63,7 +63,7 @@ class FinancialAgentParsingTest extends TestCase
     }
 
     /**
-     * @covers SkGovernmentParser\FinancialAgentRegister\Parser\FinancialAgentPageParser::parseHtml
+     * @covers ByrokratSk\FinancialAgentRegister\Parser\FinancialAgentPageParser::parseHtml
      */
     public function testCikesSroParsing()
     {
@@ -119,7 +119,7 @@ class FinancialAgentParsingTest extends TestCase
     }
 
     /**
-     * @covers SkGovernmentParser\FinancialAgentRegister\Parser\FinancialAgentPageParser::parseHtml
+     * @covers ByrokratSk\FinancialAgentRegister\Parser\FinancialAgentPageParser::parseHtml
      */
     public function testFingoSroParsing()
     {
@@ -162,7 +162,7 @@ class FinancialAgentParsingTest extends TestCase
     }
 
     /**
-     * @covers SkGovernmentParser\FinancialAgentRegister\Parser\FinancialAgentPageParser::parseHtml
+     * @covers ByrokratSk\FinancialAgentRegister\Parser\FinancialAgentPageParser::parseHtml
      */
     public function testFinportalParsing()
     {

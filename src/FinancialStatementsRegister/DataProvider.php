@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialStatementsRegister;
+namespace ByrokratSk\FinancialStatementsRegister;
 
 
 interface DataProvider

@@ -1,11 +1,11 @@
 <?php
 
-namespace SkGovernmentParser\TradeRegister;
+namespace ByrokratSk\TradeRegister;
 
 
 use Psr\Http\Message\ResponseInterface;
-use SkGovernmentParser\Exception\BadHttpRequestException;
-use SkGovernmentParser\Helper\StringHelper;
+use ByrokratSk\Exception\BadHttpRequestException;
+use ByrokratSk\Helper\StringHelper;
 use GuzzleHttp\Client;
 
 

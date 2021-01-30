@@ -1,11 +1,11 @@
 <?php
 
 
-namespace SkGovernmentParser\BusinessRegister;
+namespace ByrokratSk\BusinessRegister;
 
 
-use SkGovernmentParser\BusinessRegister\Model\Search\Listing;
-use SkGovernmentParser\Exception\BadHttpRequestException;
+use ByrokratSk\BusinessRegister\Model\Search\Listing;
+use ByrokratSk\Exception\BadHttpRequestException;
 use GuzzleHttp\Client;
 
 

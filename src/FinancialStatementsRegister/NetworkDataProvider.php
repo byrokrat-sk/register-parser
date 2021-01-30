@@ -1,13 +1,13 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialStatementsRegister;
+namespace ByrokratSk\FinancialStatementsRegister;
 
 
-use SkGovernmentParser\Exception\InconclusiveSearchException;
-use SkGovernmentParser\Exception\EmptySearchResultException;
-use SkGovernmentParser\Exception\BadHttpRequestException;
-use SkGovernmentParser\Helper\StringHelper;
+use ByrokratSk\Exception\InconclusiveSearchException;
+use ByrokratSk\Exception\EmptySearchResultException;
+use ByrokratSk\Exception\BadHttpRequestException;
+use ByrokratSk\Helper\StringHelper;
 use GuzzleHttp\Client;
 
 

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser\TradeRegister;
+namespace ByrokratSk\TradeRegister;
 
 
 interface PageProvider

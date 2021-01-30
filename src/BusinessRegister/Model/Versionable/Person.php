@@ -1,13 +1,13 @@
 <?php
 
 
-namespace SkGovernmentParser\BusinessRegister\Model\Versionable;
+namespace ByrokratSk\BusinessRegister\Model\Versionable;
 
 
-use SkGovernmentParser\BusinessRegister\Model\Address;
-use SkGovernmentParser\BusinessRegister\Model\Versionable;
-use SkGovernmentParser\Helper\Arrayable;
-use SkGovernmentParser\Helper\DateHelper;
+use ByrokratSk\BusinessRegister\Model\Address;
+use ByrokratSk\BusinessRegister\Model\Versionable;
+use ByrokratSk\Helper\Arrayable;
+use ByrokratSk\Helper\DateHelper;
 
 
 class Person extends Versionable implements \JsonSerializable, Arrayable

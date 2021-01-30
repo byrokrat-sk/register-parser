@@ -1,11 +1,11 @@
 <?php
 
 
-namespace SkGovernmentParser\BusinessRegister\Model;
+namespace ByrokratSk\BusinessRegister\Model;
 
 
-use SkGovernmentParser\Helper\Arrayable;
-use SkGovernmentParser\Helper\DateHelper;
+use ByrokratSk\Helper\Arrayable;
+use ByrokratSk\Helper\DateHelper;
 
 class BusinessSubject implements \JsonSerializable, Arrayable
 {

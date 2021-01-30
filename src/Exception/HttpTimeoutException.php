@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser\Exception;
+namespace ByrokratSk\Exception;
 
 
 class HttpTimeoutException extends \RuntimeException

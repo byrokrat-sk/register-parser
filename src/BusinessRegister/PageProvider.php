@@ -1,10 +1,10 @@
 <?php
 
 
-namespace SkGovernmentParser\BusinessRegister;
+namespace ByrokratSk\BusinessRegister;
 
 
-use SkGovernmentParser\BusinessRegister\Model\Search\Listing;
+use ByrokratSk\BusinessRegister\Model\Search\Listing;
 
 
 interface PageProvider

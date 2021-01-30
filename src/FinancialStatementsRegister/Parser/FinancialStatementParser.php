@@ -1,11 +1,11 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialStatementsRegister\Parser;
+namespace ByrokratSk\FinancialStatementsRegister\Parser;
 
 
-use SkGovernmentParser\FinancialStatementsRegister\Model\FinancialStatement;
-use SkGovernmentParser\Helper\DateHelper;
+use ByrokratSk\FinancialStatementsRegister\Model\FinancialStatement;
+use ByrokratSk\Helper\DateHelper;
 
 
 class FinancialStatementParser

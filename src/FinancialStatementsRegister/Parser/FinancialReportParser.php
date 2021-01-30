@@ -1,18 +1,18 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialStatementsRegister\Parser;
+namespace ByrokratSk\FinancialStatementsRegister\Parser;
 
 
-use SkGovernmentParser\FinancialStatementsRegister\Model\Address;
-use SkGovernmentParser\FinancialStatementsRegister\Model\FinancialReport\ContentTable;
-use SkGovernmentParser\FinancialStatementsRegister\Model\FinancialReport\FinancialReport;
-use SkGovernmentParser\FinancialStatementsRegister\Model\FinancialReport\ReportAttachment;
-use SkGovernmentParser\FinancialStatementsRegister\Model\FinancialReport\ReportContent;
-use SkGovernmentParser\FinancialStatementsRegister\Model\FinancialReport\ReportTemplate;
-use SkGovernmentParser\FinancialStatementsRegister\Model\FinancialReport\TemplateLine;
-use SkGovernmentParser\FinancialStatementsRegister\Model\FinancialReport\TemplateTable;
-use SkGovernmentParser\Helper\DateHelper;
+use ByrokratSk\FinancialStatementsRegister\Model\Address;
+use ByrokratSk\FinancialStatementsRegister\Model\FinancialReport\ContentTable;
+use ByrokratSk\FinancialStatementsRegister\Model\FinancialReport\FinancialReport;
+use ByrokratSk\FinancialStatementsRegister\Model\FinancialReport\ReportAttachment;
+use ByrokratSk\FinancialStatementsRegister\Model\FinancialReport\ReportContent;
+use ByrokratSk\FinancialStatementsRegister\Model\FinancialReport\ReportTemplate;
+use ByrokratSk\FinancialStatementsRegister\Model\FinancialReport\TemplateLine;
+use ByrokratSk\FinancialStatementsRegister\Model\FinancialReport\TemplateTable;
+use ByrokratSk\Helper\DateHelper;
 
 
 class FinancialReportParser

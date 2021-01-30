@@ -1,16 +1,16 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialAgentRegister;
+namespace ByrokratSk\FinancialAgentRegister;
 
 
-use SkGovernmentParser\FinancialAgentRegister\Parser\FinancialAgentPageParser;
-use SkGovernmentParser\FinancialAgentRegister\Parser\SearchPageResultParser;
-use SkGovernmentParser\FinancialAgentRegister\Model\FinancialAgent;
-use SkGovernmentParser\FinancialAgentRegister\Model\Search\Result;
-use SkGovernmentParser\BusinessRegister\CompanyIdValidator;
-use SkGovernmentParser\Exception\InvalidQueryException;
-use SkGovernmentParser\Helper\StringHelper;
+use ByrokratSk\FinancialAgentRegister\Parser\FinancialAgentPageParser;
+use ByrokratSk\FinancialAgentRegister\Parser\SearchPageResultParser;
+use ByrokratSk\FinancialAgentRegister\Model\FinancialAgent;
+use ByrokratSk\FinancialAgentRegister\Model\Search\Result;
+use ByrokratSk\BusinessRegister\CompanyIdValidator;
+use ByrokratSk\Exception\InvalidQueryException;
+use ByrokratSk\Helper\StringHelper;
 
 
 class RegisterQuery

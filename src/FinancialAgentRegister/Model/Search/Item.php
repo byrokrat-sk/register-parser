@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialAgentRegister\Model\Search;
+namespace ByrokratSk\FinancialAgentRegister\Model\Search;
 
 
 class Item implements \JsonSerializable

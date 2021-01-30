@@ -1,10 +1,10 @@
 <?php
 
 
-namespace SkGovernmentParser\TradeRegister\Model\Search;
+namespace ByrokratSk\TradeRegister\Model\Search;
 
 
-use SkGovernmentParser\TradeRegister\Model\Address;
+use ByrokratSk\TradeRegister\Model\Address;
 
 class Item implements \JsonSerializable
 {

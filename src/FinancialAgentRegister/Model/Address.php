@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialAgentRegister\Model;
+namespace ByrokratSk\FinancialAgentRegister\Model;
 
 
 class Address implements \JsonSerializable

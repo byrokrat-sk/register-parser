@@ -1,15 +1,15 @@
 <?php
 
 
-namespace SkGovernmentParser\TradeRegister\Parser;
+namespace ByrokratSk\TradeRegister\Parser;
 
 
-use SkGovernmentParser\TradeRegister\Model\Address;
-use SkGovernmentParser\TradeRegister\Model\BusinessObject;
-use SkGovernmentParser\TradeRegister\Model\Manager;
-use SkGovernmentParser\TradeRegister\Model\TradeSubject;
-use SkGovernmentParser\Helper\DateHelper;
-use SkGovernmentParser\Helper\StringHelper;
+use ByrokratSk\TradeRegister\Model\Address;
+use ByrokratSk\TradeRegister\Model\BusinessObject;
+use ByrokratSk\TradeRegister\Model\Manager;
+use ByrokratSk\TradeRegister\Model\TradeSubject;
+use ByrokratSk\Helper\DateHelper;
+use ByrokratSk\Helper\StringHelper;
 
 class TradeSubjectPageParser
 {

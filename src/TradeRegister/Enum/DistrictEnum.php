@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser\TradeRegister\Enum;
+namespace ByrokratSk\TradeRegister\Enum;
 
 
 class DistrictEnum

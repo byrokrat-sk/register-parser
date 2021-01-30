@@ -1,11 +1,11 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialStatementsRegister\Model;
+namespace ByrokratSk\FinancialStatementsRegister\Model;
 
 
-use SkGovernmentParser\Helper\Arrayable;
-use SkGovernmentParser\Helper\DateHelper;
+use ByrokratSk\Helper\Arrayable;
+use ByrokratSk\Helper\DateHelper;
 
 
 class AccountingEntity implements \JsonSerializable, Arrayable

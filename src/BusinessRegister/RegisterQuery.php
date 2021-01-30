@@ -1,18 +1,18 @@
 <?php
 
 
-namespace SkGovernmentParser\BusinessRegister;
+namespace ByrokratSk\BusinessRegister;
 
 
-use SkGovernmentParser\BusinessRegister\Parser\BusinessSubjectPageParser;
-use SkGovernmentParser\BusinessRegister\Parser\SearchResultPageParser;
-use SkGovernmentParser\BusinessRegister\Model\BusinessSubject;
-use SkGovernmentParser\BusinessRegister\Model\Search\Listing;
-use SkGovernmentParser\Exception\InconclusiveSearchException;
-use SkGovernmentParser\BusinessRegister\Model\Search\Result;
-use SkGovernmentParser\Exception\EmptySearchResultException;
-use SkGovernmentParser\Exception\InvalidQueryException;
-use SkGovernmentParser\Helper\StringHelper;
+use ByrokratSk\BusinessRegister\Parser\BusinessSubjectPageParser;
+use ByrokratSk\BusinessRegister\Parser\SearchResultPageParser;
+use ByrokratSk\BusinessRegister\Model\BusinessSubject;
+use ByrokratSk\BusinessRegister\Model\Search\Listing;
+use ByrokratSk\Exception\InconclusiveSearchException;
+use ByrokratSk\BusinessRegister\Model\Search\Result;
+use ByrokratSk\Exception\EmptySearchResultException;
+use ByrokratSk\Exception\InvalidQueryException;
+use ByrokratSk\Helper\StringHelper;
 
 
 class RegisterQuery

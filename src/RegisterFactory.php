@@ -1,13 +1,13 @@
 <?php
 
 
-namespace SkGovernmentParser;
+namespace ByrokratSk;
 
 
 use GuzzleHttp\Client;
-use SkGovernmentParser\FinancialStatementsRegister\NetworkDataProvider;
-use SkGovernmentParser\BusinessRegister\Parser\SearchResultPageParser;
-use SkGovernmentParser\TradeRegister\RegisterQuery;
+use ByrokratSk\FinancialStatementsRegister\NetworkDataProvider;
+use ByrokratSk\BusinessRegister\Parser\SearchResultPageParser;
+use ByrokratSk\TradeRegister\RegisterQuery;
 
 
 class RegisterFactory

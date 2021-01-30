@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialAgentRegister\Model;
+namespace ByrokratSk\FinancialAgentRegister\Model;
 
 
 class State implements \JsonSerializable

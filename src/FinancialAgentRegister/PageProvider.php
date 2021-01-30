@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialAgentRegister;
+namespace ByrokratSk\FinancialAgentRegister;
 
 
 interface PageProvider

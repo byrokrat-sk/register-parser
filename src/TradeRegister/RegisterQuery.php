@@ -1,19 +1,19 @@
 <?php
 
 
-namespace SkGovernmentParser\TradeRegister;
+namespace ByrokratSk\TradeRegister;
 
 
-use SkGovernmentParser\TradeRegister\Parser\SearchResultPageParser;
-use SkGovernmentParser\TradeRegister\Parser\TradeSubjectPageParser;
-use SkGovernmentParser\Exception\InconclusiveSearchException;
-use SkGovernmentParser\Exception\EmptySearchResultException;
-use SkGovernmentParser\BusinessRegister\CompanyIdValidator;
-use SkGovernmentParser\TradeRegister\Model\Search\Result;
-use SkGovernmentParser\TradeRegister\Model\TradeSubject;
-use SkGovernmentParser\Exception\InvalidQueryException;
-use SkGovernmentParser\TradeRegister\Enum\DistrictEnum;
-use SkGovernmentParser\Helper\StringHelper;
+use ByrokratSk\TradeRegister\Parser\SearchResultPageParser;
+use ByrokratSk\TradeRegister\Parser\TradeSubjectPageParser;
+use ByrokratSk\Exception\InconclusiveSearchException;
+use ByrokratSk\Exception\EmptySearchResultException;
+use ByrokratSk\BusinessRegister\CompanyIdValidator;
+use ByrokratSk\TradeRegister\Model\Search\Result;
+use ByrokratSk\TradeRegister\Model\TradeSubject;
+use ByrokratSk\Exception\InvalidQueryException;
+use ByrokratSk\TradeRegister\Enum\DistrictEnum;
+use ByrokratSk\Helper\StringHelper;
 
 
 class RegisterQuery

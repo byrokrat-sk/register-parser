@@ -1,18 +1,18 @@
 <?php
 
 
-namespace SkGovernmentParser\FinancialAgentRegister\Parser;
+namespace ByrokratSk\FinancialAgentRegister\Parser;
 
 
-use SkGovernmentParser\FinancialAgentRegister\Model\Address;
-use SkGovernmentParser\FinancialAgentRegister\Model\AgentRegistration;
-use SkGovernmentParser\FinancialAgentRegister\Model\FinancialAgent;
-use SkGovernmentParser\FinancialAgentRegister\Model\Guarantor;
-use SkGovernmentParser\FinancialAgentRegister\Model\LiabilityInsurance;
-use SkGovernmentParser\FinancialAgentRegister\Model\SectorRegistration;
-use SkGovernmentParser\FinancialAgentRegister\Model\State;
-use SkGovernmentParser\Helper\DateHelper;
-use SkGovernmentParser\Helper\StringHelper;
+use ByrokratSk\FinancialAgentRegister\Model\Address;
+use ByrokratSk\FinancialAgentRegister\Model\AgentRegistration;
+use ByrokratSk\FinancialAgentRegister\Model\FinancialAgent;
+use ByrokratSk\FinancialAgentRegister\Model\Guarantor;
+use ByrokratSk\FinancialAgentRegister\Model\LiabilityInsurance;
+use ByrokratSk\FinancialAgentRegister\Model\SectorRegistration;
+use ByrokratSk\FinancialAgentRegister\Model\State;
+use ByrokratSk\Helper\DateHelper;
+use ByrokratSk\Helper\StringHelper;
 
 
 class FinancialAgentPageParser

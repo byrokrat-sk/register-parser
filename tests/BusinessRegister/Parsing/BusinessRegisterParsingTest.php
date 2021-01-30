@@ -5,12 +5,12 @@ namespace BusinessRegister\Parsing;
 
 
 use PHPUnit\Framework\TestCase;
-use SkGovernmentParser\BusinessRegister\Parser\BusinessSubjectPageParser;
+use ByrokratSk\BusinessRegister\Parser\BusinessSubjectPageParser;
 
 
 class BusinessRegisterParsingTest extends TestCase
 {
-    /** @covers \SkGovernmentParser\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
+    /** @covers \ByrokratSk\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
     public function testEsetParsing()
     {
         $htmlCode = file_get_contents(__DIR__ . "/page/eset.html");
@@ -122,7 +122,7 @@ class BusinessRegisterParsingTest extends TestCase
         $this->assertSame("2020-10-31", $subject->ExtractedAt->format("Y-m-d"));
     }
 
-    /** @covers \SkGovernmentParser\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
+    /** @covers \ByrokratSk\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
     public function testLidlParsing()
     {
         $htmlCode = file_get_contents(__DIR__ . "/page/lidl.html");
@@ -184,7 +184,7 @@ class BusinessRegisterParsingTest extends TestCase
         $this->assertSame("2005-09-23", $subject->ManagementBody->getAll()[25]->ValidTo->format("Y-m-d"));
     }
 
-    /** @covers \SkGovernmentParser\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
+    /** @covers \ByrokratSk\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
     public function testSoftecParsing()
     {
         $htmlCode = file_get_contents(__DIR__ . "/page/softec.html");
@@ -249,7 +249,7 @@ class BusinessRegisterParsingTest extends TestCase
         $this->assertSame("Jarošova 1, Bratislava - mestská časť Nové Mesto 83103", $subject->CompaniesCoased->getAll()[0]->Address->getFull());
     }
 
-    /** @covers \SkGovernmentParser\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
+    /** @covers \ByrokratSk\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
     public function testTescoParsing()
     {
         $htmlCode = file_get_contents(__DIR__ . "/page/tesco.html");
@@ -279,7 +279,7 @@ class BusinessRegisterParsingTest extends TestCase
         $this->assertSame("Holandské kráľovstvo", $subject->Stockholders->getAll()[0]->Address->Country);
     }
 
-    /** @covers \SkGovernmentParser\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
+    /** @covers \ByrokratSk\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
     public function testGoogleParsing()
     {
         $htmlCode = file_get_contents(__DIR__ . "/page/google.html");
@@ -310,7 +310,7 @@ class BusinessRegisterParsingTest extends TestCase
         $this->assertNull($subject->ManagementBody->getAll()[0]->Address->Zip);
     }
 
-    /** @covers \SkGovernmentParser\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
+    /** @covers \ByrokratSk\BusinessRegister\Parser\BusinessSubjectPageParser::parseHtml */
     public function testHbpParsing()
     {
         $htmlCode = file_get_contents(__DIR__ . "/page/hbp.html");
