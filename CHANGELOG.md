@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1
+
+- Changed project name, repository and namespace
+
 ## 2.0.0
 
 - Refactored namespaces and codebase structure
