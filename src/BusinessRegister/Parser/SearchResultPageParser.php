@@ -7,7 +7,6 @@ namespace ByrokratSk\BusinessRegister\Parser;
 use ByrokratSk\BusinessRegister\Model\Search\Item;
 use ByrokratSk\BusinessRegister\Model\Search\Listing;
 use ByrokratSk\BusinessRegister\Model\Search\Result;
-use ByrokratSk\Helper\DomHelper;
 use ByrokratSk\Helper\StringHelper;
 
 class SearchResultPageParser
@@ -35,22 +34,55 @@ class SearchResultPageParser
 
         $parsedItems = [];
 
-        $resultTable = $doc->childNodes[1]->childNodes[1]->childNodes[7];
-        $resultRows = DomHelper::nodeListToArray($resultTable->childNodes);
-        unset($resultRows[0]); // Remove table header for easier iteration
+        // Find the result table: the last <table> in the document that has <th> header cells.
+        // (Previous positional access broke when orsr.sk added whitespace text nodes in the HTML.)
+        $resultTable = null;
+        foreach ($doc->getElementsByTagName('table') as $table) {
+            if ($table->getElementsByTagName('th')->length > 0) {
+                $resultTable = $table;
+            }
+        }
+        if (null === $resultTable) {
+            return new Result([]);
+        }
 
-        foreach ($resultRows as $row) {
-            $subjectName = \trim((string) $row->childNodes[2]->textContent);
+        $headerSkipped = false;
+        foreach ($resultTable->childNodes as $row) {
+            if (!($row instanceof \DOMElement) || 'tr' !== $row->nodeName) {
+                continue;
+            }
+            if (!$headerSkipped) {
+                $headerSkipped = true;
+                continue; // skip header <tr>
+            }
 
-            $listingsCell = $row->childNodes[4];
+            // Collect <td> cells, skipping whitespace text nodes
+            $cells = [];
+            foreach ($row->childNodes as $node) {
+                if ($node instanceof \DOMElement && 'td' === $node->nodeName) {
+                    $cells[] = $node;
+                }
+            }
+            if (\count($cells) < 3) {
+                continue;
+            }
+
+            // cells[0] = row number, cells[1] = company name, cells[2] = listing links
+            $subjectName = \trim((string) $cells[1]->textContent);
+
+            $links = $cells[2]->getElementsByTagName('a');
+            if ($links->length < 2) {
+                continue;
+            }
+
             $actualListingHref =
                 $this->registerRootUrl
                 . '/'
-                . \trim((string) $listingsCell->childNodes[0]->childNodes[1]->getAttribute('href'));
+                . \trim((string) $links->item(0)->getAttribute('href'));
             $fullListingHref =
                 $this->registerRootUrl
                 . '/'
-                . \trim((string) $listingsCell->childNodes[0]->childNodes[3]->getAttribute('href'));
+                . \trim((string) $links->item(1)->getAttribute('href'));
 
             $actualListing = $this->parseListingFromUrl($actualListingHref);
             $fullListing = $this->parseListingFromUrl($fullListingHref);
@@ -62,9 +94,9 @@ class SearchResultPageParser
 
     private function parseListingFromUrl(string $url): Listing
     {
-        $id = StringHelper::stringBetween($url, 'ID=', '&');
-        $sid = StringHelper::stringBetween($url, 'SID=', '&');
-        $p = \explode('&P=', $url)[1];
+        $id = (int) StringHelper::stringBetween($url, 'ID=', '&');
+        $sid = (int) StringHelper::stringBetween($url, 'SID=', '&');
+        $p = (int) \explode('&P=', $url)[1];
 
         return new Listing($id, $sid, $p, $this->registerRootUrl);
     }

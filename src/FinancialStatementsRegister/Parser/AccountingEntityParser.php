@@ -17,7 +17,7 @@ class AccountingEntityParser
             $rawObject->id,
             $rawObject->ico,
             $rawObject->dic,
-            $rawObject->sid,
+            $rawObject->sid ?? null,
             $rawObject->nazovUJ,
             self::parseAddress(
                 $rawObject->ulica,
@@ -37,7 +37,7 @@ class AccountingEntityParser
             $rawObject->idVyrocnychSprav,
             $rawObject->zdrojDat,
             DateHelper::parseYmdDate($rawObject->datumZalozenia),
-            DateHelper::parseYmdDate($rawObject->datumZrusenia),
+            DateHelper::parseYmdDate($rawObject->datumZrusenia ?? null),
             DateHelper::parseYmdDate($rawObject->datumPoslednejUpravy),
         );
     }

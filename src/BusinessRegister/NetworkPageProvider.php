@@ -6,13 +6,14 @@ namespace ByrokratSk\BusinessRegister;
 
 use ByrokratSk\BusinessRegister\Model\Search\Listing;
 use ByrokratSk\Exception\BadHttpRequestException;
+use ByrokratSk\Helper\StringHelper;
 use GuzzleHttp\Client;
 
 class NetworkPageProvider implements PageProvider
 {
-    public const NAME_QUERY_URL = '/hladaj_subjekt.asp?lan=en&OBMENO={query}&PF=0&R=on';
+    public const NAME_QUERY_URL = '/hladaj_subjekt.asp?lan=sk&OBMENO={query}&PF=0&R=on';
     public const IDENTIFICATOR_QUERY_URL = '/hladaj_ico.asp?ICO={query}&SID=0';
-    public const FULL_PAGE_URL = '/vypis.asp?lan=en&ID={query}&SID=2&P=1';
+    public const FULL_PAGE_URL = '/vypis.asp?lan=sk&ID={query}&SID=2&P=1';
 
     public function __construct(
         private readonly Client $HttpClient,
@@ -50,6 +51,9 @@ class NetworkPageProvider implements PageProvider
             );
         }
 
-        return $response->getBody()->getContents();
+        return StringHelper::convertHtmlToUtf8(
+            $response->getBody()->getContents(),
+            $response->getHeaderLine('Content-Type'),
+        );
     }
 }

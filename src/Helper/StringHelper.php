@@ -61,4 +61,34 @@ class StringHelper
 
         return $jsonObj;
     }
+
+    /**
+     * Converts HTML bytes to UTF-8 based on the charset declared in the HTTP
+     * Content-Type response header or the HTML <meta charset> tag.
+     * After conversion the meta tag is updated so DOMDocument won't attempt
+     * a second conversion on the already-converted bytes.
+     */
+    public static function convertHtmlToUtf8(string $html, string $contentTypeHeader = ''): string
+    {
+        if (\preg_match('/charset=([^\s;]+)/i', $contentTypeHeader, $m)) {
+            $charset = \strtoupper(\trim($m[1]));
+        } elseif (\preg_match('/<meta[^>]+charset=["\']?\s*([^"\'\s;>]+)/i', $html, $m)) {
+            $charset = \strtoupper(\trim($m[1]));
+        } else {
+            return $html;
+        }
+
+        if (\in_array($charset, ['UTF-8', 'UTF8'], true)) {
+            return $html;
+        }
+
+        $converted = \mb_convert_encoding($html, 'UTF-8', $charset);
+
+        // Replace the old charset declaration so DOMDocument won't try to re-convert
+        return (string) \preg_replace(
+            '/<meta([^>]+)charset=["\']?[^"\'\s;>]+/i',
+            '<meta$1charset=UTF-8',
+            $converted,
+        );
+    }
 }

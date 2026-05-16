@@ -24,12 +24,12 @@ class Configuration
     {
         return new self(
             10,
-            'http://orsr.sk',
+            'https://orsr.sk',
             true,
             true,
             'https://www.zrsr.sk',
             'https://regfap.nbs.sk',
-            'http://www.registeruz.sk/cruz-public/api',
+            'https://www.registeruz.sk/cruz-public/api',
         );
     }
 }

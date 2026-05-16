@@ -6,10 +6,15 @@
          failOnRisky="true"
          failOnWarning="true"
          cacheDirectory=".phpunit.cache"
+         defaultTestSuite="default"
 >
     <testsuites>
         <testsuite name="default">
             <directory suffix="Test.php">tests</directory>
+            <exclude>tests/E2E</exclude>
+        </testsuite>
+        <testsuite name="e2e">
+            <directory suffix="Test.php">tests/E2E</directory>
         </testsuite>
     </testsuites>
 

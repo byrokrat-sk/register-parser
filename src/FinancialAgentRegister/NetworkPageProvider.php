@@ -50,7 +50,10 @@ class NetworkPageProvider implements PageProvider
             ';',
         );
 
-        $responseContent = $searchResponse->getBody()->getContents();
+        $responseContent = StringHelper::convertHtmlToUtf8(
+            $searchResponse->getBody()->getContents(),
+            $searchResponse->getHeaderLine('Content-Type'),
+        );
 
         /*
          * There is case when register return page of financial agent immediately without search results page mid-step
@@ -103,7 +106,10 @@ $matchedAgent = $searchItem;
                 );
             }
 
-            return $agentPageResponse->getBody()->getContents();
+            return StringHelper::convertHtmlToUtf8(
+                $agentPageResponse->getBody()->getContents(),
+                $agentPageResponse->getHeaderLine('Content-Type'),
+            );
         } catch (AgentPageProvidedException $agentPageProvided) {
             return $agentPageProvided->AgentPageHtml;
         }
@@ -138,7 +144,10 @@ $matchedAgent = $searchItem;
                 );
             }
 
-            return $agentPageResponse->getBody()->getContents();
+            return StringHelper::convertHtmlToUtf8(
+                $agentPageResponse->getBody()->getContents(),
+                $agentPageResponse->getHeaderLine('Content-Type'),
+            );
         } catch (AgentPageProvidedException $agentPageProvided) {
             return $agentPageProvided->AgentPageHtml;
         }

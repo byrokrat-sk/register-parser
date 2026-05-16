@@ -116,7 +116,10 @@ class NetworkPageProvider implements PageProvider
             );
         }
 
-        return $subjectResponse->getBody()->getContents();
+        return StringHelper::convertHtmlToUtf8(
+            $subjectResponse->getBody()->getContents(),
+            $subjectResponse->getHeaderLine('Content-Type'),
+        );
     }
 
     // ~
@@ -142,7 +145,10 @@ class NetworkPageProvider implements PageProvider
             );
         }
 
-        return $searchResponse->getBody()->getContents();
+        return StringHelper::convertHtmlToUtf8(
+            $searchResponse->getBody()->getContents(),
+            $searchResponse->getHeaderLine('Content-Type'),
+        );
     }
 
     /** This function will init session with request to register if it's not yet initialised */
