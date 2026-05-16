@@ -9,6 +9,10 @@ use ByrokratSk\FinancialStatementsRegister\Model\AccountingEntityAddress;
 use ByrokratSk\Helper\DateHelper;
 use ByrokratSk\Helper\StringHelper;
 
+use function count;
+use function explode;
+use function implode;
+
 class AccountingEntityParser
 {
     public static function parseObject(object $rawObject): AccountingEntity
@@ -49,10 +53,10 @@ class AccountingEntityParser
         string $region,
         string $district,
     ): AccountingEntityAddress {
-        $streetExplode = \explode(' ', $rawStreet);
-        $streetNumber = $streetExplode[\count($streetExplode) - 1];
-        unset($streetExplode[\count($streetExplode) - 1]);
-        $streetName = \implode(' ', $streetExplode);
+        $streetExplode = explode(' ', $rawStreet);
+        $streetNumber = $streetExplode[count($streetExplode) - 1];
+        unset($streetExplode[count($streetExplode) - 1]);
+        $streetName = implode(' ', $streetExplode);
 
         return new AccountingEntityAddress(
             $streetName,

@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace ByrokratSk\BusinessRegister\Model\Versionable;
 
+use ByrokratSk\BusinessRegister\Model\Address;
 use ByrokratSk\Helper\Arrayable;
 use ByrokratSk\Helper\DateHelper;
+use DateTime;
+use JsonSerializable;
 
-class Procuration extends Person implements \JsonSerializable, Arrayable
+use function array_merge;
+
+class Procuration extends Person implements JsonSerializable, Arrayable
 {
     public function __construct(
         ?string $BusinessName,
@@ -15,16 +20,16 @@ class Procuration extends Person implements \JsonSerializable, Arrayable
         ?string $FirstName,
         ?string $LastName,
         ?string $DegreeAfter,
-        ?\ByrokratSk\BusinessRegister\Model\Address $Address,
-        public ?\DateTime $PositionFrom,
-        public ?\DateTime $PositionTo,
+        ?Address $Address,
+        public ?DateTime $PositionFrom,
+        public ?DateTime $PositionTo,
     ) {
         parent::__construct($BusinessName, $DegreeBefore, $FirstName, $LastName, $DegreeAfter, $Address);
     }
 
     public function toArray(): array
     {
-        return \array_merge(parent::toArray(), [
+        return array_merge(parent::toArray(), [
             'position_from' => DateHelper::formatYmd($this->PositionFrom),
             'position_to' => DateHelper::formatYmd($this->PositionTo),
         ]);

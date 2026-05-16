@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace ByrokratSk\BusinessRegister\Model;
 
 use ByrokratSk\Helper\Arrayable;
+use DateTime;
+use JsonSerializable;
 
-class VersionableGroup implements \JsonSerializable, Arrayable
+use function array_filter;
+use function array_map;
+
+class VersionableGroup implements JsonSerializable, Arrayable
 {
     /**
      * @param Versionable[] $Items
@@ -26,28 +31,28 @@ class VersionableGroup implements \JsonSerializable, Arrayable
     }
 
     /** @returns Versionable[] */
-    public function getValid(?\DateTime $now = null): array
+    public function getValid(?DateTime $now = null): array
     {
-        $now ??= new \DateTime();
+        $now ??= new DateTime();
 
-        return \array_filter(
+        return array_filter(
             $this->Items,
             static fn(Versionable $versionable): bool => (
-                !$versionable->ValidTo instanceof \DateTime
+                !$versionable->ValidTo instanceof DateTime
                 || $now > $versionable->ValidTo
             ),
         );
     }
 
     /** @returns Versionable[] */
-    public function getExpired(?\DateTime $now = null): array
+    public function getExpired(?DateTime $now = null): array
     {
-        $now ??= new \DateTime();
+        $now ??= new DateTime();
 
-        return \array_filter(
+        return array_filter(
             $this->Items,
             static fn(Versionable $versionable): bool => (
-                !$versionable->ValidTo instanceof \DateTime
+                !$versionable->ValidTo instanceof DateTime
                 || $now <= $versionable->ValidTo
             ),
         );
@@ -61,7 +66,7 @@ class VersionableGroup implements \JsonSerializable, Arrayable
 
     public function toArray(): array
     {
-        return \array_map(static fn(Arrayable $arrayable): array => $arrayable->toArray(), $this->getAll());
+        return array_map(static fn(Arrayable $arrayable): array => $arrayable->toArray(), $this->getAll());
     }
 
     public function jsonSerialize(): mixed

@@ -6,6 +6,8 @@ namespace ByrokratSk\FinancialStatementsRegister\Model;
 
 use ByrokratSk\Helper\Arrayable;
 
+use function array_merge;
+
 class AccountingEntityAddress extends Address implements Arrayable
 {
     public function __construct(
@@ -22,7 +24,7 @@ class AccountingEntityAddress extends Address implements Arrayable
 
     public function toArray(): array
     {
-        return \array_merge(parent::toArray(), [
+        return array_merge(parent::toArray(), [
             'region_code' => $this->RegionCode,
             'district_code' => $this->DistrictCode,
         ]);

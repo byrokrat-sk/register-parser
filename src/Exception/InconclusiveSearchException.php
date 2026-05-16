@@ -4,4 +4,6 @@ declare(strict_types=1);
 
 namespace ByrokratSk\Exception;
 
-class InconclusiveSearchException extends \RuntimeException {}
+use RuntimeException;
+
+class InconclusiveSearchException extends RuntimeException {}

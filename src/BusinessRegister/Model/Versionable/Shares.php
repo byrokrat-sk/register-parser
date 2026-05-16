@@ -7,8 +7,9 @@ namespace ByrokratSk\BusinessRegister\Model\Versionable;
 use ByrokratSk\BusinessRegister\Model\Versionable;
 use ByrokratSk\Helper\Arrayable;
 use ByrokratSk\Helper\DateHelper;
+use JsonSerializable;
 
-class Shares extends Versionable implements \JsonSerializable, Arrayable
+class Shares extends Versionable implements JsonSerializable, Arrayable
 {
     public function __construct(
         public int $Quantity,

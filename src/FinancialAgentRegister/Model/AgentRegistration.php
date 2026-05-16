@@ -4,7 +4,14 @@ declare(strict_types=1);
 
 namespace ByrokratSk\FinancialAgentRegister\Model;
 
-class AgentRegistration implements \JsonSerializable
+use DateTime;
+use JsonSerializable;
+
+use function array_column;
+use function max;
+use function min;
+
+class AgentRegistration implements JsonSerializable
 {
     /**
      * @param SectorRegistration[] $SectorRegistrations
@@ -16,14 +23,14 @@ class AgentRegistration implements \JsonSerializable
         public array $SectorRegistrations,
     ) {}
 
-    public function getFromDate(): ?\DateTime
+    public function getFromDate(): ?DateTime
     {
-        return \min(\array_column($this->SectorRegistrations, 'RegistratedAt'));
+        return min(array_column($this->SectorRegistrations, 'RegistratedAt'));
     }
 
-    public function getTerminationDate(): ?\DateTime
+    public function getTerminationDate(): ?DateTime
     {
-        return \max(\array_column($this->SectorRegistrations, 'TerminatedAt'));
+        return max(array_column($this->SectorRegistrations, 'TerminatedAt'));
     }
 
     public function jsonSerialize(): mixed
@@ -35,8 +42,8 @@ class AgentRegistration implements \JsonSerializable
             'registration_number' => $this->RegistrationNumber,
             'decision_number' => $this->DecisionNumber,
             'sector_registrations' => $this->SectorRegistrations,
-            'started_at' => $fromDate instanceof \DateTime ? $fromDate->format('Y-m-d') : null,
-            'ended_at' => $toDate instanceof \DateTime ? $toDate->format('Y-m-d') : null,
+            'started_at' => $fromDate instanceof DateTime ? $fromDate->format('Y-m-d') : null,
+            'ended_at' => $toDate instanceof DateTime ? $toDate->format('Y-m-d') : null,
         ];
     }
 }

@@ -7,8 +7,12 @@ namespace ByrokratSk\FinancialStatementsRegister\Model;
 use ByrokratSk\FinancialStatementsRegister\Model\FinancialReport\FinancialReport;
 use ByrokratSk\Helper\Arrayable;
 use ByrokratSk\Helper\DateHelper;
+use DateTime;
+use JsonSerializable;
 
-class FinancialStatement implements \JsonSerializable, Arrayable
+use function array_map;
+
+class FinancialStatement implements JsonSerializable, Arrayable
 {
     public function __construct(
         public int $Id,
@@ -18,11 +22,11 @@ class FinancialStatement implements \JsonSerializable, Arrayable
         public string $Tin,
         public string $FromDate,
         public string $UntilDate,
-        public \DateTime $UpdatedAt,
-        public \DateTime $AssembledAt,
-        public ?\DateTime $PreparedAt,
-        public ?\DateTime $ApprovedAt,
-        public ?\DateTime $SubmittedAt,
+        public DateTime $UpdatedAt,
+        public DateTime $AssembledAt,
+        public ?DateTime $PreparedAt,
+        public ?DateTime $ApprovedAt,
+        public ?DateTime $SubmittedAt,
         public string $DataSourceCode,
         public string $Type,
         public array $FinancialReportIds,
@@ -50,7 +54,7 @@ class FinancialStatement implements \JsonSerializable, Arrayable
             'financial_reports' =>
                 null === $this->FinancialReports || [] === $this->FinancialReports
                     ? null
-                    : \array_map(
+                    : array_map(
                         static fn(FinancialReport $report): array => $report->toArray(),
                         $this->FinancialReports,
                     ),

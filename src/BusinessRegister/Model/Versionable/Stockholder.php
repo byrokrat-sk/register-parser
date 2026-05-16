@@ -8,8 +8,9 @@ use ByrokratSk\BusinessRegister\Model\Address;
 use ByrokratSk\BusinessRegister\Model\Versionable;
 use ByrokratSk\Helper\Arrayable;
 use ByrokratSk\Helper\DateHelper;
+use JsonSerializable;
 
-class Stockholder extends Versionable implements \JsonSerializable, Arrayable
+class Stockholder extends Versionable implements JsonSerializable, Arrayable
 {
     public function __construct(
         public string $Name,

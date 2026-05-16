@@ -8,12 +8,14 @@ use ByrokratSk\BusinessRegister\Parser\BusinessSubjectPageParser;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 
+use function file_get_contents;
+
 #[CoversMethod(BusinessSubjectPageParser::class, 'parseHtml')]
 class BusinessRegisterParsingTest extends TestCase
 {
     public function testEsetParsing(): void
     {
-        $htmlCode = \file_get_contents(__DIR__ . '/page/eset.html');
+        $htmlCode = file_get_contents(__DIR__ . '/page/eset.html');
         $subject = BusinessSubjectPageParser::parseHtml($htmlCode);
 
         self::assertSame('Sro', $subject->Section);
@@ -146,7 +148,7 @@ class BusinessRegisterParsingTest extends TestCase
 
     public function testLidlParsing(): void
     {
-        $htmlCode = \file_get_contents(__DIR__ . '/page/lidl.html');
+        $htmlCode = file_get_contents(__DIR__ . '/page/lidl.html');
         $subject = BusinessSubjectPageParser::parseHtml($htmlCode);
 
         self::assertSame('Sr', $subject->Section);
@@ -216,7 +218,7 @@ class BusinessRegisterParsingTest extends TestCase
 
     public function testSoftecParsing(): void
     {
-        $htmlCode = \file_get_contents(__DIR__ . '/page/softec.html');
+        $htmlCode = file_get_contents(__DIR__ . '/page/softec.html');
         $subject = BusinessSubjectPageParser::parseHtml($htmlCode);
 
         self::assertSame('SOFTEC, spol. s r.o.', $subject->BusinessName->getLatest()->BusinessName);
@@ -224,7 +226,10 @@ class BusinessRegisterParsingTest extends TestCase
         self::assertSame('Sro', $subject->Section);
         self::assertSame('140/B', $subject->InsertNumber);
         self::assertSame('Mestský súd Bratislava III', $subject->Court);
-        self::assertSame('Einsteinova 33, Bratislava - mestská časť Petržalka 85101', $subject->RegisteredSeat->getLatest()->Address->getFull());
+        self::assertSame(
+            'Einsteinova 33, Bratislava - mestská časť Petržalka 85101',
+            $subject->RegisteredSeat->getLatest()->Address->getFull(),
+        );
 
         self::assertSame('Ing.', $subject->MemberContributions->getAll()[1]->DegreeBefore);
         self::assertSame('Martin', $subject->MemberContributions->getAll()[1]->FirstName);
@@ -278,7 +283,7 @@ class BusinessRegisterParsingTest extends TestCase
 
     public function testTescoParsing(): void
     {
-        $htmlCode = \file_get_contents(__DIR__ . '/page/tesco.html');
+        $htmlCode = file_get_contents(__DIR__ . '/page/tesco.html');
         $subject = BusinessSubjectPageParser::parseHtml($htmlCode);
 
         self::assertSame('TESCO STORES SR, a.s.', $subject->BusinessName->getLatest()->BusinessName);
@@ -310,7 +315,7 @@ class BusinessRegisterParsingTest extends TestCase
 
     public function testGoogleParsing(): void
     {
-        $htmlCode = \file_get_contents(__DIR__ . '/page/google.html');
+        $htmlCode = file_get_contents(__DIR__ . '/page/google.html');
         $subject = BusinessSubjectPageParser::parseHtml($htmlCode);
 
         self::assertSame('Google Slovakia, s. r. o.', $subject->BusinessName->getLatest()->BusinessName);
@@ -342,7 +347,7 @@ class BusinessRegisterParsingTest extends TestCase
 
     public function testHbpParsing(): void
     {
-        $htmlCode = \file_get_contents(__DIR__ . '/page/hbp.html');
+        $htmlCode = file_get_contents(__DIR__ . '/page/hbp.html');
         $subject = BusinessSubjectPageParser::parseHtml($htmlCode);
 
         self::assertSame(
@@ -402,7 +407,10 @@ class BusinessRegisterParsingTest extends TestCase
             'Hornonitrianske bane Prievidza, a.s. v skratke HBP, a.s. Banská mechanizácia a elektrifikácia,  o.z.',
             $subject->EnterpriseBranches->getAll()[11]->BusinessName->getAll()[0]->BusinessName,
         );
-        self::assertSame('kovoobrábanie', $subject->EnterpriseBranches->getAll()[11]->BusinessScope->getAll()[0]->Title);
+        self::assertSame(
+            'kovoobrábanie',
+            $subject->EnterpriseBranches->getAll()[11]->BusinessScope->getAll()[0]->Title,
+        );
         self::assertSame(
             '2020-02-01',
             $subject->EnterpriseBranches->getAll()[11]->BusinessScope->getAll()[0]->ValidFrom->format('Y-m-d'),

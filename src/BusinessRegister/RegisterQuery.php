@@ -14,6 +14,8 @@ use ByrokratSk\Exception\InconclusiveSearchException;
 use ByrokratSk\Exception\InvalidQueryException;
 use ByrokratSk\Helper\StringHelper;
 
+use function trim;
+
 class RegisterQuery
 {
     public function __construct(
@@ -29,7 +31,9 @@ class RegisterQuery
         $trimmedQuery = StringHelper::removeWhitespaces($query);
 
         if (!CompanyIdValidator::isValid($trimmedQuery)) {
-            throw new InvalidQueryException("Passed identificator [{$trimmedQuery}] is not valid identificator number!");
+            throw new InvalidQueryException(
+                "Passed identificator [{$trimmedQuery}] is not valid identificator number!",
+            );
         }
 
         $searchPageHtml = $this->Provider->getIdentificatorSearchPageHtml($trimmedQuery);
@@ -57,7 +61,7 @@ class RegisterQuery
 
     public function byName(string $query): Result
     {
-        $trimmedQuery = \trim($query);
+        $trimmedQuery = trim($query);
 
         if ('' === $trimmedQuery || '0' === $trimmedQuery) {
             throw new InvalidQueryException('Provided query is empty!');

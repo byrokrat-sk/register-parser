@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ByrokratSk\BusinessRegister\Model\Search;
 
+use function str_replace;
+
 class Listing
 {
     public const LISTING_URL = '/vypis.asp?lan=sk&ID={id}&SID={sid}&P={p}';
@@ -22,9 +24,9 @@ class Listing
 
     public function formatListingUrl(int $id, int $sid, int $p): string
     {
-        $url = \str_replace('{id}', (string) $id, $this->RootUrl . self::LISTING_URL);
-        $url = \str_replace('{sid}', (string) $sid, $url);
+        $url = str_replace('{id}', (string) $id, $this->RootUrl . self::LISTING_URL);
+        $url = str_replace('{sid}', (string) $sid, $url);
 
-        return \str_replace('{p}', (string) $p, $url);
+        return str_replace('{p}', (string) $p, $url);
     }
 }

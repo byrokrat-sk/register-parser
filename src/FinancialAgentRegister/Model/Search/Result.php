@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace ByrokratSk\FinancialAgentRegister\Model\Search;
 
-class Result implements \JsonSerializable
+use JsonSerializable;
+
+use function count;
+
+class Result implements JsonSerializable
 {
     public function __construct(
         private readonly array $ResultItems,
@@ -33,7 +37,7 @@ class Result implements \JsonSerializable
 
     public function isEmpty(): bool
     {
-        return 0 === \count($this->ResultItems);
+        return 0 === count($this->ResultItems);
     }
 
     public function withNumber(string $numberToFind): ?Item

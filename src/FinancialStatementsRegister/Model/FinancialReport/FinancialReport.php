@@ -6,8 +6,10 @@ namespace ByrokratSk\FinancialStatementsRegister\Model\FinancialReport;
 
 use ByrokratSk\Helper\Arrayable;
 use ByrokratSk\Helper\DateHelper;
+use DateTime;
+use JsonSerializable;
 
-class FinancialReport implements \JsonSerializable, Arrayable
+class FinancialReport implements JsonSerializable, Arrayable
 {
     public function __construct(
         public int $Id,
@@ -21,7 +23,7 @@ class FinancialReport implements \JsonSerializable, Arrayable
         public array $Attachments,
         public ?ReportContent $Content,
         public ReportTemplate $Template,
-        public \DateTime $UpdatedAt,
+        public DateTime $UpdatedAt,
     ) {}
 
     public function toArray(): array

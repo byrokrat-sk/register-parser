@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace ByrokratSk\TradeRegister\Model\Search;
 
-class Item implements \JsonSerializable
+use JsonSerializable;
+
+class Item implements JsonSerializable
 {
     public function __construct(
         public int $ResultOrder,

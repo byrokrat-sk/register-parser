@@ -22,7 +22,33 @@ class RegisterQuery
 
     // ~
 
-    public function byIdentificator(string $identificator, bool $fetchFull = false): AccountingEntity
+    public function byIdentificator(string $identificator): AccountingEntity
+    {
+        return $this->resolveByIdentificator($identificator);
+    }
+
+    public function byIdentificatorFull(string $identificator): AccountingEntity
+    {
+        $parsedSubject = $this->resolveByIdentificator($identificator);
+
+        $statements = [];
+        foreach ($parsedSubject->FinancialStatementIds as $statementId) {
+            $statement = self::fetchFinancialStatement($statementId);
+
+            $reports = [];
+            foreach ($statement->FinancialReportIds as $reportId) {
+                $reports[] = self::fetchFinancialReport($reportId);
+            }
+            $statement->FinancialReports = $reports;
+
+            $statements[] = $statement;
+        }
+        $parsedSubject->FinancialStatements = $statements;
+
+        return $parsedSubject;
+    }
+
+    private function resolveByIdentificator(string $identificator): AccountingEntity
     {
         $sanetisedIdentificator = StringHelper::removeWhitespaces($identificator);
 
@@ -33,25 +59,8 @@ class RegisterQuery
         }
 
         $companyObject = $this->Provider->getSubjectJsonByIdentificator($sanetisedIdentificator);
-        $parsedSubject = AccountingEntityParser::parseObject($companyObject);
 
-        if ($fetchFull) {
-            $statements = [];
-            foreach ($parsedSubject->FinancialStatementIds as $statementId) {
-                $statement = self::fetchFinancialStatement($statementId);
-
-                $reports = [];
-                foreach ($statement->FinancialReportIds as $reportId) {
-                    $reports[] = self::fetchFinancialReport($reportId);
-                }
-                $statement->FinancialReports = $reports;
-
-                $statements[] = $statement;
-            }
-            $parsedSubject->FinancialStatements = $statements;
-        }
-
-        return $parsedSubject;
+        return AccountingEntityParser::parseObject($companyObject);
     }
 
     public function fetchFinancialStatement(int $id): FinancialStatement

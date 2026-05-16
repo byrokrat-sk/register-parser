@@ -14,11 +14,13 @@ use ByrokratSk\FinancialStatementsRegister\Model\FinancialReport\TemplateLine;
 use ByrokratSk\FinancialStatementsRegister\Model\FinancialReport\TemplateTable;
 use ByrokratSk\Helper\DateHelper;
 
+use function array_map;
+
 class FinancialReportParser
 {
     public static function parseObject(object $rawReport, object $rawTemplate): FinancialReport
     {
-        $attachments = \array_map(
+        $attachments = array_map(
             static fn(object $rawAttachment): ReportAttachment => new ReportAttachment(
                 $rawAttachment->id,
                 $rawAttachment->meno,
@@ -52,8 +54,8 @@ class FinancialReportParser
     private static function parseContent(object $rawContent, ReportTemplate $template): ReportContent
     {
         $tables = null;
-        if (!empty($rawContent->tabulky)) {
-            $tables = \array_map(
+        if ($rawContent->tabulky) {
+            $tables = array_map(
                 static fn(object $rawTable): ContentTable => new ContentTable($rawTable->nazov->sk, $rawTable->data),
                 $rawContent->tabulky,
             );
@@ -91,7 +93,7 @@ class FinancialReportParser
 
     private static function parseTemplate(object $rawTemplate): ReportTemplate
     {
-        $tables = \array_map(static function (object $rawTable): TemplateTable {
+        $tables = array_map(static function (object $rawTable): TemplateTable {
             $header = [];
             foreach ($rawTable->hlavicka as $rawCell) {
                 $header[$rawCell->riadok][] = $rawCell->text->sk;

@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace ByrokratSk\BusinessRegister;
 
+use function preg_match;
+use function preg_replace;
+
 class CompanyIdValidator
 {
     // https://phpfashion.com/jak-overit-platne-ic-a-rodne-cislo
     public static function isValid(string $identificator): bool
     {
         // be liberal in what you receive
-        $identificator = \preg_replace('#\s+#', '', $identificator);
+        $identificator = preg_replace('#\s+#', '', $identificator);
 
         // má požadovaný tvar?
-        if (!\preg_match('#^\d{8}$#', (string) $identificator)) {
+        if (!preg_match('#^\d{8}$#', (string) $identificator)) {
             return false;
         }
 
@@ -24,13 +27,11 @@ class CompanyIdValidator
         }
 
         $a %= 11;
-        if (0 === $a) {
-            $c = 1;
-        } elseif (1 === $a) {
-            $c = 0;
-        } else {
-            $c = 11 - $a;
-        }
+        $c = match ($a) {
+            0 => 1,
+            1 => 0,
+            default => 11 - $a,
+        };
 
         return (int) $identificator[7] === $c;
     }

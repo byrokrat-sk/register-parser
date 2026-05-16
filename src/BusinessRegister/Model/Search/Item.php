@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace ByrokratSk\BusinessRegister\Model\Search;
 
-class Item implements \JsonSerializable
+use JsonSerializable;
+
+class Item implements JsonSerializable
 {
     public function __construct(
         public string $BusinessName,

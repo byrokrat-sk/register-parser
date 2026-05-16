@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace ByrokratSk\FinancialStatementsRegister\Model\FinancialReport;
 
 use ByrokratSk\Helper\Arrayable;
+use JsonSerializable;
 
-class TemplateTable implements \JsonSerializable, Arrayable
+class TemplateTable implements JsonSerializable, Arrayable
 {
     public function __construct(
         public string $Name,

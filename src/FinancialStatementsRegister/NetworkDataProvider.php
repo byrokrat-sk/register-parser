@@ -10,6 +10,10 @@ use ByrokratSk\Exception\InconclusiveSearchException;
 use ByrokratSk\Helper\StringHelper;
 use GuzzleHttp\Client;
 
+use function array_key_exists;
+use function count;
+use function str_replace;
+
 class NetworkDataProvider implements DataProvider
 {
     public const ACCOUNTING_ENTITIES_BY_IDENTIFICATOR = '/uctovne-jednotky?zmenene-od=2000-01-01&ico={identificator}';
@@ -27,18 +31,17 @@ class NetworkDataProvider implements DataProvider
     public function getSubjectJsonByIdentificator(string $identificator): object
     {
         $listUrl =
-            $this->RootUrl
-            . \str_replace('{identificator}', $identificator, self::ACCOUNTING_ENTITIES_BY_IDENTIFICATOR);
+            $this->RootUrl . str_replace('{identificator}', $identificator, self::ACCOUNTING_ENTITIES_BY_IDENTIFICATOR);
         $listResponse = $this->HttpClient->get($listUrl);
         $idsList = StringHelper::parseJson($listResponse->getBody()->getContents())->id;
 
-        if (empty($idsList)) {
+        if (!$idsList) {
             throw new EmptySearchResultException(
                 "Accounting entity with identificator [{$identificator}] was not found!",
             );
         }
 
-        if (\count($idsList) > 1) {
+        if (count($idsList) > 1) {
             throw new InconclusiveSearchException(
                 "Multiple accounting entities was returned for identificator [{$identificator}]!",
             );
@@ -55,7 +58,7 @@ class NetworkDataProvider implements DataProvider
 
     public function getFinancialStatementJsonById(int $statementId): object
     {
-        $statementUrl = $this->RootUrl . \str_replace('{id}', $statementId, self::FINANCIAL_STATEMENT_BY_ID);
+        $statementUrl = $this->RootUrl . str_replace('{id}', $statementId, self::FINANCIAL_STATEMENT_BY_ID);
         $response = $this->HttpClient->get($statementUrl);
 
         if (200 !== $response->getStatusCode()) {
@@ -69,7 +72,7 @@ class NetworkDataProvider implements DataProvider
 
     public function getFinancialReportJsonById(int $reportId): object
     {
-        $reportUrl = $this->RootUrl . \str_replace('{id}', $reportId, self::FINANCIAL_REPORT_BY_ID);
+        $reportUrl = $this->RootUrl . str_replace('{id}', $reportId, self::FINANCIAL_REPORT_BY_ID);
         $response = $this->HttpClient->get($reportUrl);
 
         if (200 !== $response->getStatusCode()) {
@@ -84,11 +87,11 @@ class NetworkDataProvider implements DataProvider
     public function getFinancialReportTemplateJsonById(int $templateId): object
     {
         // Templates can be potentially hit in cache more times in single request
-        if (\array_key_exists($templateId, self::$TemplatesCache)) {
+        if (array_key_exists($templateId, self::$TemplatesCache)) {
             return self::$TemplatesCache[$templateId];
         }
 
-        $reportUrl = $this->RootUrl . \str_replace('{id}', $templateId, self::FINANCIAL_REPORT_TEMPLATE_BY_ID);
+        $reportUrl = $this->RootUrl . str_replace('{id}', $templateId, self::FINANCIAL_REPORT_TEMPLATE_BY_ID);
         $response = $this->HttpClient->get($reportUrl);
 
         if (200 !== $response->getStatusCode()) {

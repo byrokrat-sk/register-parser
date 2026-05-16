@@ -1,0 +1,53 @@
+[source]
+paths = ["src", "tests"]
+extensions = ["php"]
+
+[formatter]
+print-width = 120
+single-quote = true
+trailing-comma = true
+sort-uses = true
+separate-use-types = true
+
+[linter.rules.excessive-parameter-list]
+# Data-model constructors with property promotion legitimately need more params
+constructor-threshold = 30
+threshold = 6
+
+[linter.rules.too-many-properties]
+# Rich domain models (BusinessSubject) carry many fields by design
+threshold = 30
+
+[linter.rules.too-many-methods]
+# HTML parsers with many private helpers legitimately exceed 15
+threshold = 25
+
+[linter.rules.cyclomatic-complexity]
+# Parser switch trees are intentionally complex
+threshold = 120
+
+[linter.rules.kan-defect]
+# Parser classes have inherently high kan-defect scores
+threshold = 12.0
+
+[linter.rules.halstead]
+volume-threshold    = 2500.0
+difficulty-threshold = 25.0
+effort-threshold    = 25000.0
+
+[linter.rules.no-isset]
+# Allow isset() on array keys; only flag plain variable isset()
+allow-array-checks = true
+
+[linter.rules.no-fully-qualified-global-function]
+enabled = true
+
+[linter.rules.no-fully-qualified-global-constant]
+enabled = true
+
+[linter.rules.no-fully-qualified-global-class-like]
+enabled = true
+
+[linter.rules.literal-named-argument]
+# Only flag when 3+ positional literals appear, to reduce noise on str_replace etc.
+threshold = 3

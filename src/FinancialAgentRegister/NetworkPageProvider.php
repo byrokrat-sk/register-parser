@@ -10,6 +10,7 @@ use ByrokratSk\FinancialAgentRegister\Model\Search\Item;
 use ByrokratSk\FinancialAgentRegister\Model\Search\Result;
 use ByrokratSk\FinancialAgentRegister\Parser\SearchPageResultParser;
 use ByrokratSk\Helper\StringHelper;
+use Generator;
 use GuzzleHttp\Client;
 
 class NetworkPageProvider implements PageProvider
@@ -58,7 +59,7 @@ class NetworkPageProvider implements PageProvider
         /*
          * There is case when register return page of financial agent immediately without search results page mid-step
          * In this case I will throw up exception because I am too lazy to implement this some other way.
-         * TODO: Fix this code "architecture" mistake
+         * TODO(@martin): Fix this code "architecture" mistake
          */
         if (StringHelper::str_contains($responseContent, 'Identifikačné údaje')) {
             /*
@@ -79,10 +80,12 @@ class NetworkPageProvider implements PageProvider
         try {
             $matchedAgent = null;
             foreach (self::querySearchItems($registrationNumber) as $searchItem) {
-                if ($searchItem->Number !== $registrationNumber) { continue; }
+                if ($searchItem->Number !== $registrationNumber) {
+                    continue;
+                }
 
-$matchedAgent = $searchItem;
-                    break;
+                $matchedAgent = $searchItem;
+                break;
             }
 
             if (null === $matchedAgent) {
@@ -118,12 +121,10 @@ $matchedAgent = $searchItem;
     public function getAgentPageHtmlByCin(string $cin): string
     {
         try {
-            $matchedAgent = null;
-            foreach (self::querySearchItems($cin) as $searchItem) {
-                // TODO: Rewrite to agent page parsing and check if CIN is equal to desired CIN number
-                $matchedAgent = $searchItem;
-                break;
-            }
+            // TODO(@martin): Rewrite to agent page parsing and check if CIN is equal to desired CIN number
+            $generator = self::querySearchItems($cin);
+            $generator->rewind();
+            $matchedAgent = $generator->valid() ? $generator->current() : null;
 
             if (null === $matchedAgent) {
                 throw new EmptySearchResultException("Financial agent with CIN [{$cin}] was not found");
@@ -156,7 +157,7 @@ $matchedAgent = $searchItem;
     // ~
 
     /** @return \Generator|Item[] */
-    private function querySearchItems(string $searchQuery): \Generator
+    private function querySearchItems(string $searchQuery): Generator
     {
         /** @var Result $pageResult */
         foreach (self::querySearchPages($searchQuery) as $pageResult) {
@@ -167,7 +168,7 @@ $matchedAgent = $searchItem;
     }
 
     /** @return \Generator|Result[] */
-    private function querySearchPages(string $searchQuery): \Generator
+    private function querySearchPages(string $searchQuery): Generator
     {
         $parsedResult = null;
         $pageNumber = 1;

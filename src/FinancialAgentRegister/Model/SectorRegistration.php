@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace ByrokratSk\FinancialAgentRegister\Model;
 
-class SectorRegistration implements \JsonSerializable
+use DateTime;
+use JsonSerializable;
+
+class SectorRegistration implements JsonSerializable
 {
     /**
      * @param LiabilityInsurance[] $LiabilityInsurance
@@ -25,8 +28,8 @@ class SectorRegistration implements \JsonSerializable
         public ?array $States,
         /** @var Guarantor[] */
         public ?array $Guarantors,
-        public ?\DateTime $RegistratedAt,
-        public ?\DateTime $TerminatedAt,
+        public ?DateTime $RegistratedAt,
+        public ?DateTime $TerminatedAt,
     ) {}
 
     public function jsonSerialize(): mixed
@@ -42,10 +45,8 @@ class SectorRegistration implements \JsonSerializable
             'liability_insurance' => $this->LiabilityInsurance,
             'states' => $this->States,
             'guarantors' => $this->Guarantors,
-            'registrated_at' => $this->RegistratedAt instanceof \DateTime
-                ? $this->RegistratedAt->format('Y-m-d')
-                : null,
-            'terminated_at' => $this->TerminatedAt instanceof \DateTime ? $this->TerminatedAt->format('Y-m-d') : null,
+            'registrated_at' => $this->RegistratedAt instanceof DateTime ? $this->RegistratedAt->format('Y-m-d') : null,
+            'terminated_at' => $this->TerminatedAt instanceof DateTime ? $this->TerminatedAt->format('Y-m-d') : null,
         ];
     }
 }

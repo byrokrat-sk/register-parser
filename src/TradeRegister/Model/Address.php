@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace ByrokratSk\TradeRegister\Model;
 
-class Address implements \JsonSerializable
+use JsonSerializable;
+
+class Address implements JsonSerializable
 {
     public const DEFAULT_COUNTRY = 'Slovensko';
 

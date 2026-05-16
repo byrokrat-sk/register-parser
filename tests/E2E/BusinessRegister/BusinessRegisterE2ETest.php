@@ -25,9 +25,7 @@ class BusinessRegisterE2ETest extends TestCase
         $provider = new class implements PageProvider {
             public function getIdentificatorSearchPageHtml(string $identificator): string
             {
-                return self::curlFetch(
-                    'https://orsr.sk/hladaj_ico.asp?ICO=' . rawurlencode($identificator) . '&SID=0',
-                );
+                return self::curlFetch('https://orsr.sk/hladaj_ico.asp?ICO=' . rawurlencode($identificator) . '&SID=0');
             }
 
             public function getNameSearchPageHtml(string $query): string
@@ -53,10 +51,7 @@ class BusinessRegisterE2ETest extends TestCase
             }
         };
 
-        self::$register = new RegisterQuery(
-            $provider,
-            new SearchResultPageParser(self::ROOT),
-        );
+        self::$register = new RegisterQuery($provider, new SearchResultPageParser(self::ROOT));
     }
 
     public function testEset(): void

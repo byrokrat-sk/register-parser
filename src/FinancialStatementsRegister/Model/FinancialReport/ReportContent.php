@@ -6,8 +6,13 @@ namespace ByrokratSk\FinancialStatementsRegister\Model\FinancialReport;
 
 use ByrokratSk\FinancialStatementsRegister\Model\Address;
 use ByrokratSk\Helper\Arrayable;
+use DateTime;
+use JsonSerializable;
 
-class ReportContent implements \JsonSerializable, Arrayable
+use function array_map;
+use function floor;
+
+class ReportContent implements JsonSerializable, Arrayable
 {
     public function __construct(
         public string $Cin,
@@ -29,11 +34,11 @@ class ReportContent implements \JsonSerializable, Arrayable
         public string $PeriodTo,
         public ?string $PreviousPeriodFrom,
         public ?string $PreviousPeriodTo,
-        public ?\DateTime $FilledAt,
-        public ?\DateTime $ApprovedAt,
-        public \DateTime $AssembledAt,
-        public ?\DateTime $PreparedAt,
-        public ?\DateTime $AuditedAt,
+        public ?DateTime $FilledAt,
+        public ?DateTime $ApprovedAt,
+        public DateTime $AssembledAt,
+        public ?DateTime $PreparedAt,
+        public ?DateTime $AuditedAt,
         public array $Tables,
         private readonly ReportTemplate $Template,
     ) {}
@@ -49,7 +54,7 @@ class ReportContent implements \JsonSerializable, Arrayable
 
         $lines = [];
         foreach ($table->Data as $index => $cell) {
-            $lineNumber = \floor($index / $template->DataColumnsCount) + 1;
+            $lineNumber = floor($index / $template->DataColumnsCount) + 1;
             $cellOrder = $index % $template->DataColumnsCount;
 
             if (0 === $cellOrder) {
@@ -71,7 +76,7 @@ class ReportContent implements \JsonSerializable, Arrayable
     public function toArray(): array
     {
         return [
-            'tables' => \array_map($this->formatTableWithTemplate(...), $this->Tables),
+            'tables' => array_map($this->formatTableWithTemplate(...), $this->Tables),
         ];
     }
 

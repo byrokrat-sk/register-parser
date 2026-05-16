@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace ByrokratSk\FinancialAgentRegister\Model;
 
-class FinancialAgent implements \JsonSerializable
+use JsonSerializable;
+
+class FinancialAgent implements JsonSerializable
 {
     /**
      * @param AgentRegistration[]  $Registrations

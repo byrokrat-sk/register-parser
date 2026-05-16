@@ -9,6 +9,10 @@ use ByrokratSk\Helper\StringHelper;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 
+use function array_key_exists;
+use function array_merge;
+use function str_replace;
+
 class NetworkPageProvider implements PageProvider
 {
     public const SESSION_URL_IDENTIFIER = '/zr_ico.aspx'; // "IČO"
@@ -19,7 +23,7 @@ class NetworkPageProvider implements PageProvider
     public const BROWSE_SUBJECT_URL = '/zr_vypis.aspx?ID={order}&V=A'; // V={A,U}
 
     // I think it would be possible to store this on a disk or in Redis for certain amount of time before session expire
-    // TODO: How long does it take session from trade register to expire?
+    // TODO(@martin): How long does it take session from trade register to expire?
     public static array $SessionCache = [];
 
     public function __construct(
@@ -106,7 +110,7 @@ class NetworkPageProvider implements PageProvider
     {
         $session = $this->getSession(self::SESSION_URL_IDENTIFIER);
 
-        $subjectPageUrl = \str_replace('{order}', $searchOrder, $this->RootUrl . self::BROWSE_SUBJECT_URL);
+        $subjectPageUrl = str_replace('{order}', $searchOrder, $this->RootUrl . self::BROWSE_SUBJECT_URL);
         $subjectResponse = $this->getWithSession($session, $subjectPageUrl);
 
         // Session set is returning 302 on success
@@ -154,7 +158,7 @@ class NetworkPageProvider implements PageProvider
     /** This function will init session with request to register if it's not yet initialised */
     private function getSession(string $forUrl): object
     {
-        if (!\array_key_exists($forUrl, self::$SessionCache)) {
+        if (!array_key_exists($forUrl, self::$SessionCache)) {
             // Session can be obtained from any URL so we choose page with identifier form
             $sessionSetUrl = $this->RootUrl . $forUrl;
             $response = $this->HttpClient->get($sessionSetUrl);
@@ -204,7 +208,7 @@ class NetworkPageProvider implements PageProvider
         ];
 
         $sessionResponse = $this->HttpClient->post($url, [
-            'form_params' => \array_merge($sessionHeaders, $parameters),
+            'form_params' => array_merge($sessionHeaders, $parameters),
             'headers' => [
                 'Cookie' => 'ASP.NET_SessionId=' . $session->session_id,
             ],

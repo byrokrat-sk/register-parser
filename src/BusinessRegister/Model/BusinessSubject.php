@@ -6,8 +6,10 @@ namespace ByrokratSk\BusinessRegister\Model;
 
 use ByrokratSk\Helper\Arrayable;
 use ByrokratSk\Helper\DateHelper;
+use DateTime;
+use JsonSerializable;
 
-class BusinessSubject implements \JsonSerializable, Arrayable
+class BusinessSubject implements JsonSerializable, Arrayable
 {
     // Static properties
     public ?string $InsertNumber = null;
@@ -44,9 +46,9 @@ class BusinessSubject implements \JsonSerializable, Arrayable
     public ?VersionableGroup $Liquidators = null;
 
     // Dates
-    public ?\DateTime $EnteredAt = null;
-    public ?\DateTime $UpdatedAt = null;
-    public ?\DateTime $ExtractedAt = null;
+    public ?DateTime $EnteredAt = null;
+    public ?DateTime $UpdatedAt = null;
+    public ?DateTime $ExtractedAt = null;
 
     public function __construct()
     {

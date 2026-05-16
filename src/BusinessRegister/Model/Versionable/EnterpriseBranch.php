@@ -6,8 +6,9 @@ namespace ByrokratSk\BusinessRegister\Model\Versionable;
 
 use ByrokratSk\BusinessRegister\Model\VersionableGroup;
 use ByrokratSk\Helper\Arrayable;
+use JsonSerializable;
 
-class EnterpriseBranch implements \JsonSerializable, Arrayable
+class EnterpriseBranch implements JsonSerializable, Arrayable
 {
     public function __construct(
         public ?VersionableGroup $BusinessName,

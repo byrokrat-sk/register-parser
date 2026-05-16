@@ -15,6 +15,8 @@ use ByrokratSk\TradeRegister\Model\TradeSubject;
 use ByrokratSk\TradeRegister\Parser\SearchResultPageParser;
 use ByrokratSk\TradeRegister\Parser\TradeSubjectPageParser;
 
+use function strlen;
+
 class RegisterQuery
 {
     public function __construct(
@@ -59,7 +61,7 @@ class RegisterQuery
         ?string $streetNumber = null,
         ?string $districtId = null,
     ): Result {
-        if (\strlen((string) $businessName) < 2) {
+        if (strlen((string) $businessName) < 2) {
             throw new InvalidQueryException('Business name must have at least 2 characters');
         }
 

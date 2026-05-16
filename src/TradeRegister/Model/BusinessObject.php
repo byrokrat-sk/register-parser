@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace ByrokratSk\TradeRegister\Model;
 
-class BusinessObject implements \JsonSerializable
+use DateTime;
+use JsonSerializable;
+
+class BusinessObject implements JsonSerializable
 {
     public function __construct(
         public string $Name,
-        public \DateTime $AuthorizedAt,
+        public DateTime $AuthorizedAt,
         public ?string $Manager,
         public ?array $Establishments,
     ) {}

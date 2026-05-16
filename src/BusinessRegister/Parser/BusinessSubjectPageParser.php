@@ -29,6 +29,24 @@ use ByrokratSk\BusinessRegister\Model\Versionable\Stockholder;
 use ByrokratSk\BusinessRegister\Model\VersionableGroup;
 use ByrokratSk\Helper\DateHelper;
 use ByrokratSk\Helper\StringHelper;
+use DOMDocument;
+use DOMNode;
+
+use function array_filter;
+use function array_key_exists;
+use function array_slice;
+use function array_values;
+use function count;
+use function explode;
+use function implode;
+use function is_numeric;
+use function libxml_clear_errors;
+use function libxml_use_internal_errors;
+use function ltrim;
+use function str_replace;
+use function str_starts_with;
+use function strtoupper;
+use function trim;
 
 class BusinessSubjectPageParser
 {
@@ -152,7 +170,7 @@ class BusinessSubjectPageParser
                 case 'Dozorná rada':
                     $managers = [];
                     foreach ($mainTable['records'] as $record) {
-                        if (1 === \count($record['lines'])) {
+                        if (1 === count($record['lines'])) {
                             continue;
                         } // ignore headers
                         $managers[] = self::parseManagerArray($record);
@@ -199,11 +217,12 @@ class BusinessSubjectPageParser
                     $facts = [];
                     foreach ($mainTable['records'] as $record) {
                         // After procuration lines there are also lines with facts about procuration
-                        if (1 === \count($record['lines'])) {
+                        if (1 === count($record['lines'])) {
                             $facts[] = self::parseProcurationFactRecord($record);
-                        } else {
-                            $procuations[] = self::parseProcurationRecord($record);
+                            continue;
                         }
+
+                        $procuations[] = self::parseProcurationRecord($record);
                     }
                     $subject->Procuration = new VersionableGroup($procuations);
                     $subject->ProcurationFacts = new VersionableGroup($facts);
@@ -236,9 +255,7 @@ class BusinessSubjectPageParser
         return $subject;
     }
 
-    
     // Array parsers to classes
-    
 
     private static function getFirstLine(array $mainTable): string
     {
@@ -249,27 +266,27 @@ class BusinessSubjectPageParser
     {
         // Edge-case fix: second line contains function name so we move it to first line
         if (isset($managerArray['lines'][1][0][0]) && '-' === $managerArray['lines'][1][0][0]) {
-            // TODO: Implement parsing of function name of institution
+            // TODO(@martin): Implement parsing of function name of institution
             // $managerArray['lines'][0][] = $managerArray['lines'][1][0]; // <- adding function name to name line
 
             unset($managerArray['lines'][1]);
-            $managerArray['lines'] = \array_values($managerArray['lines']); // re-index array
+            $managerArray['lines'] = array_values($managerArray['lines']); // re-index array
         }
 
         $nameLine = $managerArray['lines'][0];
-        $managerArray['lines'] = \array_slice($managerArray['lines'], 1);
+        $managerArray['lines'] = array_slice($managerArray['lines'], 1);
 
         $functionDateLine = null;
         // Last line can by: function mandate dates
         if (
             isset($managerArray['lines'])
             && [] !== $managerArray['lines']
-            && null !== $managerArray['lines'][\count($managerArray['lines']) - 1]
-            && \array_key_exists(0, $managerArray['lines'][\count($managerArray['lines']) - 1])
-            && StringHelper::str_contains($managerArray['lines'][\count($managerArray['lines']) - 1][0], 'funkci')
+            && null !== $managerArray['lines'][count($managerArray['lines']) - 1]
+            && array_key_exists(0, $managerArray['lines'][count($managerArray['lines']) - 1])
+            && StringHelper::str_contains($managerArray['lines'][count($managerArray['lines']) - 1][0], 'funkci')
         ) {
-            $functionDateLine = $managerArray['lines'][\count($managerArray['lines']) - 1][0];
-            $managerArray['lines'] = \array_slice($managerArray['lines'], 0, -1);
+            $functionDateLine = $managerArray['lines'][count($managerArray['lines']) - 1][0];
+            $managerArray['lines'] = array_slice($managerArray['lines'], 0, -1);
         }
 
         $parsedName = self::parseNameLine($nameLine);
@@ -304,18 +321,16 @@ class BusinessSubjectPageParser
 
         // 26.03.2012
         // Vznik funkcie: 23.03.2011 Skončenie funkcie: 24.08.2017
-        $functionDates = \str_replace('Vznik funkcie: ', '', $functionDates);
-        $functionDates = \str_replace('Skončenie funkcie: ', '', $functionDates);
+        $functionDates = str_replace('Vznik funkcie: ', '', $functionDates);
+        $functionDates = str_replace('Skončenie funkcie: ', '', $functionDates);
 
-        $explode = \explode(' ', $functionDates);
+        $explode = explode(' ', $functionDates);
 
         $from = null;
         $to = null;
-        if (1 === \count($explode)) {
-            $from = DateHelper::parseDmyDate(\trim($explode[0]));
-        } else {
-            $from = DateHelper::parseDmyDate(\trim($explode[0]));
-            $to = DateHelper::parseDmyDate(\trim($explode[1]));
+        $from = DateHelper::parseDmyDate(trim($explode[0]));
+        if (1 < count($explode)) {
+            $to = DateHelper::parseDmyDate(trim($explode[1]));
         }
 
         return (object) [
@@ -333,46 +348,52 @@ class BusinessSubjectPageParser
         $degreeAfter = null;
         $functionName = null;
 
-        if (1 === \count($nameLine) || StringHelper::str_contains($nameLine[1], 'IČO')) {
-            // There can be weird edge-case where second cell of business name line contains CIN of institution
-            // Is there benefit to store that CIN? I think it's really unusual case -> for now lets implode it!
-            $businessName = \implode(' ', $nameLine);
-        } else {
-            if (StringHelper::str_contains($nameLine[0], '.')) {
-                $degreeBefore = $nameLine[0];
-                $nameLine = \array_slice($nameLine, 1); // remove first
-            }
+        if (1 === count($nameLine) || StringHelper::str_contains($nameLine[1], 'IČO')) {
+            // Edge case: second cell may contain CIN of institution — just implode
+            return (object) [
+                'business_name' => implode(' ', $nameLine),
+                'degree_before' => null,
+                'first_name' => null,
+                'last_name' => null,
+                'degree_after' => null,
+                'function_name' => null,
+            ];
+        }
 
-            if ([] !== $nameLine) {
-                $firstName = $nameLine[0];
-                $nameLine = \array_slice($nameLine, 1);
-            }
+        if (StringHelper::str_contains($nameLine[0], '.')) {
+            $degreeBefore = $nameLine[0];
+            $nameLine = array_slice($nameLine, 1);
+        }
 
-            if ([] !== $nameLine) {
-                $lastName = $nameLine[0];
-                $nameLine = \array_slice($nameLine, 1);
-            }
+        if ([] !== $nameLine) {
+            $firstName = $nameLine[0];
+            $nameLine = array_slice($nameLine, 1);
+        }
 
-            if (
-                [] !== $nameLine
-                && StringHelper::str_contains($nameLine[0], '.')
-                && !StringHelper::str_contains($nameLine[0], '- ') // If it contains "-" then it is manager function name
-            ) {
-                $degreeAfter = \ltrim((string) $nameLine[0], ', ');
-                $nameLine = \array_slice($nameLine, 1); // remove first
-            }
+        if ([] !== $nameLine) {
+            $lastName = $nameLine[0];
+            $nameLine = array_slice($nameLine, 1);
+        }
 
-            if ([] !== $nameLine && StringHelper::str_contains($nameLine[0], '- ')) {
-                $functionName = \ltrim((string) $nameLine[0], '- ');
-            }
+        if (
+            [] !== $nameLine
+            && StringHelper::str_contains($nameLine[0], '.')
+            && !StringHelper::str_contains($nameLine[0], '- ')
+        ) {
+            $degreeAfter = ltrim((string) $nameLine[0], ', ');
+            $nameLine = array_slice($nameLine, 1);
+        }
 
-            // Edge case fix: (last name + degree after) in the same cell
-            if (!empty($lastName) && StringHelper::str_contains($lastName, ',')) {
-                $explode = \explode(',', (string) $lastName);
-                $lastName = \trim($explode[0]);
-                unset($explode[0]);
-                $degreeAfter = \trim(\implode(',', $explode));
-            }
+        if ([] !== $nameLine && StringHelper::str_contains($nameLine[0], '- ')) {
+            $functionName = ltrim((string) $nameLine[0], '- ');
+        }
+
+        // Edge case: (last name + degree after) in the same cell
+        if (null !== $lastName && '' !== $lastName && StringHelper::str_contains($lastName, ',')) {
+            $explode = explode(',', (string) $lastName);
+            $lastName = trim($explode[0]);
+            unset($explode[0]);
+            $degreeAfter = trim(implode(',', $explode));
         }
 
         return (object) [
@@ -389,16 +410,16 @@ class BusinessSubjectPageParser
     {
         // Filter out address description line
         if (isset($arrayAddress[0][0]) && 'dlhodobý pobyt na území SR :' === $arrayAddress[0][0]) {
-            $arrayAddress = \array_slice($arrayAddress, 1);
+            $arrayAddress = array_slice($arrayAddress, 1);
         }
 
         // Filter out extra identification lines added by orsr.sk (e.g. "Iné identifikačné číslo: ...")
-        $arrayAddress = \array_values(\array_filter(
+        $arrayAddress = array_values(array_filter(
             $arrayAddress,
-            static fn($line) => !isset($line[0]) || !\str_starts_with($line[0], 'Iné identifikačné'),
+            static fn($line) => !isset($line[0]) || !str_starts_with($line[0], 'Iné identifikačné'),
         ));
 
-        $linesCount = \count($arrayAddress);
+        $linesCount = count($arrayAddress);
         $address = new Address();
 
         // How much lines there is in array address?
@@ -410,16 +431,11 @@ class BusinessSubjectPageParser
             // no break
             case 2:
                 // 1: street, 2: city
-                if (1 === \count($arrayAddress[0])) {
-                    // If street line has just name or number
-                    if (\is_numeric($arrayAddress[0][0])) {
-                        $address->StreetNumber = $arrayAddress[0][0];
-                    } else {
-                        $address->StreetName = $arrayAddress[0][0];
-                    }
-                } else {
-                    $address->StreetName = $arrayAddress[0][0];
-                    $address->StreetNumber = $arrayAddress[0][1];
+                $address->StreetName = $arrayAddress[0][0];
+                $address->StreetNumber = $arrayAddress[0][1] ?? null;
+                if (1 === count($arrayAddress[0]) && is_numeric($arrayAddress[0][0])) {
+                    $address->StreetName = null;
+                    $address->StreetNumber = $arrayAddress[0][0];
                 }
                 $address->CityName = $arrayAddress[1][0];
                 $address->Zip = StringHelper::removeWhitespaces($arrayAddress[1][1] ?? '');
@@ -494,21 +510,21 @@ class BusinessSubjectPageParser
 
         // Total amount
         $maybeNumber = self::parseNumber($cells[0]);
-        if (!empty($cells) && null !== $maybeNumber) {
+        if ($cells && null !== $maybeNumber) {
             $totally = $maybeNumber;
-            $cells = \array_slice($cells, 1);
+            $cells = array_slice($cells, 1);
         }
 
         // currency
         $maybeNumber = self::parseNumber($cells[0]);
-        if (!empty($cells) && null === $maybeNumber) {
-            $currency = \strtoupper((string) $cells[0]);
-            $cells = \array_slice($cells, 1);
+        if ($cells && null === $maybeNumber) {
+            $currency = strtoupper((string) $cells[0]);
+            $cells = array_slice($cells, 1);
         }
 
         // Payed
-        $maybeNumber = self::parseNumber(\str_replace('Rozsah splatenia: ', '', $cells[0] ?? ''));
-        if (!empty($cells) && null !== $maybeNumber) {
+        $maybeNumber = self::parseNumber(str_replace('Rozsah splatenia: ', '', $cells[0] ?? ''));
+        if ($cells && null !== $maybeNumber) {
             $payed = $maybeNumber;
         }
 
@@ -533,7 +549,7 @@ class BusinessSubjectPageParser
         $form = null;
 
         foreach ($record['lines'] as $line) {
-            $labelExplode = \explode(': ', (string) $line[0]);
+            $labelExplode = explode(': ', (string) $line[0]);
             $label = $labelExplode[0];
             $value = $labelExplode[1];
             switch ($label) {
@@ -555,7 +571,7 @@ class BusinessSubjectPageParser
             }
 
             // Has line second cell (currency)?
-            if (2 === \count($line)) {
+            if (2 === count($line)) {
                 $currency = $line[1];
             }
         }
@@ -569,8 +585,8 @@ class BusinessSubjectPageParser
 
     private static function parseStockholderRecord(array $record): Stockholder
     {
-        $name = \implode(' ', $record['lines'][0]);
-        $addressArray = \array_slice($record['lines'], 1);
+        $name = implode(' ', $record['lines'][0]);
+        $addressArray = array_slice($record['lines'], 1);
 
         $stockholder = new Stockholder($name, self::parseAddressArray($addressArray));
         $validity = self::parseTableDate($record['date']);
@@ -599,8 +615,8 @@ class BusinessSubjectPageParser
 
     private static function parseCoasedRecord(array $record): CoasedCompany
     {
-        $businessName = \implode(' ', $record['lines'][0]);
-        $addressArray = \array_slice($record['lines'], 1);
+        $businessName = implode(' ', $record['lines'][0]);
+        $addressArray = array_slice($record['lines'], 1);
 
         $coasedCompany = new CoasedCompany($businessName, self::parseAddressArray($addressArray));
         $validity = self::parseTableDate($record['date']);
@@ -612,7 +628,7 @@ class BusinessSubjectPageParser
     private static function parsePersonArray(array $record): Person
     {
         $parsedName = self::parseNameLine($record['lines'][0]);
-        $addressArray = \array_slice($record['lines'], 1);
+        $addressArray = array_slice($record['lines'], 1);
 
         $partner = new Person(
             $parsedName->business_name,
@@ -638,23 +654,23 @@ class BusinessSubjectPageParser
         $amount = null;
         $payed = null;
 
-        if (!empty($parts) && StringHelper::str_contains($parts[0], 'Vklad: ')) {
-            $amount = self::parseNumber(\str_replace('Vklad: ', '', $parts[0]));
-            $parts = \array_slice($parts, 1);
+        if ($parts && StringHelper::str_contains($parts[0], 'Vklad: ')) {
+            $amount = self::parseNumber(str_replace('Vklad: ', '', $parts[0]));
+            $parts = array_slice($parts, 1);
         }
 
-        if (!empty($parts)) {
+        if ($parts) {
             $currency = $parts[0];
 
-            if ('SK' === \strtoupper((string) $currency)) {
+            if ('SK' === strtoupper((string) $currency)) {
                 $currency = 'SKK'; // This should be more correct
             }
 
-            $parts = \array_slice($parts, 1);
+            $parts = array_slice($parts, 1);
         }
 
-        if (!empty($parts) && StringHelper::str_contains($parts[0], 'Splatené: ')) {
-            $payed = self::parseNumber(\str_replace('Splatené: ', '', $parts[0]));
+        if ($parts && StringHelper::str_contains($parts[0], 'Splatené: ')) {
+            $payed = self::parseNumber(str_replace('Splatené: ', '', $parts[0]));
 
             // $parts = array_slice($parts, 1);
         }
@@ -678,14 +694,14 @@ class BusinessSubjectPageParser
     private static function parseProcurationRecord(array $record): Procuration
     {
         $parsedName = self::parseNameLine($record['lines'][0]);
-        $lines = \array_slice($record['lines'], 1);
+        $lines = array_slice($record['lines'], 1);
 
         $functionDates = (object) ['from' => null, 'to' => null];
-        $lastIndex = \count($lines) - 1;
+        $lastIndex = count($lines) - 1;
         if (StringHelper::str_contains($lines[$lastIndex][0], 'funkcie')) {
-            $functionLine = \implode(' ', $lines[$lastIndex]);
+            $functionLine = implode(' ', $lines[$lastIndex]);
             $functionDates = self::parseFunctionLineDates($functionLine);
-            $lines = \array_slice($record['lines'], 1);
+            $lines = array_slice($record['lines'], 1);
         }
 
         $procuration = new Procuration(
@@ -716,8 +732,8 @@ class BusinessSubjectPageParser
 
     private static function parseLegalSuccessorRecord(array $record): LegalSuccessor
     {
-        $businessName = \implode(' ', $record['lines'][0]);
-        $addressArray = \array_slice($record['lines'], 1);
+        $businessName = implode(' ', $record['lines'][0]);
+        $addressArray = array_slice($record['lines'], 1);
 
         $successor = new LegalSuccessor($businessName, self::parseAddressArray($addressArray));
         $validity = self::parseTableDate($record['date']);
@@ -731,12 +747,11 @@ class BusinessSubjectPageParser
         $header = null;
         $text = null;
 
-        if (1 === \count($record['lines'])) {
-            $text = StringHelper::paragraphText($record['lines'][0][0]);
-        } else {
+        $text = StringHelper::paragraphText($record['lines'][0][0]);
+        if (1 < count($record['lines'])) {
             $header = StringHelper::paragraphText($record['lines'][0][0]);
-            $record['lines'] = \array_slice($record['lines'], 1);
-            $text = StringHelper::paragraphText(\implode(' ', $record['lines'][0]));
+            $record['lines'] = array_slice($record['lines'], 1);
+            $text = StringHelper::paragraphText(implode(' ', $record['lines'][0]));
         }
 
         $sale = new EnterpriseSale($header, $text);
@@ -751,12 +766,12 @@ class BusinessSubjectPageParser
         $parsedName = self::parseNameLine($record['lines'][0]);
 
         $functionDates = (object) ['from' => null, 'to' => null];
-        if (\count($record['lines']) > 3) {
-            $functionLine = \implode(' ', $record['lines'][\count($record['lines']) - 1]);
+        if (count($record['lines']) > 3) {
+            $functionLine = implode(' ', $record['lines'][count($record['lines']) - 1]);
             $functionDates = self::parseFunctionLineDates($functionLine);
         }
 
-        $addressArray = \array_slice($record['lines'], 1, -1);
+        $addressArray = array_slice($record['lines'], 1, -1);
 
         $procuration = new Liquidator(
             $parsedName->business_name,
@@ -775,29 +790,25 @@ class BusinessSubjectPageParser
         return $procuration;
     }
 
-    
     // String parsers
-    
 
     private static function parseTableDate(string $tableDate): object
     {
-        $validFrom = null;
         $validTo = null;
 
-        // (od: 06.07.1998)
-        // (od: 01.07.1996 do: 05.07.1998)
-        $tableDate = \trim($tableDate, '(): od');
+        // (od: 06.07.1998) or (od: 01.07.1996 do: 05.07.1998)
+        $tableDate = trim($tableDate, '(): od');
 
         if (StringHelper::str_contains($tableDate, ' do: ')) {
-            $explode = \explode('do:', $tableDate);
-            $validFrom = DateHelper::parseDmyDate(\trim($explode[0]));
-            $validTo = DateHelper::parseDmyDate(\trim($explode[1]));
-        } else {
-            $validFrom = DateHelper::parseDmyDate($tableDate);
+            $explode = explode('do:', $tableDate);
+            return (object) [
+                'from' => DateHelper::parseDmyDate(trim($explode[0])),
+                'to' => DateHelper::parseDmyDate(trim($explode[1])),
+            ];
         }
 
         return (object) [
-            'from' => $validFrom,
+            'from' => DateHelper::parseDmyDate($tableDate),
             'to' => $validTo,
         ];
     }
@@ -809,14 +820,13 @@ class BusinessSubjectPageParser
             return null;
         }
 
-        $posibblyNumber = \str_replace(',', '.', $normalized);
+        $posibblyNumber = str_replace(',', '.', $normalized);
 
-        return \is_numeric($posibblyNumber) ? (float) $posibblyNumber : null;
+        return is_numeric($posibblyNumber) ? (float) $posibblyNumber : null;
     }
 
-    
     // HTML parsing to array structure
-    
+
     /**
      * In this function I am building pretty complicated and nested structure. It's necessary. I tried before to make it
      * simpler but it was more complicated without it. There was big pile of code that did nested DOM and string parsing
@@ -827,24 +837,26 @@ class BusinessSubjectPageParser
      */
     private static function parseHtmlToArrays(string $rawHtml): array
     {
-        $rawHtml = \str_replace('&nbsp;', ' ', $rawHtml);
-        $doc = new \DOMDocument();
-        @$doc->loadHTML($rawHtml, LIBXML_NOBLANKS); // Do not throw notices; LIBXML_NOBLANKS strips whitespace text nodes between elements (required for PHP 8.4 compatibility)
+        $rawHtml = str_replace('&nbsp;', ' ', $rawHtml);
+        $doc = new DOMDocument();
+        libxml_use_internal_errors(true);
+        $doc->loadHTML($rawHtml, LIBXML_NOBLANKS);
+        libxml_clear_errors();
 
         $bodyElement = $doc->getElementsByTagName('body')[0];
 
         $bodyTables = [];
         foreach ($bodyElement->childNodes as $bodyElement) {
-            if (!(XML_ELEMENT_NODE === $bodyElement->nodeType && 'table' === $bodyElement->tagName)) { continue; }
+            if (!(XML_ELEMENT_NODE === $bodyElement->nodeType && 'table' === $bodyElement->tagName)) {
+                continue;
+            }
 
-$bodyTables[] = $bodyElement;
+            $bodyTables[] = $bodyElement;
         }
 
         $primaryTables = [];
 
-        
         // Parsing of special edge-case tables
-        
 
         $primaryTables[] = [
             'title' => 'Okresný súd',
@@ -852,7 +864,7 @@ $bodyTables[] = $bodyElement;
                 [
                     'title' => null,
                     'lines' => [[
-                        \str_replace(
+                        str_replace(
                             [
                                 'Výpis z Obchodného registra Okresného súdu ',
                                 'Výpis z Obchodného registra Mestského súdu ',
@@ -861,7 +873,7 @@ $bodyTables[] = $bodyElement;
                                 'Okresný súd ',
                                 'Mestský súd ',
                             ],
-                            \trim((string) $bodyTables[1]->childNodes[0]->textContent),
+                            trim((string) $bodyTables[1]->childNodes[0]->textContent),
                         ),
                     ]],
                     'date' => null,
@@ -874,7 +886,7 @@ $bodyTables[] = $bodyElement;
                 [
                     'title' => null,
                     'lines' =>
-                        [[\trim((string) $bodyTables[2]->childNodes[0]->childNodes[0]->childNodes[3]->textContent)]],
+                        [[trim((string) $bodyTables[2]->childNodes[0]->childNodes[0]->childNodes[3]->textContent)]],
                     'date' => null,
                 ],
             ],
@@ -885,7 +897,7 @@ $bodyTables[] = $bodyElement;
                 [
                     'title' => null,
                     'lines' =>
-                        [[\trim((string) $bodyTables[2]->childNodes[0]->childNodes[2]->childNodes[3]->textContent)]],
+                        [[trim((string) $bodyTables[2]->childNodes[0]->childNodes[2]->childNodes[3]->textContent)]],
                     'date' => null,
                 ],
             ],
@@ -900,7 +912,7 @@ $bodyTables[] = $bodyElement;
             'records' => [
                 [
                     'title' => null,
-                    'lines' => [[\trim((string) $lastTable->childNodes[0]->childNodes[2]->textContent)]],
+                    'lines' => [[trim((string) $lastTable->childNodes[0]->childNodes[2]->textContent)]],
                     'date' => null,
                 ],
             ],
@@ -910,15 +922,13 @@ $bodyTables[] = $bodyElement;
             'records' => [
                 [
                     'title' => null,
-                    'lines' => [[\trim((string) $lastTable->childNodes[1]->childNodes[2]->textContent)]],
+                    'lines' => [[trim((string) $lastTable->childNodes[1]->childNodes[2]->textContent)]],
                     'date' => null,
                 ],
             ],
         ];
 
-        
         // Parsing of standard tables
-        
 
         /** @var \DOMElement $bodyElement */
         foreach ($bodyTables as $bodyElement) {
@@ -927,7 +937,7 @@ $bodyTables[] = $bodyElement;
             }
 
             $primaryTable = [
-                'title' => \trim((string) $bodyElement->childNodes[0]->childNodes[0]->textContent, ': '),
+                'title' => trim((string) $bodyElement->childNodes[0]->childNodes[0]->textContent, ': '),
                 'records' => [],
             ];
 
@@ -941,11 +951,10 @@ $bodyTables[] = $bodyElement;
                     XML_ELEMENT_NODE === $subtable->childNodes[0]->childNodes[2]->childNodes[0]->nodeType
                     && 'table' === $subtable->childNodes[0]->childNodes[2]->childNodes[0]->tagName
                 ) {
-                    $title = \trim((string) $subtable->childNodes[0]->childNodes[0]->textContent, ': ');
+                    $title = trim((string) $subtable->childNodes[0]->childNodes[0]->textContent, ': ');
 
-                    // There can be multiple subrecords in a record subtable (fuck me)
                     foreach ($subtable->childNodes[0]->childNodes[2]->childNodes as $subtableRecord) {
-                        $date = \trim((string) $subtableRecord->childNodes[0]->childNodes[2]->textContent);
+                        $date = trim((string) $subtableRecord->childNodes[0]->childNodes[2]->textContent);
 
                         $primaryTable['records'][] = [
                             'title' => $title,
@@ -953,23 +962,22 @@ $bodyTables[] = $bodyElement;
                             'date' => '' === $date || '0' === $date ? null : $date,
                         ];
                     }
-                } else {
-                    $record = [
-                        'title' => null,
-                        'lines' => null,
-                        'date' => null,
-                    ];
-
-                    $record['title'] = null;
-
-                    $content = self::parseContentNodeLines($subtable->childNodes[0]->childNodes[0]);
-                    $date = \trim((string) $subtable->childNodes[0]->childNodes[2]->textContent);
-                    if (null !== $content && null !== $date) {
-                        $record['lines'] = $content;
-                        $record['date'] = '' === $date || '0' === $date ? null : $date;
-                    }
-                    $primaryTable['records'][] = $record;
+                    continue;
                 }
+
+                $record = [
+                    'title' => null,
+                    'lines' => null,
+                    'date' => null,
+                ];
+
+                $content = self::parseContentNodeLines($subtable->childNodes[0]->childNodes[0]);
+                $date = trim((string) $subtable->childNodes[0]->childNodes[2]->textContent);
+                if (null !== $content && null !== $date) {
+                    $record['lines'] = $content;
+                    $record['date'] = '' === $date || '0' === $date ? null : $date;
+                }
+                $primaryTable['records'][] = $record;
             }
 
             $primaryTables[] = $primaryTable;
@@ -978,7 +986,7 @@ $bodyTables[] = $bodyElement;
         return $primaryTables;
     }
 
-    private static function parseContentNodeLines(\DOMNode $contentNode): ?array
+    private static function parseContentNodeLines(DOMNode $contentNode): ?array
     {
         $lineIndex = 0;
         $lines = [];
@@ -993,18 +1001,21 @@ $bodyTables[] = $bodyElement;
                 continue;
             }
 
-            if ('a' === $subnode->nodeName) {
-                foreach ($subnode->childNodes as $subsubnode) {
-                    if ('#text' === $subsubnode->nodeName) { continue; }
+            if ('a' !== $subnode->nodeName) {
+                $lines[$lineIndex][] = trim($subnode->textContent);
+                continue;
+            }
 
-$lines[$lineIndex][] = \trim($subsubnode->textContent);
+            foreach ($subnode->childNodes as $subsubnode) {
+                if ('#text' === $subsubnode->nodeName) {
+                    continue;
                 }
-            } else {
-                $lines[$lineIndex][] = \trim($subnode->textContent);
+
+                $lines[$lineIndex][] = trim($subsubnode->textContent);
             }
         }
 
-        if (1 === \count($lines) && 1 === \count($lines[0]) && empty($lines[0][0])) {
+        if (1 === count($lines) && 1 === count($lines[0]) && !$lines[0][0]) {
             return null;
         }
 

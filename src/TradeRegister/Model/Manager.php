@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace ByrokratSk\TradeRegister\Model;
 
-class Manager implements \JsonSerializable
+use JsonSerializable;
+
+class Manager implements JsonSerializable
 {
     public function __construct(
         public string $Name,

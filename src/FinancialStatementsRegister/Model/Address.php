@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace ByrokratSk\FinancialStatementsRegister\Model;
 
 use ByrokratSk\Helper\Arrayable;
+use JsonSerializable;
 
-class Address implements \JsonSerializable, Arrayable
+class Address implements JsonSerializable, Arrayable
 {
     public const DEFAULT_COUNTRY = 'Slovensko';
 

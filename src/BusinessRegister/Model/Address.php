@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace ByrokratSk\BusinessRegister\Model;
 
 use ByrokratSk\Helper\Arrayable;
+use JsonSerializable;
 
-class Address implements \JsonSerializable, Arrayable
+use function implode;
+use function in_array;
+
+class Address implements JsonSerializable, Arrayable
 {
     public const DEFAULT_COUNTRY = 'Slovensko';
 
@@ -20,30 +24,30 @@ class Address implements \JsonSerializable, Arrayable
     {
         $streetArray = [];
 
-        if (!\in_array($this->StreetName, [null, '', '0'], true)) {
+        if (!in_array($this->StreetName, [null, '', '0'], true)) {
             $streetArray[] = $this->StreetName;
         }
 
-        if (!\in_array($this->StreetNumber, [null, '', '0'], true)) {
+        if (!in_array($this->StreetNumber, [null, '', '0'], true)) {
             $streetArray[] = $this->StreetNumber;
         }
 
-        return \implode(' ', $streetArray);
+        return implode(' ', $streetArray);
     }
 
     public function getFullCity(): string
     {
         $cityArray = [];
 
-        if (!\in_array($this->CityName, [null, '', '0'], true)) {
+        if (!in_array($this->CityName, [null, '', '0'], true)) {
             $cityArray[] = $this->CityName;
         }
 
-        if (!\in_array($this->Zip, [null, '', '0'], true)) {
+        if (!in_array($this->Zip, [null, '', '0'], true)) {
             $cityArray[] = $this->Zip;
         }
 
-        return \implode(' ', $cityArray);
+        return implode(' ', $cityArray);
     }
 
     public function getFull(): string
@@ -60,7 +64,7 @@ class Address implements \JsonSerializable, Arrayable
             $address[] = $fullCity;
         }
 
-        return \implode(', ', $address);
+        return implode(', ', $address);
     }
 
     public function toArray(): array

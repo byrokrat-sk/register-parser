@@ -6,8 +6,9 @@ namespace ByrokratSk\BusinessRegister\Model\Versionable;
 
 use ByrokratSk\Helper\Arrayable;
 use ByrokratSk\Helper\DateHelper;
+use JsonSerializable;
 
-class Contributor extends Person implements \JsonSerializable, Arrayable
+class Contributor extends Person implements JsonSerializable, Arrayable
 {
     public function __construct(
         ?string $BusinessName,

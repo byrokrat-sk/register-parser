@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace ByrokratSk\FinancialStatementsRegister\Model\FinancialReport;
 
 use ByrokratSk\Helper\Arrayable;
+use DateTime;
+use JsonSerializable;
+use RuntimeException;
 
-class ReportTemplate implements \JsonSerializable, Arrayable
+class ReportTemplate implements JsonSerializable, Arrayable
 {
     /**
      * @param TemplateTable[] $Tables
@@ -15,8 +18,8 @@ class ReportTemplate implements \JsonSerializable, Arrayable
         public int $Id,
         public string $Name,
         public string $RegulationSpecification,
-        public \DateTime $ValidFrom,
-        public ?\DateTime $ValidTo,
+        public DateTime $ValidFrom,
+        public ?DateTime $ValidTo,
         /** @var TemplateTable[] */
         public array $Tables,
     ) {}
@@ -29,7 +32,7 @@ class ReportTemplate implements \JsonSerializable, Arrayable
             }
         }
 
-        throw new \RuntimeException("Template table with name [{$name}] was not found!");
+        throw new RuntimeException("Template table with name [{$name}] was not found!");
     }
 
     public function toArray(): array

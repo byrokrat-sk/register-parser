@@ -9,6 +9,13 @@ use ByrokratSk\FinancialAgentRegister\Model\Search\Item;
 use ByrokratSk\FinancialAgentRegister\Model\Search\Result;
 use ByrokratSk\Helper\DomHelper;
 use ByrokratSk\Helper\StringHelper;
+use DOMDocument;
+
+use function count;
+use function explode;
+use function libxml_clear_errors;
+use function libxml_use_internal_errors;
+use function trim;
 
 class SearchPageResultParser
 {
@@ -34,8 +41,10 @@ class SearchPageResultParser
             throw new InvalidQueryException('Register returned too many results error.');
         }
 
-        $doc = new \DOMDocument();
-        @$doc->loadHTML($rawHtml); // Do not throw notices
+        $doc = new DOMDocument();
+        libxml_use_internal_errors(true);
+        $doc->loadHTML($rawHtml);
+        libxml_clear_errors();
 
         $htmlBody = $doc->getElementsByTagName('body')[0];
         $resultTable = $htmlBody->childNodes[3]->childNodes[3]->childNodes[7];
@@ -46,11 +55,11 @@ class SearchPageResultParser
         $resultItems = [];
         foreach ($resultRows as $tableRow) {
             $resultItems[] = new Item(
-                \explode('?row=', (string) $tableRow->childNodes[2]->childNodes[0]->getAttribute('href'))[1],
-                \trim((string) $tableRow->childNodes[0]->textContent),
-                \trim((string) $tableRow->childNodes[2]->textContent),
-                \trim((string) $tableRow->childNodes[4]->textContent),
-                \trim((string) $tableRow->childNodes[6]->textContent),
+                explode('?row=', (string) $tableRow->childNodes[2]->childNodes[0]->getAttribute('href'))[1],
+                trim((string) $tableRow->childNodes[0]->textContent),
+                trim((string) $tableRow->childNodes[2]->textContent),
+                trim((string) $tableRow->childNodes[4]->textContent),
+                trim((string) $tableRow->childNodes[6]->textContent),
             );
         }
 
@@ -58,16 +67,18 @@ class SearchPageResultParser
         $pagesNumber = 1;
         $currentPage = 1;
         $pager = $htmlBody->childNodes[3]->childNodes[3]->childNodes[8];
-        if ('search_pager' === $pager->getAttribute('class') && \count($pager->childNodes) > 1) {
+        if ('search_pager' === $pager->getAttribute('class') && count($pager->childNodes) > 1) {
             $paginator = $pager->childNodes[1];
-            $pagesNumber = (int) $paginator->childNodes[\count($paginator->childNodes) - 1]->textContent;
+            $pagesNumber = (int) $paginator->childNodes[count($paginator->childNodes) - 1]->textContent;
 
             $currentPage = null;
             foreach ($paginator->childNodes as $pageElement) {
-                if ('strong' !== $pageElement->nodeName) { continue; }
+                if ('strong' !== $pageElement->nodeName) {
+                    continue;
+                }
 
-$currentPage = (int) $pageElement->textContent;
-                    break;
+                $currentPage = (int) $pageElement->textContent;
+                break;
             }
         }
 

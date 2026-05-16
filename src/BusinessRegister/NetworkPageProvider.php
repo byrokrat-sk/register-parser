@@ -9,6 +9,8 @@ use ByrokratSk\Exception\BadHttpRequestException;
 use ByrokratSk\Helper\StringHelper;
 use GuzzleHttp\Client;
 
+use function str_replace;
+
 class NetworkPageProvider implements PageProvider
 {
     public const NAME_QUERY_URL = '/hladaj_subjekt.asp?lan=sk&OBMENO={query}&PF=0&R=on';
@@ -22,14 +24,14 @@ class NetworkPageProvider implements PageProvider
 
     public function getIdentificatorSearchPageHtml(string $identificator): string
     {
-        $searchPageUrl = \str_replace('{query}', $identificator, $this->RootAddress . self::IDENTIFICATOR_QUERY_URL);
+        $searchPageUrl = str_replace('{query}', $identificator, $this->RootAddress . self::IDENTIFICATOR_QUERY_URL);
 
         return $this->fetchPage($searchPageUrl);
     }
 
     public function getNameSearchPageHtml(string $query): string
     {
-        $searchPageUrl = \str_replace('{query}', $query, $this->RootAddress . self::NAME_QUERY_URL);
+        $searchPageUrl = str_replace('{query}', $query, $this->RootAddress . self::NAME_QUERY_URL);
 
         return $this->fetchPage($searchPageUrl);
     }
