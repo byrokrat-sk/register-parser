@@ -1,5 +1,9 @@
 # byrokrat-sk/register-parser
 
+> **⚠️ Deprecated**
+> This package is no longer actively maintained. A modern replacement is currently in development,
+> featuring an expanded set of data sources, PHP 8.4 support, and a cleaner architecture.
+
 This package provides access to structured data from web pages of various slovak government sites without structured API access. This package is making requests to web servers of listed pages and parsing structured data from returned HTML code (with exception to financial statements register that is providing JSON REST API).
 
 ## Compatibility warning
