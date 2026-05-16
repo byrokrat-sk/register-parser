@@ -1,33 +1,25 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialStatementsRegister\Model\FinancialReport;
 
-
 use ByrokratSk\Helper\Arrayable;
-
 
 class ReportTemplate implements \JsonSerializable, Arrayable
 {
-    public int $Id;
-    public string $Name;
-    public string $RegulationSpecification;
-
-    /** @var TemplateTable[] */
-    public array $Tables;
-
-    public \DateTime $ValidFrom;
-    public ?\DateTime $ValidTo;
-
-    public function __construct($Id, $Name, $RegulationSpecification, $ValidFrom, $ValidTo, $Tables)
-    {
-        $this->Id = $Id;
-        $this->Name = $Name;
-        $this->RegulationSpecification = $RegulationSpecification;
-        $this->ValidFrom = $ValidFrom;
-        $this->ValidTo = $ValidTo;
-        $this->Tables = $Tables;
-    }
+    /**
+     * @param TemplateTable[] $Tables
+     */
+    public function __construct(
+        public int $Id,
+        public string $Name,
+        public string $RegulationSpecification,
+        public \DateTime $ValidFrom,
+        public ?\DateTime $ValidTo,
+        /** @var TemplateTable[] */
+        public array $Tables,
+    ) {}
 
     public function getTemplateWithName(string $name): TemplateTable
     {
@@ -37,7 +29,7 @@ class ReportTemplate implements \JsonSerializable, Arrayable
             }
         }
 
-        throw new \RuntimeException("Template table with name [$name] was not found!");
+        throw new \RuntimeException("Template table with name [{$name}] was not found!");
     }
 
     public function toArray(): array
@@ -45,14 +37,14 @@ class ReportTemplate implements \JsonSerializable, Arrayable
         return [
             'id' => $this->Id,
             'name' => $this->Name,
-            //'regulation_specification' => $this->RegulationSpecification,
+            // 'regulation_specification' => $this->RegulationSpecification,
             'valid_from' => $this->ValidFrom,
             'valid_to' => $this->ValidTo,
             'tables' => $this->Tables,
         ];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }

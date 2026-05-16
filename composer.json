@@ -5,9 +5,9 @@
     "version": "2.0.1",
     "minimum-stability": "stable",
     "require": {
-        "php": "^7.4",
-        "ext-json": "^7.4",
-        "ext-dom": "20031129",
+        "php": "^8.2",
+        "ext-dom": "*",
+        "ext-json": "*",
         "guzzlehttp/guzzle": "^7.0"
     },
     "support": {
@@ -17,16 +17,27 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Martin Sršeň",
+            "name": "Martin Sršeň",
             "email": "martin@srsen.sk"
         }
     ],
     "autoload": {
-        "psr-4":{
+        "psr-4": {
             "ByrokratSk\\": "src"
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "^9"
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "phpunit/phpunit": "^11",
+        "rector/rector": "^2.0"
+    },
+    "scripts": {
+        "cs": "php-cs-fixer --allow-risky=yes fix",
+        "cs-check": "php-cs-fixer --allow-risky=yes fix --dry-run --diff",
+        "rector": "rector process",
+        "rector-check": "rector process --dry-run",
+        "test": "phpunit --testdox tests",
+        "mago": "mago lint",
+        "mago-fix": "mago fix"
     }
 }

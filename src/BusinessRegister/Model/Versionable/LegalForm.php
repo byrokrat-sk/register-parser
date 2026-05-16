@@ -1,22 +1,18 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\BusinessRegister\Model\Versionable;
-
 
 use ByrokratSk\BusinessRegister\Model\Versionable;
 use ByrokratSk\Helper\Arrayable;
 use ByrokratSk\Helper\DateHelper;
 
-
 class LegalForm extends Versionable implements \JsonSerializable, Arrayable
 {
-    public string $Name;
-
-    public function __construct($name)
-    {
-        $this->Name = $name;
-    }
+    public function __construct(
+        public string $Name,
+    ) {}
 
     public function toArray(): array
     {
@@ -27,7 +23,7 @@ class LegalForm extends Versionable implements \JsonSerializable, Arrayable
         ];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }

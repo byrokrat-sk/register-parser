@@ -1,33 +1,25 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\TradeRegister\Model\Search;
 
-
-use ByrokratSk\TradeRegister\Model\Address;
-
 class Item implements \JsonSerializable
 {
-    public int $ResultOrder;
-    public string $BusinessName;
-    public string $Identificator;
-    public string $Address;
+    public function __construct(
+        public int $ResultOrder,
+        public string $BusinessName,
+        public string $Identificator,
+        public string $Address,
+    ) {}
 
-    public function __construct($ResultOrder, $BusinessName, $Identificator, $Address)
-    {
-        $this->ResultOrder = $ResultOrder;
-        $this->BusinessName = $BusinessName;
-        $this->Identificator = $Identificator;
-        $this->Address = $Address;
-    }
-
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             'order' => $this->ResultOrder,
             'business_name' => $this->BusinessName,
             'identificator' => $this->Identificator,
-            'address' => $this->Address
+            'address' => $this->Address,
         ];
     }
 }

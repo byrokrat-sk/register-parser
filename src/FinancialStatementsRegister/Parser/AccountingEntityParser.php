@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialStatementsRegister\Parser;
-
 
 use ByrokratSk\FinancialStatementsRegister\Model\AccountingEntity;
 use ByrokratSk\FinancialStatementsRegister\Model\AccountingEntityAddress;
 use ByrokratSk\Helper\DateHelper;
 use ByrokratSk\Helper\StringHelper;
-
 
 class AccountingEntityParser
 {
@@ -20,7 +19,13 @@ class AccountingEntityParser
             $rawObject->dic,
             $rawObject->sid,
             $rawObject->nazovUJ,
-            self::parseAddress($rawObject->ulica, $rawObject->mesto, $rawObject->psc, $rawObject->kraj, $rawObject->okres),
+            self::parseAddress(
+                $rawObject->ulica,
+                $rawObject->mesto,
+                $rawObject->psc,
+                $rawObject->kraj,
+                $rawObject->okres,
+            ),
             $rawObject->sidlo,
             $rawObject->pravnaForma,
             $rawObject->skNace,
@@ -33,16 +38,21 @@ class AccountingEntityParser
             $rawObject->zdrojDat,
             DateHelper::parseYmdDate($rawObject->datumZalozenia),
             DateHelper::parseYmdDate($rawObject->datumZrusenia),
-            DateHelper::parseYmdDate($rawObject->datumPoslednejUpravy)
+            DateHelper::parseYmdDate($rawObject->datumPoslednejUpravy),
         );
     }
 
-    private static function parseAddress(string $rawStreet, string $rawCity, string $rawZip, string $region, string $district): AccountingEntityAddress
-    {
-        $streetExplode = explode(' ', $rawStreet);
-        $streetNumber = $streetExplode[count($streetExplode) - 1];
-        unset($streetExplode[count($streetExplode) - 1]);
-        $streetName = implode(' ', $streetExplode);
+    private static function parseAddress(
+        string $rawStreet,
+        string $rawCity,
+        string $rawZip,
+        string $region,
+        string $district,
+    ): AccountingEntityAddress {
+        $streetExplode = \explode(' ', $rawStreet);
+        $streetNumber = $streetExplode[\count($streetExplode) - 1];
+        unset($streetExplode[\count($streetExplode) - 1]);
+        $streetName = \implode(' ', $streetExplode);
 
         return new AccountingEntityAddress(
             $streetName,
@@ -50,7 +60,7 @@ class AccountingEntityParser
             $rawCity,
             StringHelper::removeWhitespaces($rawZip),
             $region,
-            $district
+            $district,
         );
     }
 }

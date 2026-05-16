@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\BusinessRegister\Parser;
-
 
 use ByrokratSk\BusinessRegister\Model\Search\Item;
 use ByrokratSk\BusinessRegister\Model\Search\Listing;
@@ -10,19 +10,14 @@ use ByrokratSk\BusinessRegister\Model\Search\Result;
 use ByrokratSk\Helper\DomHelper;
 use ByrokratSk\Helper\StringHelper;
 
-
 class SearchResultPageParser
 {
-    private string $registerRootUrl;
-
     /**
      * SearchResultPageParser constructor.
-     * @param string $registerRootUrl
      */
-    public function __construct(string $registerRootUrl)
-    {
-        $this->registerRootUrl = $registerRootUrl;
-    }
+    public function __construct(
+        private readonly string $registerRootUrl,
+    ) {}
 
     public function parseHtml(string $rawHtml): Result
     {
@@ -36,7 +31,7 @@ class SearchResultPageParser
          */
         @$doc->loadHTML($rawHtml);
 
-        # ~
+        // ~
 
         $parsedItems = [];
 
@@ -45,11 +40,17 @@ class SearchResultPageParser
         unset($resultRows[0]); // Remove table header for easier iteration
 
         foreach ($resultRows as $row) {
-            $subjectName = trim($row->childNodes[2]->textContent);
+            $subjectName = \trim((string) $row->childNodes[2]->textContent);
 
             $listingsCell = $row->childNodes[4];
-            $actualListingHref = $this->registerRootUrl . '/' . trim($listingsCell->childNodes[0]->childNodes[1]->getAttribute("href"));
-            $fullListingHref = $this->registerRootUrl . '/' . trim($listingsCell->childNodes[0]->childNodes[3]->getAttribute("href"));
+            $actualListingHref =
+                $this->registerRootUrl
+                . '/'
+                . \trim((string) $listingsCell->childNodes[0]->childNodes[1]->getAttribute('href'));
+            $fullListingHref =
+                $this->registerRootUrl
+                . '/'
+                . \trim((string) $listingsCell->childNodes[0]->childNodes[3]->getAttribute('href'));
 
             $actualListing = $this->parseListingFromUrl($actualListingHref);
             $fullListing = $this->parseListingFromUrl($fullListingHref);
@@ -63,7 +64,8 @@ class SearchResultPageParser
     {
         $id = StringHelper::stringBetween($url, 'ID=', '&');
         $sid = StringHelper::stringBetween($url, 'SID=', '&');
-        $p = explode('&P=', $url)[1];
+        $p = \explode('&P=', $url)[1];
+
         return new Listing($id, $sid, $p, $this->registerRootUrl);
     }
 }

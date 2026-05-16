@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\Helper;
-
 
 class DomHelper
 {
     public static function nodeListToArray(\DOMNodeList $nodeList): array
     {
         $nodes = [];
-        foreach($nodeList as $node){
+        foreach ($nodeList as $node) {
             $nodes[] = $node;
         }
+
         return $nodes;
     }
 }

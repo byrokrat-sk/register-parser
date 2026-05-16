@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialStatementsRegister;
-
 
 interface DataProvider
 {

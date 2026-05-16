@@ -1,41 +1,32 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialAgentRegister\Model;
 
-
 class FinancialAgent implements \JsonSerializable
 {
-    public string $LegalForm;
-    public ?string $IdentificationNumber;
-    public ?string $FirstName;
-    public ?string $LastName;
-    public ?string $BusinessName;
-    public ?string $EmailAddress;
-    public ?string $PhoneNumber;
-    public ?Address $ResidenceAddress;
-    public ?Address $BusinessAddress;
-    /** @var AgentRegistration[] */
-    public ?array $Registrations;
-    /** @var LiabilityInsurance[] */
-    public ?array $Contracts;
+    /**
+     * @param AgentRegistration[]  $Registrations
+     * @param LiabilityInsurance[] $Contracts
+     */
+    public function __construct(
+        public string $LegalForm,
+        public ?string $IdentificationNumber,
+        public ?string $FirstName,
+        public ?string $LastName,
+        public ?string $BusinessName,
+        public ?string $EmailAddress,
+        public ?string $PhoneNumber,
+        public ?Address $ResidenceAddress,
+        public ?Address $BusinessAddress,
+        /** @var AgentRegistration[] */
+        public ?array $Registrations,
+        /** @var LiabilityInsurance[] */
+        public ?array $Contracts,
+    ) {}
 
-    public function __construct($LegalForm, $IdentificationNumber, $FirstName, $LastName, $BusinessName, $EmailAddress, $PhoneNumber, $ResidenceAddress, $BusinessAddress, $Registrations, $Contracts)
-    {
-        $this->LegalForm = $LegalForm;
-        $this->IdentificationNumber = $IdentificationNumber;
-        $this->FirstName = $FirstName;
-        $this->LastName = $LastName;
-        $this->BusinessName = $BusinessName;
-        $this->EmailAddress = $EmailAddress;
-        $this->PhoneNumber = $PhoneNumber;
-        $this->ResidenceAddress = $ResidenceAddress;
-        $this->BusinessAddress = $BusinessAddress;
-        $this->Registrations = $Registrations;
-        $this->Contracts = $Contracts;
-    }
-
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             'legal_form' => $this->LegalForm,

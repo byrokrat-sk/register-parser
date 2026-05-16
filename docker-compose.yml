@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   php:
     build: .
@@ -7,4 +5,3 @@ services:
       - .:/usr/src/app
     working_dir: /usr/src/app/
     command: bash test.sh
-    # command: tail -f /dev/null

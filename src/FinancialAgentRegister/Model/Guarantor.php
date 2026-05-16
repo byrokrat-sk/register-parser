@@ -1,32 +1,25 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialAgentRegister\Model;
 
-
 class Guarantor implements \JsonSerializable
 {
-    public string $Name;
-    /** @var Address */
-    public ?Address $Address;
-    public ?\DateTime $StartedAt;
-    public ?\DateTime $StoppedAt;
+    public function __construct(
+        public string $Name,
+        public ?Address $Address,
+        public ?\DateTime $StartedAt,
+        public ?\DateTime $StoppedAt,
+    ) {}
 
-    public function __construct($Name, $Address, $StartedAt, $StoppedAt)
-    {
-        $this->Name = $Name;
-        $this->Address = $Address;
-        $this->StartedAt = $StartedAt;
-        $this->StoppedAt = $StoppedAt;
-    }
-
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             'name' => $this->Name,
             'address' => $this->Address,
-            'started_at' => is_null($this->StartedAt) ? null : $this->StartedAt->format('Y-m-d'),
-            'stopped_at' => is_null($this->StoppedAt) ? null : $this->StoppedAt->format('Y-m-d'),
+            'started_at' => $this->StartedAt instanceof \DateTime ? $this->StartedAt->format('Y-m-d') : null,
+            'stopped_at' => $this->StoppedAt instanceof \DateTime ? $this->StoppedAt->format('Y-m-d') : null,
         ];
     }
 }

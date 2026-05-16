@@ -1,32 +1,22 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialStatementsRegister\Model\FinancialReport;
 
-
 use ByrokratSk\Helper\Arrayable;
-
 
 class ReportAttachment implements \JsonSerializable, Arrayable
 {
-    public int $Id;
-    public string $Name;
-    public string $MimeType;
-    public int $FileSize;
-    public ?int $PagesCount;
-    public string $ContentHash;
-    public string $Language;
-
-    public function __construct($Id, $Name, $MimeType, $FileSize, $PagesCount, $ContentHash, $Language)
-    {
-        $this->Id = $Id;
-        $this->Name = $Name;
-        $this->MimeType = $MimeType;
-        $this->FileSize = $FileSize;
-        $this->PagesCount = $PagesCount;
-        $this->ContentHash = $ContentHash;
-        $this->Language = $Language;
-    }
+    public function __construct(
+        public int $Id,
+        public string $Name,
+        public string $MimeType,
+        public int $FileSize,
+        public ?int $PagesCount,
+        public string $ContentHash,
+        public string $Language,
+    ) {}
 
     public function toArray(): array
     {
@@ -41,7 +31,7 @@ class ReportAttachment implements \JsonSerializable, Arrayable
         ];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }

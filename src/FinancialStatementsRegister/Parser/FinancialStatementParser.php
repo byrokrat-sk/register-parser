@@ -1,12 +1,11 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialStatementsRegister\Parser;
 
-
 use ByrokratSk\FinancialStatementsRegister\Model\FinancialStatement;
 use ByrokratSk\Helper\DateHelper;
-
 
 class FinancialStatementParser
 {
@@ -28,7 +27,7 @@ class FinancialStatementParser
             $rawObject->zdrojDat,
             $rawObject->typ,
             $rawObject->idUctovnychVykazov,
-            null
+            null,
         );
     }
 }

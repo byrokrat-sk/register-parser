@@ -1,17 +1,14 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\TradeRegister\Model\Search;
 
-
 class Result implements \JsonSerializable
 {
-    private array $ResultItems;
-
-    public function __construct(array $resultItems)
-    {
-        $this->ResultItems = $resultItems;
-    }
+    public function __construct(
+        private readonly array $ResultItems,
+    ) {}
 
     public function getItems(): array
     {
@@ -20,28 +17,26 @@ class Result implements \JsonSerializable
 
     public function isEmpty(): bool
     {
-        return count($this->ResultItems) === 0;
+        return 0 === \count($this->ResultItems);
     }
 
     public function isMultiple(): bool
     {
-        return count($this->ResultItems) > 1;
+        return \count($this->ResultItems) > 1;
     }
 
     public function count(): int
     {
-        return count($this->ResultItems);
+        return \count($this->ResultItems);
     }
 
     public function first(): Item
     {
-        return array_values($this->ResultItems)[0];
+        return \array_values($this->ResultItems)[0];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
-        return array_map(function (Item $item) {
-            return $item->jsonSerialize();
-        }, $this->ResultItems);
+        return \array_map(static fn(Item $item): mixed => $item->jsonSerialize(), $this->ResultItems);
     }
 }

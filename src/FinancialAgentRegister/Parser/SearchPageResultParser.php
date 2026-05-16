@@ -1,29 +1,36 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialAgentRegister\Parser;
 
-
+use ByrokratSk\Exception\InvalidQueryException;
 use ByrokratSk\FinancialAgentRegister\Model\Search\Item;
 use ByrokratSk\FinancialAgentRegister\Model\Search\Result;
-use ByrokratSk\Exception\InvalidQueryException;
 use ByrokratSk\Helper\DomHelper;
 use ByrokratSk\Helper\StringHelper;
-
 
 class SearchPageResultParser
 {
     public static function parseHtml(string $rawHtml): Result
     {
-        if (StringHelper::str_contains($rawHtml, 'Bolo nájdených príliš veľa záznamov obsahujúcich hľadaný výraz. Skúste lepšie špecifikovať výberové kritérium.')) {
-            throw new InvalidQueryException('Register did not return response because query matched too many entities.');
+        if (StringHelper::str_contains(
+            $rawHtml,
+            'Bolo nájdených príliš veľa záznamov obsahujúcich hľadaný výraz. Skúste lepšie špecifikovať výberové kritérium.',
+        )) {
+            throw new InvalidQueryException(
+                'Register did not return response because query matched too many entities.',
+            );
         }
 
         if (StringHelper::str_contains($rawHtml, 'Neboli nájdené žiadne záznamy obsahujúce hľadaný výraz.')) {
             return Result::emptyResult();
         }
 
-        if (StringHelper::str_contains($rawHtml, 'Bolo nájdených príliš veľa záznamov obsahujúcich hľadaný výraz. Skúste lepšie špecifikovať výberové kritérium.')) {
+        if (StringHelper::str_contains(
+            $rawHtml,
+            'Bolo nájdených príliš veľa záznamov obsahujúcich hľadaný výraz. Skúste lepšie špecifikovať výberové kritérium.',
+        )) {
             throw new InvalidQueryException('Register returned too many results error.');
         }
 
@@ -39,11 +46,11 @@ class SearchPageResultParser
         $resultItems = [];
         foreach ($resultRows as $tableRow) {
             $resultItems[] = new Item(
-                explode('?row=', $tableRow->childNodes[2]->childNodes[0]->getAttribute('href'))[1],
-                trim($tableRow->childNodes[0]->textContent),
-                trim($tableRow->childNodes[2]->textContent),
-                trim($tableRow->childNodes[4]->textContent),
-                trim($tableRow->childNodes[6]->textContent)
+                \explode('?row=', (string) $tableRow->childNodes[2]->childNodes[0]->getAttribute('href'))[1],
+                \trim((string) $tableRow->childNodes[0]->textContent),
+                \trim((string) $tableRow->childNodes[2]->textContent),
+                \trim((string) $tableRow->childNodes[4]->textContent),
+                \trim((string) $tableRow->childNodes[6]->textContent),
             );
         }
 
@@ -51,16 +58,16 @@ class SearchPageResultParser
         $pagesNumber = 1;
         $currentPage = 1;
         $pager = $htmlBody->childNodes[3]->childNodes[3]->childNodes[8];
-        if ($pager->getAttribute('class') === 'search_pager' && count($pager->childNodes) > 1) {
+        if ('search_pager' === $pager->getAttribute('class') && \count($pager->childNodes) > 1) {
             $paginator = $pager->childNodes[1];
-            $pagesNumber = (int)$paginator->childNodes[count($paginator->childNodes) - 1]->textContent;
+            $pagesNumber = (int) $paginator->childNodes[\count($paginator->childNodes) - 1]->textContent;
 
             $currentPage = null;
             foreach ($paginator->childNodes as $pageElement) {
-                if ($pageElement->nodeName === 'strong') {
-                    $currentPage = (int)$pageElement->textContent;
+                if ('strong' !== $pageElement->nodeName) { continue; }
+
+$currentPage = (int) $pageElement->textContent;
                     break;
-                }
             }
         }
 

@@ -1,24 +1,23 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\BusinessRegister\Model;
-
 
 use ByrokratSk\Helper\Arrayable;
 
 class VersionableGroup implements \JsonSerializable, Arrayable
 {
-    /** @var Versionable[] */
-    private array $Items;
-
-    public function __construct($Items)
-    {
-        $this->Items = $Items;
-    }
+    /**
+     * @param Versionable[] $Items
+     */
+    public function __construct(/** @var Versionable[] */
+        private array $Items,
+    ) {}
 
     public function isEmpty(): bool
     {
-        return empty($this->Items);
+        return [] === $this->Items;
     }
 
     public function getLatest(): ?Versionable
@@ -27,23 +26,31 @@ class VersionableGroup implements \JsonSerializable, Arrayable
     }
 
     /** @returns Versionable[] */
-    public function getValid(\DateTime $now = null): array
+    public function getValid(?\DateTime $now = null): array
     {
-        $now = $now ?? new \DateTime();
+        $now ??= new \DateTime();
 
-        return array_filter($this->Items, function (Versionable $versionable) use ($now) {
-            return is_null($versionable->ValidTo) || $now > $versionable->ValidTo;
-        });
+        return \array_filter(
+            $this->Items,
+            static fn(Versionable $versionable): bool => (
+                !$versionable->ValidTo instanceof \DateTime
+                || $now > $versionable->ValidTo
+            ),
+        );
     }
 
     /** @returns Versionable[] */
-    public function getExpired(\DateTime $now = null): array
+    public function getExpired(?\DateTime $now = null): array
     {
-        $now = $now ?? new \DateTime();
+        $now ??= new \DateTime();
 
-        return array_filter($this->Items, function (Versionable $versionable) use ($now) {
-            return is_null($versionable->ValidTo) || $now <= $versionable->ValidTo;
-        });
+        return \array_filter(
+            $this->Items,
+            static fn(Versionable $versionable): bool => (
+                !$versionable->ValidTo instanceof \DateTime
+                || $now <= $versionable->ValidTo
+            ),
+        );
     }
 
     /** @returns Versionable[] */
@@ -54,12 +61,10 @@ class VersionableGroup implements \JsonSerializable, Arrayable
 
     public function toArray(): array
     {
-        return array_map(function (Arrayable $arrayable) {
-            return $arrayable->toArray();
-        }, $this->getAll());
+        return \array_map(static fn(Arrayable $arrayable): array => $arrayable->toArray(), $this->getAll());
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }

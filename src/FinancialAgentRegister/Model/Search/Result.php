@@ -1,30 +1,25 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialAgentRegister\Model\Search;
 
-
 class Result implements \JsonSerializable
 {
-    private array $ResultItems;
-    private int $CurrentPage;
-    private int $PagesCount;
+    public function __construct(
+        private readonly array $ResultItems,
+        private readonly int $CurrentPage = 1,
+        private readonly int $PagesCount = 1,
+    ) {}
 
-    public function __construct(array $resultItems, int $currentPage = 1, int $pagesCount = 1)
+    // ~
+
+    public static function emptyResult(): self
     {
-        $this->ResultItems = $resultItems;
-        $this->CurrentPage = $currentPage;
-        $this->PagesCount = $pagesCount;
+        return new self([]);
     }
 
-    # ~
-
-    public static function emptyResult(): Result
-    {
-        return new Result([]);
-    }
-
-    # ~
+    // ~
 
     public function hasNextPage(): bool
     {
@@ -38,7 +33,7 @@ class Result implements \JsonSerializable
 
     public function isEmpty(): bool
     {
-        return count($this->ResultItems) === 0;
+        return 0 === \count($this->ResultItems);
     }
 
     public function withNumber(string $numberToFind): ?Item
@@ -53,11 +48,11 @@ class Result implements \JsonSerializable
         return null;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         /*return array_map(function (Item $item) {
-            return $item->jsonSerialize();
-        }, $this->ResultItems);*/
+         * return $item->jsonSerialize();
+         * }, $this->ResultItems);*/
 
         return $this->ResultItems;
     }

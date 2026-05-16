@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\BusinessRegister\Model\Versionable;
-
 
 use ByrokratSk\BusinessRegister\Model\Address;
 use ByrokratSk\BusinessRegister\Model\Versionable;
@@ -11,23 +11,20 @@ use ByrokratSk\Helper\DateHelper;
 
 class RegisteredSeat extends Versionable implements \JsonSerializable, Arrayable
 {
-    public Address $Address;
-
-    public function __construct($address)
-    {
-        $this->Address = $address;
-    }
+    public function __construct(
+        public Address $Address,
+    ) {}
 
     public function toArray(): array
     {
         return [
-            'address' => is_null($this->Address) ? null : $this->Address->toArray(),
+            'address' => $this->Address instanceof Address ? $this->Address->toArray() : null,
             'valid_from' => DateHelper::formatYmd($this->ValidFrom),
             'valid_to' => DateHelper::formatYmd($this->ValidTo),
         ];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }

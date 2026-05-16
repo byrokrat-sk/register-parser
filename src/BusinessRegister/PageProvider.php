@@ -1,11 +1,10 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\BusinessRegister;
 
-
 use ByrokratSk\BusinessRegister\Model\Search\Listing;
-
 
 interface PageProvider
 {

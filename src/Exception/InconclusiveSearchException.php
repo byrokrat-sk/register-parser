@@ -1,7 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ByrokratSk\Exception;
 
-class InconclusiveSearchException extends \RuntimeException
-{
-}
+class InconclusiveSearchException extends \RuntimeException {}

@@ -1,35 +1,30 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialAgentRegister;
 
-
-use ByrokratSk\FinancialAgentRegister\Parser\FinancialAgentPageParser;
-use ByrokratSk\FinancialAgentRegister\Parser\SearchPageResultParser;
-use ByrokratSk\FinancialAgentRegister\Model\FinancialAgent;
-use ByrokratSk\FinancialAgentRegister\Model\Search\Result;
 use ByrokratSk\BusinessRegister\CompanyIdValidator;
 use ByrokratSk\Exception\InvalidQueryException;
+use ByrokratSk\FinancialAgentRegister\Model\FinancialAgent;
+use ByrokratSk\FinancialAgentRegister\Model\Search\Result;
+use ByrokratSk\FinancialAgentRegister\Parser\FinancialAgentPageParser;
+use ByrokratSk\FinancialAgentRegister\Parser\SearchPageResultParser;
 use ByrokratSk\Helper\StringHelper;
-
 
 class RegisterQuery
 {
-    private PageProvider $Provider;
+    public function __construct(
+        private readonly PageProvider $Provider,
+    ) {}
 
-    public function __construct(PageProvider $pageProvider)
-    {
-        $this->Provider = $pageProvider;
-    }
-
-    # ~
+    // ~
 
     public function byName(string $query): Result
     {
         $searchPageHtml = $this->Provider->getSearchPageHtml($query);
-        $searchResult = SearchPageResultParser::parseHtml($searchPageHtml);
 
-        return $searchResult;
+        return SearchPageResultParser::parseHtml($searchPageHtml);
     }
 
     public function byNumber(string $number): FinancialAgent
@@ -37,6 +32,7 @@ class RegisterQuery
         $sanetisedNumber = StringHelper::removeWhitespaces($number);
 
         $agentPageHtml = $this->Provider->getAgentPageHtmlByNumber($sanetisedNumber);
+
         return FinancialAgentPageParser::parseHtml($agentPageHtml);
     }
 
@@ -45,10 +41,11 @@ class RegisterQuery
         $sanetisedCin = StringHelper::removeWhitespaces($cin);
 
         if (!CompanyIdValidator::isValid($sanetisedCin)) {
-            throw new InvalidQueryException("Inputted CIN [$sanetisedCin] is not valid!");
+            throw new InvalidQueryException("Inputted CIN [{$sanetisedCin}] is not valid!");
         }
 
         $agentPageHtml = $this->Provider->getAgentPageHtmlByCin($sanetisedCin);
+
         return FinancialAgentPageParser::parseHtml($agentPageHtml);
     }
 }

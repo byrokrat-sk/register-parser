@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\TradeRegister\Enum;
-
 
 class DistrictEnum
 {
@@ -59,13 +59,14 @@ class DistrictEnum
 
     public static function getEnum(): array
     {
-        $oClass = new \ReflectionClass(__CLASS__);
+        $oClass = new \ReflectionClass(self::class);
+
         return $oClass->getConstants();
     }
 
     public static function hasId(int $id): bool
     {
-        return in_array($id, self::getEnum());
+        return \in_array($id, self::getEnum(), true);
     }
 
     public static function getNameById(int $id): string
@@ -123,8 +124,8 @@ class DistrictEnum
             580 => 'Žilina',
         ];
 
-        if (!array_key_exists($id, $names)) {
-            throw new \OutOfRangeException("District with id [$id] do not have defined name or is not in this enum!");
+        if (!\array_key_exists($id, $names)) {
+            throw new \OutOfRangeException("District with id [{$id}] do not have defined name or is not in this enum!");
         }
 
         return $names[$id];

@@ -1,27 +1,28 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialStatementsRegister\Model;
 
-
 use ByrokratSk\Helper\Arrayable;
-
 
 class AccountingEntityAddress extends Address implements Arrayable
 {
-    public ?string $RegionCode;
-    public ?string $DistrictCode;
-
-    public function __construct($StreetName, $StreetNumber, $CityName, $Zip, $RegionCode, $DistrictCode, $Country = null)
-    {
+    public function __construct(
+        string $StreetName,
+        string $StreetNumber,
+        string $CityName,
+        ?string $Zip,
+        public ?string $RegionCode,
+        public ?string $DistrictCode,
+        $Country = null,
+    ) {
         parent::__construct($StreetName, $StreetNumber, $CityName, $Zip, $Country);
-        $this->RegionCode = $RegionCode;
-        $this->DistrictCode = $DistrictCode;
     }
 
     public function toArray(): array
     {
-        return array_merge(parent::toArray(), [
+        return \array_merge(parent::toArray(), [
             'region_code' => $this->RegionCode,
             'district_code' => $this->DistrictCode,
         ]);

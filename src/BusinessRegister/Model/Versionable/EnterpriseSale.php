@@ -1,24 +1,19 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\BusinessRegister\Model\Versionable;
-
 
 use ByrokratSk\BusinessRegister\Model\Versionable;
 use ByrokratSk\Helper\Arrayable;
 use ByrokratSk\Helper\DateHelper;
 
-
 class EnterpriseSale extends Versionable implements \JsonSerializable, Arrayable
 {
-    public ?string $Header;
-    public string $Text;
-
-    public function __construct($Header, $Text)
-    {
-        $this->Header = $Header;
-        $this->Text = $Text;
-    }
+    public function __construct(
+        public ?string $Header,
+        public string $Text,
+    ) {}
 
     public function toArray(): array
     {
@@ -30,7 +25,7 @@ class EnterpriseSale extends Versionable implements \JsonSerializable, Arrayable
         ];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }

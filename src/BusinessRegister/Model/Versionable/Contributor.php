@@ -1,26 +1,25 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\BusinessRegister\Model\Versionable;
-
 
 use ByrokratSk\Helper\Arrayable;
 use ByrokratSk\Helper\DateHelper;
 
-
 class Contributor extends Person implements \JsonSerializable, Arrayable
 {
-    public ?string $Currency;
-    public ?float $Amount;
-    public ?float $Payed;
-
-    public function __construct($BusinessName, $DegreeBefore, $FirstName, $LastName, $DegreeAfter, $Currency, $Amount, $Payed)
-    {
+    public function __construct(
+        ?string $BusinessName,
+        ?string $DegreeBefore,
+        ?string $FirstName,
+        ?string $LastName,
+        ?string $DegreeAfter,
+        public ?string $Currency,
+        public ?float $Amount,
+        public ?float $Payed,
+    ) {
         parent::__construct($BusinessName, $DegreeBefore, $FirstName, $LastName, $DegreeAfter, null);
-
-        $this->Currency = $Currency;
-        $this->Amount = $Amount;
-        $this->Payed = $Payed;
     }
 
     public function toArray(): array
@@ -39,7 +38,7 @@ class Contributor extends Person implements \JsonSerializable, Arrayable
         ];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }

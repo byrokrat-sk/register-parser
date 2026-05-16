@@ -1,34 +1,28 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialAgentRegister;
 
-
-use ByrokratSk\FinancialAgentRegister\Parser\SearchPageResultParser;
-use ByrokratSk\FinancialAgentRegister\Model\Search\Result;
-use ByrokratSk\FinancialAgentRegister\Model\Search\Item;
-use ByrokratSk\Exception\EmptySearchResultException;
 use ByrokratSk\Exception\BadHttpRequestException;
+use ByrokratSk\Exception\EmptySearchResultException;
+use ByrokratSk\FinancialAgentRegister\Model\Search\Item;
+use ByrokratSk\FinancialAgentRegister\Model\Search\Result;
+use ByrokratSk\FinancialAgentRegister\Parser\SearchPageResultParser;
 use ByrokratSk\Helper\StringHelper;
 use GuzzleHttp\Client;
-
 
 class NetworkPageProvider implements PageProvider
 {
     public const SEARCH_PAGE_URL = '/search.php';
 
-    private Client $HttpClient;
-
-    private string $RootUrl;
-
     private static ?string $PhpSessionId = null;
     private static ?string $SearchToken = null;
 
-    public function __construct(Client $httpClient, string $rootUrl)
-    {
-        $this->HttpClient = $httpClient;
-        $this->RootUrl = $rootUrl;
-    }
+    public function __construct(
+        private readonly Client $HttpClient,
+        private readonly string $RootUrl,
+    ) {}
 
     public function getSearchPageHtml(string $query, int $pageNumber = 1): string
     {
@@ -44,11 +38,17 @@ class NetworkPageProvider implements PageProvider
             ],
         ]);
 
-        if ($searchResponse->getStatusCode() !== 200) {
-            throw new BadHttpRequestException("Search request for financial agent [{$query}] was not succesfull. Register returned HTTP code [{$searchResponse->getStatusCode()}]!");
+        if (200 !== $searchResponse->getStatusCode()) {
+            throw new BadHttpRequestException(
+                "Search request for financial agent [{$query}] was not succesfull. Register returned HTTP code [{$searchResponse->getStatusCode()}]!",
+            );
         }
 
-        self::$PhpSessionId = StringHelper::stringBetween($searchResponse->getHeader('set-cookie')[0], 'PHPSESSID=', ';');
+        self::$PhpSessionId = StringHelper::stringBetween(
+            $searchResponse->getHeader('set-cookie')[0],
+            'PHPSESSID=',
+            ';',
+        );
 
         $responseContent = $searchResponse->getBody()->getContents();
 
@@ -62,7 +62,10 @@ class NetworkPageProvider implements PageProvider
              * "These Are Confusing Times"
              *     ~ Hulk, Avengers: Endgame
              */
-            throw new AgentPageProvidedException('Financial Agent register provided html code of agent page instead of search result.', $responseContent);
+            throw new AgentPageProvidedException(
+                'Financial Agent register provided html code of agent page instead of search result.',
+                $responseContent,
+            );
         }
 
         return $responseContent;
@@ -73,14 +76,16 @@ class NetworkPageProvider implements PageProvider
         try {
             $matchedAgent = null;
             foreach (self::querySearchItems($registrationNumber) as $searchItem) {
-                if ($searchItem->Number === $registrationNumber) {
-                    $matchedAgent = $searchItem;
+                if ($searchItem->Number !== $registrationNumber) { continue; }
+
+$matchedAgent = $searchItem;
                     break;
-                }
             }
 
-            if (is_null($matchedAgent)) {
-                throw new EmptySearchResultException("Financial agent with registration number [$registrationNumber] was not found");
+            if (null === $matchedAgent) {
+                throw new EmptySearchResultException(
+                    "Financial agent with registration number [{$registrationNumber}] was not found",
+                );
             }
 
             $agentPageResponse = $this->HttpClient->request('GET', $this->RootUrl . self::SEARCH_PAGE_URL, [
@@ -92,8 +97,10 @@ class NetworkPageProvider implements PageProvider
                 ],
             ]);
 
-            if ($agentPageResponse->getStatusCode() !== 200) {
-                throw new BadHttpRequestException("Requesting agent page was not succesfull. HTTP code [{$agentPageResponse->getStatusCode()}] was returned!");
+            if (200 !== $agentPageResponse->getStatusCode()) {
+                throw new BadHttpRequestException(
+                    "Requesting agent page was not succesfull. HTTP code [{$agentPageResponse->getStatusCode()}] was returned!",
+                );
             }
 
             return $agentPageResponse->getBody()->getContents();
@@ -112,8 +119,8 @@ class NetworkPageProvider implements PageProvider
                 break;
             }
 
-            if (is_null($matchedAgent)) {
-                throw new EmptySearchResultException("Financial agent with CIN [$cin] was not found");
+            if (null === $matchedAgent) {
+                throw new EmptySearchResultException("Financial agent with CIN [{$cin}] was not found");
             }
 
             $agentPageResponse = $this->HttpClient->request('GET', $this->RootUrl . self::SEARCH_PAGE_URL, [
@@ -125,8 +132,10 @@ class NetworkPageProvider implements PageProvider
                 ],
             ]);
 
-            if ($agentPageResponse->getStatusCode() !== 200) {
-                throw new BadHttpRequestException("Requesting agent page was not succesfull. HTTP code [{$agentPageResponse->getStatusCode()}] was returned!");
+            if (200 !== $agentPageResponse->getStatusCode()) {
+                throw new BadHttpRequestException(
+                    "Requesting agent page was not succesfull. HTTP code [{$agentPageResponse->getStatusCode()}] was returned!",
+                );
             }
 
             return $agentPageResponse->getBody()->getContents();
@@ -135,7 +144,7 @@ class NetworkPageProvider implements PageProvider
         }
     }
 
-    # ~
+    // ~
 
     /** @return \Generator|Item[] */
     private function querySearchItems(string $searchQuery): \Generator
@@ -151,7 +160,6 @@ class NetworkPageProvider implements PageProvider
     /** @return \Generator|Result[] */
     private function querySearchPages(string $searchQuery): \Generator
     {
-        $matchedAgent = null;
         $parsedResult = null;
         $pageNumber = 1;
 
@@ -159,26 +167,32 @@ class NetworkPageProvider implements PageProvider
          * If register return multiple page result then parse will requests all pages until there is not match with
          * registration number.
          */
-        while (is_null($parsedResult) || $parsedResult->hasNextPage()) {
+        while (!$parsedResult instanceof Result || $parsedResult->hasNextPage()) {
             $searchPageHtml = $this->getSearchPageHtml($searchQuery, $pageNumber);
             $parsedResult = SearchPageResultParser::parseHtml($searchPageHtml);
 
             yield $parsedResult;
 
-            $pageNumber += 1;
+            ++$pageNumber;
         }
     }
 
     private function getAccessToken(): string
     {
-        if (is_null(self::$SearchToken)) {
+        if (null === self::$SearchToken) {
             $registerIndexResponse = $this->HttpClient->get($this->RootUrl . self::SEARCH_PAGE_URL);
 
-            if ($registerIndexResponse->getStatusCode() !== 200) {
-                throw new BadHttpRequestException("Request for getting access token was not succesfull. HTTP code [{$registerIndexResponse->getStatusCode()}] returned!");
+            if (200 !== $registerIndexResponse->getStatusCode()) {
+                throw new BadHttpRequestException(
+                    "Request for getting access token was not succesfull. HTTP code [{$registerIndexResponse->getStatusCode()}] returned!",
+                );
             }
 
-            self::$SearchToken = StringHelper::stringBetween($registerIndexResponse->getBody()->getContents(), '<input class="formular" name="token" type="hidden" value="', '"');
+            self::$SearchToken = StringHelper::stringBetween(
+                $registerIndexResponse->getBody()->getContents(),
+                '<input class="formular" name="token" type="hidden" value="',
+                '"',
+            );
         }
 
         return self::$SearchToken;

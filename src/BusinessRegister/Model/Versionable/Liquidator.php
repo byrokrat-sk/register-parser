@@ -1,34 +1,35 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\BusinessRegister\Model\Versionable;
 
-
 use ByrokratSk\Helper\DateHelper;
-
 
 class Liquidator extends Person
 {
-    public ?\Datetime $PositionFrom;
-    public ?\DateTime $PositionTo;
-
-    public function __construct($BusinessName, $DegreeBefore, $FirstName, $LastName, $DegreeAfter, $Address, $PositionFrom, $PositionTo)
-    {
+    public function __construct(
+        ?string $BusinessName,
+        ?string $DegreeBefore,
+        ?string $FirstName,
+        ?string $LastName,
+        ?string $DegreeAfter,
+        ?\ByrokratSk\BusinessRegister\Model\Address $Address,
+        public ?\DateTime $PositionFrom,
+        public ?\DateTime $PositionTo,
+    ) {
         parent::__construct($BusinessName, $DegreeBefore, $FirstName, $LastName, $DegreeAfter, $Address);
-
-        $this->PositionFrom = $PositionFrom;
-        $this->PositionTo = $PositionTo;
     }
 
     public function toArray(): array
     {
-        return array_merge(parent::toArray(), [
+        return \array_merge(parent::toArray(), [
             'position_from' => DateHelper::formatYmd($this->PositionFrom),
             'position_to' => DateHelper::formatYmd($this->PositionTo),
         ]);
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }

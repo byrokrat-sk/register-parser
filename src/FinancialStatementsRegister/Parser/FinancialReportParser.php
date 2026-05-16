@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialStatementsRegister\Parser;
-
 
 use ByrokratSk\FinancialStatementsRegister\Model\Address;
 use ByrokratSk\FinancialStatementsRegister\Model\FinancialReport\ContentTable;
@@ -14,22 +14,22 @@ use ByrokratSk\FinancialStatementsRegister\Model\FinancialReport\TemplateLine;
 use ByrokratSk\FinancialStatementsRegister\Model\FinancialReport\TemplateTable;
 use ByrokratSk\Helper\DateHelper;
 
-
 class FinancialReportParser
 {
     public static function parseObject(object $rawReport, object $rawTemplate): FinancialReport
     {
-        $attachments = array_map(function (object $rawAttachment) {
-            return new ReportAttachment(
+        $attachments = \array_map(
+            static fn(object $rawAttachment): ReportAttachment => new ReportAttachment(
                 $rawAttachment->id,
                 $rawAttachment->meno,
                 $rawAttachment->mimeType,
                 $rawAttachment->velkostPrilohy,
                 $rawAttachment->pocetStran,
                 $rawAttachment->digest,
-                $rawAttachment->jazyk
-            );
-        }, $rawReport->prilohy);
+                $rawAttachment->jazyk,
+            ),
+            $rawReport->prilohy,
+        );
 
         $template = self::parseTemplate($rawTemplate);
 
@@ -43,9 +43,9 @@ class FinancialReportParser
             $rawReport->pristupnostDat,
             $rawReport->zdrojDat,
             $attachments,
-            empty((array)$rawReport->obsah) ? null : self::parseContent($rawReport->obsah, $template),
+            [] === (array) $rawReport->obsah ? null : self::parseContent($rawReport->obsah, $template),
             $template,
-            DateHelper::parseYmdDate($rawReport->datumPoslednejUpravy)
+            DateHelper::parseYmdDate($rawReport->datumPoslednejUpravy),
         );
     }
 
@@ -53,12 +53,10 @@ class FinancialReportParser
     {
         $tables = null;
         if (!empty($rawContent->tabulky)) {
-            $tables = array_map(function (object $rawTable) {
-                return new ContentTable(
-                    $rawTable->nazov->sk,
-                    $rawTable->data
-                );
-            }, $rawContent->tabulky);
+            $tables = \array_map(
+                static fn(object $rawTable): ContentTable => new ContentTable($rawTable->nazov->sk, $rawTable->data),
+                $rawContent->tabulky,
+            );
         }
 
         return new ReportContent(
@@ -87,13 +85,13 @@ class FinancialReportParser
             DateHelper::parseYmdDate($rawContent->titulnaStrana->datumZostaveniaK),
             DateHelper::parseYmdDate($rawContent->titulnaStrana->datumPrilozeniaSpravyAuditora),
             $tables,
-            $template
+            $template,
         );
     }
 
     private static function parseTemplate(object $rawTemplate): ReportTemplate
     {
-        $tables = array_map(function (object $rawTable) {
+        $tables = \array_map(static function (object $rawTable): TemplateTable {
             $header = [];
             foreach ($rawTable->hlavicka as $rawCell) {
                 $header[$rawCell->riadok][] = $rawCell->text->sk;
@@ -102,11 +100,8 @@ class FinancialReportParser
             $lines = [];
             $lineNumber = 1;
             foreach ($rawTable->riadky as $rawCell) {
-                $lines[$lineNumber] = new TemplateLine(
-                    $rawCell->oznacenie,
-                    $rawCell->text->sk
-                );
-                $lineNumber++;
+                $lines[$lineNumber] = new TemplateLine($rawCell->oznacenie, $rawCell->text->sk);
+                ++$lineNumber;
             }
 
             return new TemplateTable(
@@ -114,7 +109,7 @@ class FinancialReportParser
                 $header,
                 $lines,
                 $rawTable->pocetStlpcov - $rawTable->pocetDatovychStlpcov,
-                $rawTable->pocetDatovychStlpcov
+                $rawTable->pocetDatovychStlpcov,
             );
         }, $rawTemplate->tabulky);
 
@@ -124,21 +119,16 @@ class FinancialReportParser
             $rawTemplate->nariadenieMF,
             DateHelper::parseYmdDate($rawTemplate->platneOd),
             DateHelper::parseYmdDate($rawTemplate->platneDo),
-            $tables
+            $tables,
         );
     }
 
     private static function parseAddress(?object $rawAddress): ?Address
     {
-        if (is_null($rawAddress)) {
+        if (null === $rawAddress) {
             return null;
         }
 
-        return new Address(
-            $rawAddress->ulica,
-            $rawAddress->cislo,
-            $rawAddress->mesto,
-            $rawAddress->psc
-        );
+        return new Address($rawAddress->ulica, $rawAddress->cislo, $rawAddress->mesto, $rawAddress->psc);
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialAgentRegister\Parser;
-
 
 use ByrokratSk\FinancialAgentRegister\Model\Address;
 use ByrokratSk\FinancialAgentRegister\Model\AgentRegistration;
@@ -13,7 +13,6 @@ use ByrokratSk\FinancialAgentRegister\Model\SectorRegistration;
 use ByrokratSk\FinancialAgentRegister\Model\State;
 use ByrokratSk\Helper\DateHelper;
 use ByrokratSk\Helper\StringHelper;
-
 
 class FinancialAgentPageParser
 {
@@ -34,7 +33,7 @@ class FinancialAgentPageParser
             'residence_address' => null,
             'business_address' => null,
             'registrations' => null,
-            'contracts' => null
+            'contracts' => null,
         ];
 
         foreach ($rawData as $section) {
@@ -49,13 +48,12 @@ class FinancialAgentPageParser
 
             foreach ($section as $sectionFields) {
                 $sectionName = $sectionFields[self::TITLE_KEY] ?? null;
-                if (empty($sectionName) && isset($sectionFields[0]) && $sectionFields[0] === 'Zrušený zápis') {
+                if (empty($sectionName) && isset($sectionFields[0]) && 'Zrušený zápis' === $sectionFields[0]) {
                     continue; // ignore header
                 }
 
                 switch ($sectionName) {
                     case 'Identifikačné údaje':
-                    {
                         foreach ($sectionFields as $key => $value) {
                             switch ($key) {
                                 case 'Registračné číslo':
@@ -82,48 +80,43 @@ class FinancialAgentPageParser
                             }
                         }
                         break;
-                    }
                     case 'Adresa trvalého pobytu':
-                    {
                         $agentData['residence_address'] = self::parseAddressArray($sectionFields);
                         break;
-                    }
                     case 'Miesto podnikania':
-                    {
                         $agentData['business_address'] = self::parseAddressArray($sectionFields);
                         break;
-                    }
                     case 'Adresa sídla':
-                    {
                         $agentData['business_address'] = self::parseAddressArray($sectionFields);
-                        if (isset($sectionFields['telefónne číslo'])) $agentData['phone_number'] = StringHelper::removeWhitespaces($sectionFields['telefónne číslo']);
-                        if (isset($sectionFields['adresa elektronickej pošty'])) $agentData['email'] = $sectionFields['adresa elektronickej pošty'];
+                        if (isset($sectionFields['telefónne číslo'])) {
+                            $agentData['phone_number'] = StringHelper::removeWhitespaces(
+                                $sectionFields['telefónne číslo'],
+                            );
+                        }
+                        if (isset($sectionFields['adresa elektronickej pošty'])) {
+                            $agentData['email'] = $sectionFields['adresa elektronickej pošty'];
+                        }
                         break;
-                    }
                     case 'Zmluvy s finančnou inštitúciou':
-                    {
                         if (isset($sectionFields['Zoznam'])) {
                             $agentData['contracts'] = self::parseInstitutionsListArray($sectionFields['Zoznam']);
                         }
                         break;
-                    }
                     case 'Podregister doplnkového dôchodkového sporenia':
                     case 'Podregister starobného dôchodkového sporenia':
                     case 'Podregister poistenia alebo zaistenia':
                     case 'Podregister prijímania vkladov':
                     case 'Podregister poskytovania úverov, úverov na bývanie a spotrebiteľských úverov':
                     case 'Podregister kapitálového trhu':
-                    {
                         $sectors[] = self::parseSectorArray($sectionFields);
                         break;
-                    }
                 }
             }
 
             $agentData['registrations'][] = new AgentRegistration(
                 $registration['registration_number'],
                 $registration['decision_number'],
-                empty($sectors) ? null : $sectors
+                [] === $sectors ? null : $sectors,
             );
         }
 
@@ -138,23 +131,23 @@ class FinancialAgentPageParser
             $agentData['residence_address'],
             $agentData['business_address'],
             empty($agentData['registrations']) ? null : $agentData['registrations'],
-            empty($agentData['contracts']) ? null : $agentData['contracts']
+            empty($agentData['contracts']) ? null : $agentData['contracts'],
         );
     }
 
-    private static function parseAddressArray(array $address): ?Address
+    private static function parseAddressArray(array $address): Address
     {
-        $streetExplode = explode(' ', $address['Ulica']);
-        $streetNumber = $streetExplode[count($streetExplode) - 1]; // last index is street number
-        unset($streetExplode[count($streetExplode) - 1]);
-        $streetName = implode(' ', $streetExplode); // Rest is street name
+        $streetExplode = \explode(' ', (string) $address['Ulica']);
+        $streetNumber = $streetExplode[\count($streetExplode) - 1]; // last index is street number
+        unset($streetExplode[\count($streetExplode) - 1]);
+        $streetName = \implode(' ', $streetExplode); // Rest is street name
 
         return new Address(
-            empty($streetName) ? null : $streetName,
-            empty($streetNumber) ? null : $streetNumber,
+            '' === $streetName || '0' === $streetName ? null : $streetName,
+            '' === $streetNumber || '0' === $streetNumber ? null : $streetNumber,
             $address['Mesto'],
             StringHelper::removeWhitespaces($address['PSČ']),
-            isset($address['Štát']) ? $address['Štát'] : null
+            $address['Štát'] ?? null,
         );
     }
 
@@ -164,32 +157,34 @@ class FinancialAgentPageParser
         $proposerNumber = null;
 
         if (isset($sector['Reg.č. navrhovateľa'])) {
-            $proposerExplode = explode('(', $sector['Reg.č. navrhovateľa']);
-            $proposerName = trim($proposerExplode[1], ')');
-            $proposerNumber = trim($proposerExplode[0]);
+            $proposerExplode = \explode('(', $sector['Reg.č. navrhovateľa']);
+            $proposerName = \trim($proposerExplode[1], ')');
+            $proposerNumber = \trim($proposerExplode[0]);
         }
 
-        $startedAt = isset($sector['Dátum vzniku oprávnenia']) ? $sector['Dátum vzniku oprávnenia'] : (
-        isset($sector['Dátum zápisu do registra']) ? $sector['Dátum zápisu do registra'] : null
-        );
+        $startedAt = $sector['Dátum vzniku oprávnenia'] ?? $sector['Dátum zápisu do registra'] ?? null;
 
-        $endedAt = isset($sector['Dátum zániku oprávnenia']) ? $sector['Dátum zániku oprávnenia'] : (
-        isset($sector['Dátum zrušenia zápisu v registri']) ? $sector['Dátum zrušenia zápisu v registri'] : null
-        );
+        $endedAt = $sector['Dátum zániku oprávnenia'] ?? $sector['Dátum zrušenia zápisu v registri'] ?? null;
 
         return new SectorRegistration(
             $sector[self::TITLE_KEY],
             $sector['Zapísaný ako'],
             $proposerName,
             $proposerNumber,
-            isset($sector['Orgán dohľadu']) ? $sector['Orgán dohľadu'] : null,
-            isset($sector['Adresa sídla orgánu dohľadu']) ? self::parseRawAddress($sector['Adresa sídla orgánu dohľadu']) : null,
-            isset($sector['Poistenie zodpovednosti']) ? self::parseInstitutionsListArray($sector['Poistenie zodpovednosti']) : null,
-            isset($sector['prevzatie zodpovednosti navrhovateľom']) ? ($sector['prevzatie zodpovednosti navrhovateľom'] === 'áno') : null,
+            $sector['Orgán dohľadu'] ?? null,
+            isset($sector['Adresa sídla orgánu dohľadu'])
+                ? self::parseRawAddress($sector['Adresa sídla orgánu dohľadu'])
+                : null,
+            isset($sector['Poistenie zodpovednosti'])
+                ? self::parseInstitutionsListArray($sector['Poistenie zodpovednosti'])
+                : null,
+            isset($sector['prevzatie zodpovednosti navrhovateľom'])
+                ? 'áno' === $sector['prevzatie zodpovednosti navrhovateľom']
+                : null,
             isset($sector['Iné členské štáty']) ? self::parseSectorStates($sector['Iné členské štáty']) : null,
             isset($sector['Odborný garant']) ? self::parseGarantorArray($sector['Odborný garant']) : null,
-            (is_null($startedAt) || $startedAt === 'neuvedené') ? null : DateHelper::parseDmyDate($startedAt),
-            (is_null($endedAt) || $endedAt === 'neuvedené') ? null : DateHelper::parseDmyDate($endedAt)
+            null === $startedAt || 'neuvedené' === $startedAt ? null : DateHelper::parseDmyDate($startedAt),
+            null === $endedAt || 'neuvedené' === $endedAt ? null : DateHelper::parseDmyDate($endedAt),
         );
     }
 
@@ -197,29 +192,25 @@ class FinancialAgentPageParser
     {
         $states = [];
 
-        foreach ($rawStates as $type => $section) {
+        foreach ($rawStates as $section) {
             foreach ($section as $group) {
                 $state = [
                     'name' => $group['title'],
                     'started_at' => null,
-                    'terminated_at' => null
+                    'terminated_at' => null,
                 ];
 
                 foreach ($group['sub_lines'] as $subline) {
                     if (StringHelper::str_contains($subline, 'dátum vzniku oprávnenia')) {
-                        $rawDate = trim(str_replace('dátum vzniku oprávnenia:', '', $subline));
+                        $rawDate = \trim(\str_replace('dátum vzniku oprávnenia:', '', $subline));
                         $state['started_at'] = DateHelper::parseDmyDate($rawDate);
-                    } else if (StringHelper::str_contains($subline, 'dátum zániku oprávnenia')) {
-                        $rawDate = trim(str_replace('dátum zániku oprávnenia:', '', $subline));
+                    } elseif (StringHelper::str_contains($subline, 'dátum zániku oprávnenia')) {
+                        $rawDate = \trim(\str_replace('dátum zániku oprávnenia:', '', $subline));
                         $state['terminated_at'] = DateHelper::parseDmyDate($rawDate);
                     }
                 }
 
-                $states[] = new State(
-                    $state['name'],
-                    $state['started_at'],
-                    $state['terminated_at']
-                );
+                $states[] = new State($state['name'], $state['started_at'], $state['terminated_at']);
             }
         }
 
@@ -230,24 +221,24 @@ class FinancialAgentPageParser
     {
         $guarantors = [];
 
-        foreach ($guarantorsArray as $type => $section) {
+        foreach ($guarantorsArray as $section) {
             foreach ($section as $group) {
                 $guarantor = [
                     'name' => $group['title'],
                     'address' => null,
                     'started_at' => null,
-                    'ended_at' => null
+                    'ended_at' => null,
                 ];
 
                 foreach ($group['sub_lines'] as $subline) {
                     if (StringHelper::str_contains($subline, 'adresa trvalého pobytu')) {
-                        $rawAddress = str_replace('adresa trvalého pobytu: ', '', $subline);
+                        $rawAddress = \str_replace('adresa trvalého pobytu: ', '', $subline);
                         $guarantor['address'] = self::parseRawAddress($rawAddress);
-                    } else if (StringHelper::str_contains($subline, 'dátum začiatku vykonávania funkcie')) {
-                        $rawDate = trim(str_replace('dátum začiatku vykonávania funkcie:', '', $subline));
+                    } elseif (StringHelper::str_contains($subline, 'dátum začiatku vykonávania funkcie')) {
+                        $rawDate = \trim(\str_replace('dátum začiatku vykonávania funkcie:', '', $subline));
                         $guarantor['started_at'] = DateHelper::parseDmyDate($rawDate);
-                    } else if (StringHelper::str_contains($subline, 'dátum ukončenia vykonávania funkcie')) {
-                        $rawDate = trim(str_replace('dátum ukončenia vykonávania funkcie:', '', $subline));
+                    } elseif (StringHelper::str_contains($subline, 'dátum ukončenia vykonávania funkcie')) {
+                        $rawDate = \trim(\str_replace('dátum ukončenia vykonávania funkcie:', '', $subline));
                         $guarantor['ended_at'] = DateHelper::parseDmyDate($rawDate);
                     }
                 }
@@ -268,7 +259,7 @@ class FinancialAgentPageParser
     {
         $contracts = [];
 
-        foreach ($sections as $type => $section) {
+        foreach ($sections as $section) {
             foreach ($section as $group) {
                 $contract = [
                     'institution_name' => null,
@@ -279,22 +270,24 @@ class FinancialAgentPageParser
                     'terminated_at' => null,
                 ];
 
-                $explode = explode('(', $group['title']);
-                $explode2 = explode(':', $explode[count($explode) - 1]);
-                $contract['identification_type'] = trim($explode2[0]);
-                $contract['identification_number'] = trim($explode2[1], ') ');
-                $contract['institution_name'] = trim($explode[0]);
+                $explode = \explode('(', (string) $group['title']);
+                $explode2 = \explode(':', $explode[\count($explode) - 1]);
+                $contract['identification_type'] = \trim($explode2[0]);
+                $contract['identification_number'] = \trim($explode2[1], ') ');
+                $contract['institution_name'] = \trim($explode[0]);
 
                 foreach ($group['sub_lines'] as $subline) {
                     if (StringHelper::str_contains($subline, 'začiatku platnosti')) {
-                        $dateExplode = explode(': ', $subline);
+                        $dateExplode = \explode(': ', (string) $subline);
                         // Date can be missing
-                        $contract['started_at'] = isset($dateExplode[1]) ? DateHelper::parseDmyDate($dateExplode[1]) : null;
-                    } else if (StringHelper::str_contains($subline, 'začiatku účinnosti')) {
-                        $date = explode(': ', $subline)[1];
+                        $contract['started_at'] = isset($dateExplode[1])
+                            ? DateHelper::parseDmyDate($dateExplode[1])
+                            : null;
+                    } elseif (StringHelper::str_contains($subline, 'začiatku účinnosti')) {
+                        $date = \explode(': ', (string) $subline)[1];
                         $contract['started_at'] = DateHelper::parseDmyDate($date);
-                    } else if (StringHelper::str_contains($subline, 'ukončenia platnosti')) {
-                        $date = explode(': ', $subline)[1];
+                    } elseif (StringHelper::str_contains($subline, 'ukončenia platnosti')) {
+                        $date = \explode(': ', (string) $subline)[1];
                         $contract['started_at'] = DateHelper::parseDmyDate($date);
                     }
                 }
@@ -316,7 +309,7 @@ class FinancialAgentPageParser
     private static function parsePageToArray(string $rawHtml): array
     {
         $doc = new \DOMDocument();
-        @$doc->loadHTML($rawHtml); // Do not throw notices
+        @$doc->loadHTML($rawHtml, LIBXML_NOBLANKS); // Do not throw notices; LIBXML_NOBLANKS strips whitespace text nodes between elements (required for PHP 8.4 compatibility)
         $htmlBody = $doc->getElementsByTagName('body')[0];
 
         // 1. Find <div class="vnplocha"> that contains all tables with informations
@@ -327,12 +320,12 @@ class FinancialAgentPageParser
         /** @var \DOMElement $mainChild */
         foreach ($mainElement->childNodes as $mainChild) {
             if (
-                $mainChild->nodeType === XML_ELEMENT_NODE
-                && $mainChild->tagName === 'table'
-                && $mainChild->getAttribute('class') === 'search_table'
-            ) {
-                $registrationTables[] = $mainChild;
-            }
+                !(XML_ELEMENT_NODE === $mainChild->nodeType
+                && 'table' === $mainChild->tagName
+                && 'search_table' === $mainChild->getAttribute('class'))
+            ) { continue; }
+
+$registrationTables[] = $mainChild;
         }
 
         // 3. Parse tables to arrays for simpler parsing to objects
@@ -344,17 +337,20 @@ class FinancialAgentPageParser
 
             // Table with current active record have different structure as terminated record
             foreach ($tableElement->childNodes as $row) {
-                if (in_array($row->childNodes[0]->getAttribute('class'), ['search_hr', 'search_ihr'])) {
-                    $currentSubtableHeader = trim($row->childNodes[0]->textContent);
-                    $currentSubtableHeader = empty($currentSubtableHeader) ? '__empty' : $currentSubtableHeader;
-                    $currentSubtableIndex += 1;
+                if (\in_array($row->childNodes[0]->getAttribute('class'), ['search_hr', 'search_ihr'], true)) {
+                    $currentSubtableHeader = \trim((string) $row->childNodes[0]->textContent);
+                    $currentSubtableHeader =
+                        '' === $currentSubtableHeader || '0' === $currentSubtableHeader
+                            ? '__empty'
+                            : $currentSubtableHeader;
+                    ++$currentSubtableIndex;
                     $parsedTable[$currentSubtableIndex] = [
-                        self::TITLE_KEY => $currentSubtableHeader
+                        self::TITLE_KEY => $currentSubtableHeader,
                     ];
                     continue;
                 }
 
-                $propertyTitle = trim($row->childNodes[0]->textContent, ': ');
+                $propertyTitle = \trim((string) $row->childNodes[0]->textContent, ': ');
                 $propertyValue = null;
 
                 if (self::isListSection($propertyTitle)) {
@@ -362,13 +358,13 @@ class FinancialAgentPageParser
                     $propertyValue = self::parseElementWithList($row->childNodes[1]);
                 } elseif ($row->childNodes->length > 1) {
                     // "Plain-text" parsing
-                    $propertyValue = trim($row->childNodes[1]->textContent);
+                    $propertyValue = \trim((string) $row->childNodes[1]->textContent);
                 }
 
                 $parsedTable[$currentSubtableIndex][$propertyTitle] = $propertyValue;
             }
 
-            if (!empty($parsedTable)) {
+            if ([] !== $parsedTable) {
                 $parsedTables[] = $parsedTable;
             }
         }
@@ -387,36 +383,35 @@ class FinancialAgentPageParser
 
         $parsedList = [
             'active' => [],
-            'inactive' => []
+            'inactive' => [],
         ];
 
         // 1. First iteration will flattern structure from DOM to simple lines
         foreach ($list->childNodes as $line) {
             if ($active) {
-                if ($line->nodeName === '#text') {
-                    if ($line->textContent === ' história ') {
+                if ('#text' === $line->nodeName) {
+                    if (' história ' === $line->textContent) {
                         $active = false;
                     } else {
-                        $parsedList['active'][] = trim($line->textContent);
+                        $parsedList['active'][] = \trim($line->textContent);
                     }
                 }
-            } else if ($line->tagName === 'div') {
+            } elseif ('div' === $line->tagName) {
                 foreach ($line->childNodes as $line2) {
-                    if ($line2->tagName === 'font') {
-                        foreach ($line2->childNodes as $line3) {
-                            if ($line3->nodeName === '#text') {
-                                // Bruh.
-                                $parsedList['inactive'][] = trim($line3->textContent);
-                            }
+                    if ('font' !== $line2->tagName) { continue; }
+
+foreach ($line2->childNodes as $line3) {
+                            if ('#text' !== $line3->nodeName) { continue; }
+
+$parsedList['inactive'][] = \trim($line3->textContent);
                         }
-                    }
                 }
             }
         }
 
         $betterParsedList = [
             'active' => [],
-            'inactive' => []
+            'inactive' => [],
         ];
 
         // 2. Second iteration will group these lines to sections by intendion (non-breaking spaces on beginning of lines)
@@ -424,16 +419,19 @@ class FinancialAgentPageParser
             $sectionIndex = -1;
 
             foreach ($linesGroup as $line) {
-                if (!StringHelper::str_contains($line, StringHelper::NON_BREAKING_SPACE . StringHelper::NON_BREAKING_SPACE)) {
-                    $sectionIndex += 1;
+                if (!StringHelper::str_contains(
+                    $line,
+                    StringHelper::NON_BREAKING_SPACE . StringHelper::NON_BREAKING_SPACE,
+                )) {
+                    ++$sectionIndex;
                     $betterParsedList[$groupType][$sectionIndex] = [
                         'title' => $line,
-                        'sub_lines' => []
+                        'sub_lines' => [],
                     ];
                     continue;
                 }
 
-                $line = trim($line, StringHelper::NON_BREAKING_SPACE);
+                $line = \trim($line, StringHelper::NON_BREAKING_SPACE);
                 $betterParsedList[$groupType][$sectionIndex]['sub_lines'][] = $line;
             }
         }
@@ -443,14 +441,18 @@ class FinancialAgentPageParser
 
     private static function isListSection(string $sectionTitle): bool
     {
-        return in_array($sectionTitle, [
-            'Zoznam',
-            'Poistenie zodpovednosti',
-            'Odborný garant',
-            'Člen/členovia štatutárneho orgánu zodpovedníza vykonávanie finančného sprostredkovania',
-            'Člen/členovia štatutárneho orgánu zodpovední za vykonávanie finančného sprostredkovania',
-            'Iné členské štáty'
-        ]);
+        return \in_array(
+            $sectionTitle,
+            [
+                'Zoznam',
+                'Poistenie zodpovednosti',
+                'Odborný garant',
+                'Člen/členovia štatutárneho orgánu zodpovedníza vykonávanie finančného sprostredkovania',
+                'Člen/členovia štatutárneho orgánu zodpovední za vykonávanie finančného sprostredkovania',
+                'Iné členské štáty',
+            ],
+            true,
+        );
     }
 
     // Note: This is edited function from Traderegister (format in this register is little different!)
@@ -462,25 +464,25 @@ class FinancialAgentPageParser
         $zip = null;
         $country = null;
 
-        $commaSplit = explode(',', $rawAddress);
-        if (count($commaSplit) === 1) {
+        $commaSplit = \explode(',', $rawAddress);
+        if (1 === \count($commaSplit)) {
             // Address do not contain comma
-            $spaceSplit = explode(' ', $rawAddress);
+            $spaceSplit = \explode(' ', $rawAddress);
             $zip = $spaceSplit[0];
-            $streetNumber = $spaceSplit[count($spaceSplit) - 1];
-            unset($spaceSplit[count($spaceSplit) - 1]);
+            $streetNumber = $spaceSplit[\count($spaceSplit) - 1];
+            unset($spaceSplit[\count($spaceSplit) - 1]);
             unset($spaceSplit[0]);
-            $city = implode(' ', $spaceSplit);
+            $city = \implode(' ', $spaceSplit);
         } else {
-            $citySplit = explode(' ', trim($commaSplit[1]));
-            if (count($citySplit) === 1) {
+            $citySplit = \explode(' ', \trim($commaSplit[1]));
+            if (1 === \count($citySplit)) {
                 // Address do not contain ZIP
                 $city = $citySplit[0];
             } else {
-                $zip = trim($citySplit[0] . $citySplit[1]); // First two parts of "city" is zip
+                $zip = \trim($citySplit[0] . $citySplit[1]); // First two parts of "city" is zip
                 unset($citySplit[0]);
                 unset($citySplit[1]);
-                $city = implode(' ', $citySplit);
+                $city = \implode(' ', $citySplit);
             }
 
             /*
@@ -488,23 +490,23 @@ class FinancialAgentPageParser
              * city name and street number are not separated by space.
              */
             $pattern = '/(?=\d)/'; // find first number in string
-            $numberSplit = preg_split($pattern, $commaSplit[0], 2);
+            $numberSplit = \preg_split($pattern, $commaSplit[0], 2);
 
-            $streetName = trim($numberSplit[0]);
-            $streetNumber = trim($numberSplit[1]);
+            $streetName = \trim($numberSplit[0]);
+            $streetNumber = \trim($numberSplit[1]);
         }
 
         // Country can be written after second comma
         if (isset($commaSplit[2])) {
-            $country = trim($commaSplit[2]);
+            $country = \trim($commaSplit[2]);
         }
 
         return new Address(
-            empty($streetName) ? null : $streetName,
+            \in_array($streetName, [null, '', '0'], true) ? null : $streetName,
             $streetNumber,
-            trim($city),
-            empty($zip) ? null : $zip,
-            $country
+            \trim($city),
+            \in_array($zip, [null, '', '0'], true) ? null : $zip,
+            $country,
         );
     }
 }

@@ -1,29 +1,20 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialStatementsRegister\Model\FinancialReport;
 
-
 use ByrokratSk\Helper\Arrayable;
-
 
 class TemplateTable implements \JsonSerializable, Arrayable
 {
-    public string $Name;
-    public array $Header;
-    public array $Lines;
-
-    public int $LabelColumnsCount;
-    public int $DataColumnsCount;
-
-    public function __construct($Name, $Header, $Lines, $LabelColumnsCount, $DataColumnsCount)
-    {
-        $this->Name = $Name;
-        $this->Header = $Header;
-        $this->Lines = $Lines;
-        $this->LabelColumnsCount = $LabelColumnsCount;
-        $this->DataColumnsCount = $DataColumnsCount;
-    }
+    public function __construct(
+        public string $Name,
+        public array $Header,
+        public array $Lines,
+        public int $LabelColumnsCount,
+        public int $DataColumnsCount,
+    ) {}
 
     public function toArray(): array
     {
@@ -32,11 +23,11 @@ class TemplateTable implements \JsonSerializable, Arrayable
             'header' => $this->Header,
             'lines' => $this->Lines,
             'label_columns_count' => $this->LabelColumnsCount,
-            'data_columns_count' => $this->DataColumnsCount
+            'data_columns_count' => $this->DataColumnsCount,
         ];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }

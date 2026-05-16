@@ -1,21 +1,21 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\Helper;
-
 
 class DateHelper
 {
     public static function parseDmyDate(?string $rawDate): ?\DateTime
     {
-        if (empty($rawDate)) {
+        if (\in_array($rawDate, [null, '', '0'], true)) {
             return null;
         }
 
         $parsedDateTime = \DateTime::createFromFormat('d.m.Y', $rawDate);
 
-        if ($parsedDateTime === false) {
-            throw new \InvalidArgumentException("String [$rawDate] is not valid d.m.Y date!");
+        if (false === $parsedDateTime) {
+            throw new \InvalidArgumentException("String [{$rawDate}] is not valid d.m.Y date!");
         }
 
         return $parsedDateTime;
@@ -23,14 +23,14 @@ class DateHelper
 
     public static function parseYmdDate(?string $rawDate): ?\DateTime
     {
-        if (empty($rawDate)) {
+        if (\in_array($rawDate, [null, '', '0'], true)) {
             return null;
         }
 
         $parsedDateTime = \DateTime::createFromFormat('Y-m-d', $rawDate);
 
-        if ($parsedDateTime === false) {
-            throw new \InvalidArgumentException("String [$rawDate] is not valid Y-m-d date!");
+        if (false === $parsedDateTime) {
+            throw new \InvalidArgumentException("String [{$rawDate}] is not valid Y-m-d date!");
         }
 
         return $parsedDateTime;
@@ -38,7 +38,7 @@ class DateHelper
 
     public static function formatYmd(?\DateTime $dateTime): ?string
     {
-        if (is_null($dateTime)) {
+        if (!$dateTime instanceof \DateTime) {
             return null;
         }
 

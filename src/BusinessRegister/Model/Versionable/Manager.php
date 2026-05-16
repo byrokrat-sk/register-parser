@@ -1,11 +1,10 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\BusinessRegister\Model\Versionable;
 
-
 use ByrokratSk\Helper\DateHelper;
-
 
 class Manager extends Person
 {
@@ -21,7 +20,7 @@ class Manager extends Person
 
     public function toArray(): array
     {
-        return array_merge(parent::toArray(), [
+        return \array_merge(parent::toArray(), [
             'function_name' => $this->FunctionName,
             'position_from' => DateHelper::formatYmd($this->PositionFrom),
             'position_to' => DateHelper::formatYmd($this->PositionTo),

@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ByrokratSk\TradeRegister;
 
-
-use Psr\Http\Message\ResponseInterface;
 use ByrokratSk\Exception\BadHttpRequestException;
 use ByrokratSk\Helper\StringHelper;
 use GuzzleHttp\Client;
-
+use Psr\Http\Message\ResponseInterface;
 
 class NetworkPageProvider implements PageProvider
 {
@@ -22,17 +22,12 @@ class NetworkPageProvider implements PageProvider
     // TODO: How long does it take session from trade register to expire?
     public static array $SessionCache = [];
 
-    private Client $HttpClient;
+    public function __construct(
+        private readonly Client $HttpClient,
+        private readonly string $RootUrl,
+    ) {}
 
-    private string $RootUrl;
-
-    public function __construct(Client $httpClient, string $RootUrl)
-    {
-        $this->HttpClient = $httpClient;
-        $this->RootUrl = $RootUrl;
-    }
-
-    # ~
+    // ~
 
     public function getIdentifierSearchPageHtml(string $identifier): string
     {
@@ -49,8 +44,13 @@ class NetworkPageProvider implements PageProvider
         return $this->requestResultsPage($session);
     }
 
-    public function getBusinessSubjectSearchPageHtml(?string $businessName = null, ?string $municipality = null, ?string $streetName = null, ?string $streetNumber = null, ?string $disctrictId = null): string
-    {
+    public function getBusinessSubjectSearchPageHtml(
+        ?string $businessName = null,
+        ?string $municipality = null,
+        ?string $streetName = null,
+        ?string $streetNumber = null,
+        ?string $disctrictId = null,
+    ): string {
         $session = $this->getSession(self::SESSION_URL_BUSINESS_NAME);
 
         // 1. First we need to set session with desired identifier
@@ -72,8 +72,14 @@ class NetworkPageProvider implements PageProvider
      * This function is context and session dependent!!!!
      * You can't call this function in just any order!
      */
-    public function getPersonSearchPageHtml(?string $firstName = null, ?string $lastName = null, ?string $municipality = null, ?string $streetName = null, ?string $streetNumber = null, ?string $districtId = null): string
-    {
+    public function getPersonSearchPageHtml(
+        ?string $firstName = null,
+        ?string $lastName = null,
+        ?string $municipality = null,
+        ?string $streetName = null,
+        ?string $streetNumber = null,
+        ?string $districtId = null,
+    ): string {
         $session = $this->getSession(self::SESSION_URL_PERSON);
 
         // 1. First we need to set session with desired identifier
@@ -100,18 +106,20 @@ class NetworkPageProvider implements PageProvider
     {
         $session = $this->getSession(self::SESSION_URL_IDENTIFIER);
 
-        $subjectPageUrl = str_replace('{order}', $searchOrder, $this->RootUrl . self::BROWSE_SUBJECT_URL);
+        $subjectPageUrl = \str_replace('{order}', $searchOrder, $this->RootUrl . self::BROWSE_SUBJECT_URL);
         $subjectResponse = $this->getWithSession($session, $subjectPageUrl);
 
         // Session set is returning 302 on success
-        if ($subjectResponse->getStatusCode() !== 200) {
-            throw new BadHttpRequestException("Page request on trade subject page [$subjectPageUrl] was not succesfull! HTTP code [{$subjectResponse->getStatusCode()}] was returned.");
+        if (200 !== $subjectResponse->getStatusCode()) {
+            throw new BadHttpRequestException(
+                "Page request on trade subject page [{$subjectPageUrl}] was not succesfull! HTTP code [{$subjectResponse->getStatusCode()}] was returned.",
+            );
         }
 
         return $subjectResponse->getBody()->getContents();
     }
 
-    # ~
+    // ~
 
     /*
      * This function is context and session dependent!!!!
@@ -128,8 +136,10 @@ class NetworkPageProvider implements PageProvider
             ],
         ]);
 
-        if ($searchResponse->getStatusCode() !== 200) {
-            throw new BadHttpRequestException("Failed to set search session on url [$searchPageUrl]! HTTP code [{$searchResponse->getStatusCode()}] was returned.");
+        if (200 !== $searchResponse->getStatusCode()) {
+            throw new BadHttpRequestException(
+                "Failed to set search session on url [{$searchPageUrl}]! HTTP code [{$searchResponse->getStatusCode()}] was returned.",
+            );
         }
 
         return $searchResponse->getBody()->getContents();
@@ -138,18 +148,34 @@ class NetworkPageProvider implements PageProvider
     /** This function will init session with request to register if it's not yet initialised */
     private function getSession(string $forUrl): object
     {
-        if (!array_key_exists($forUrl, self::$SessionCache)) {
+        if (!\array_key_exists($forUrl, self::$SessionCache)) {
             // Session can be obtained from any URL so we choose page with identifier form
             $sessionSetUrl = $this->RootUrl . $forUrl;
             $response = $this->HttpClient->get($sessionSetUrl);
             $pageHtml = $response->getBody()->getContents();
 
             // This is simple enough that DOM parser is not needed
-            self::$SessionCache[$forUrl] = (object)[
-                'session_id' => StringHelper::stringBetween($response->getHeader('set-cookie')[0], 'NET_SessionId=', '; '),
-                'view_state' => StringHelper::stringBetween($pageHtml, '<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="', '" />'),
-                'view_state_generator' => StringHelper::stringBetween($pageHtml, '<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="', '" />'),
-                'event_validation' => StringHelper::stringBetween($pageHtml, '<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="', '" />'),
+            self::$SessionCache[$forUrl] = (object) [
+                'session_id' => StringHelper::stringBetween(
+                    $response->getHeader('set-cookie')[0],
+                    'NET_SessionId=',
+                    '; ',
+                ),
+                'view_state' => StringHelper::stringBetween(
+                    $pageHtml,
+                    '<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="',
+                    '" />',
+                ),
+                'view_state_generator' => StringHelper::stringBetween(
+                    $pageHtml,
+                    '<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="',
+                    '" />',
+                ),
+                'event_validation' => StringHelper::stringBetween(
+                    $pageHtml,
+                    '<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="',
+                    '" />',
+                ),
             ];
         }
 
@@ -172,7 +198,7 @@ class NetworkPageProvider implements PageProvider
         ];
 
         $sessionResponse = $this->HttpClient->post($url, [
-            'form_params' => array_merge($sessionHeaders, $parameters),
+            'form_params' => \array_merge($sessionHeaders, $parameters),
             'headers' => [
                 'Cookie' => 'ASP.NET_SessionId=' . $session->session_id,
             ],
@@ -180,8 +206,10 @@ class NetworkPageProvider implements PageProvider
         ]);
 
         // Session set is returning 302 on success
-        if ($sessionResponse->getStatusCode() !== 302) {
-            throw new BadHttpRequestException("Page request on business name search [$url] was not succesfull! HTTP code 302 was excepted but [{$sessionResponse->getStatusCode()}] was returned.");
+        if (302 !== $sessionResponse->getStatusCode()) {
+            throw new BadHttpRequestException(
+                "Page request on business name search [{$url}] was not succesfull! HTTP code 302 was excepted but [{$sessionResponse->getStatusCode()}] was returned.",
+            );
         }
     }
 

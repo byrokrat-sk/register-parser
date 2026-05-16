@@ -1,26 +1,20 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\BusinessRegister\Model\Versionable;
-
 
 use ByrokratSk\BusinessRegister\Model\Versionable;
 use ByrokratSk\Helper\Arrayable;
 use ByrokratSk\Helper\DateHelper;
 
-
 class Capital extends Versionable implements \JsonSerializable, Arrayable
 {
-    public string $Currency;
-    public float $Total;
-    public ?float $Payed;
-
-    public function __construct($Currency, $Total, $Payed)
-    {
-        $this->Currency = $Currency;
-        $this->Total = $Total;
-        $this->Payed = $Payed;
-    }
+    public function __construct(
+        public string $Currency,
+        public float $Total,
+        public ?float $Payed,
+    ) {}
 
     public function toArray(): array
     {
@@ -33,7 +27,7 @@ class Capital extends Versionable implements \JsonSerializable, Arrayable
         ];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }

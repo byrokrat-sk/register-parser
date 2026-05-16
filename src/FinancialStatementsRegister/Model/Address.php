@@ -1,29 +1,25 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\FinancialStatementsRegister\Model;
 
-
 use ByrokratSk\Helper\Arrayable;
-
 
 class Address implements \JsonSerializable, Arrayable
 {
-    const DEFAULT_COUNTRY = 'Slovensko';
+    public const DEFAULT_COUNTRY = 'Slovensko';
 
-    public string $StreetName;
-    public string $StreetNumber;
-    public string $CityName;
-    public ?string $Zip;
     public string $Country;
 
-    public function __construct($StreetName, $StreetNumber, $CityName, $Zip, $Country = null)
-    {
-        $this->StreetName = $StreetName;
-        $this->StreetNumber = $StreetNumber;
-        $this->CityName = $CityName;
-        $this->Zip = $Zip;
-        $this->Country = is_null($Country) ? self::DEFAULT_COUNTRY : $Country;
+    public function __construct(
+        public string $StreetName,
+        public string $StreetNumber,
+        public string $CityName,
+        public ?string $Zip,
+        $Country = null,
+    ) {
+        $this->Country = $Country ?? self::DEFAULT_COUNTRY;
     }
 
     public function toArray(): array
@@ -33,11 +29,11 @@ class Address implements \JsonSerializable, Arrayable
             'street_number' => $this->StreetNumber,
             'city_name' => $this->CityName,
             'zip' => $this->Zip,
-            'country' => $this->Country
+            'country' => $this->Country,
         ];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }

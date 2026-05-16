@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace ByrokratSk\BusinessRegister\Model;
-
 
 use ByrokratSk\Helper\Arrayable;
 use ByrokratSk\Helper\DateHelper;
@@ -45,8 +45,8 @@ class BusinessSubject implements \JsonSerializable, Arrayable
 
     // Dates
     public ?\DateTime $EnteredAt = null;
-    public ?\Datetime $UpdatedAt = null;
-    public ?\Datetime $ExtractedAt = null;
+    public ?\DateTime $UpdatedAt = null;
+    public ?\DateTime $ExtractedAt = null;
 
     public function __construct()
     {
@@ -60,34 +60,60 @@ class BusinessSubject implements \JsonSerializable, Arrayable
             'section' => $this->Section,
             'court' => $this->Court,
             'cin' => $this->Cin,
-            'registered_seat' => is_null($this->RegisteredSeat) ? null : $this->RegisteredSeat->toArray(),
-            'business_name' => is_null($this->BusinessName) ? null : $this->BusinessName->toArray(),
-            'legal_form' => is_null($this->LegalForm) ? null : $this->LegalForm->toArray(),
-            'member_contributions' => is_null($this->MemberContributions) ? null : $this->MemberContributions->toArray(),
-            'supervisory_board' => is_null($this->SupervisoryBoard) ? null : $this->SupervisoryBoard->toArray(),
-            'acting_in_the_name' => is_null($this->ActingInTheName) ? null : $this->ActingInTheName->toArray(),
-            'management_body' => is_null($this->ManagementBody) ? null : $this->ManagementBody->toArray(),
-            'stockholders' => is_null($this->Stockholders) ? null : $this->Stockholders->toArray(),
-            'procuration' => is_null($this->Procuration) ? null : $this->Procuration->toArray(),
-            'procuration_facts' => is_null($this->ProcurationFacts) ? null : $this->ProcurationFacts->toArray(),
-            'partners' => is_null($this->Partners) ? null : $this->Partners->toArray(),
-            'capital' => is_null($this->Capital) ? null : $this->Capital->toArray(),
-            'shares' => is_null($this->Shares) ? null : $this->Shares->toArray(),
-            'other_legal_facts' => is_null($this->OtherLegalFacts) ? null : $this->OtherLegalFacts->toArray(),
-            'company_objects' => is_null($this->CompanyObjects) ? null : $this->CompanyObjects->toArray(),
-            'enterprise_branches' => is_null($this->EnterpriseBranches) ? null : $this->EnterpriseBranches->toArray(),
-            'merger_of_division' => is_null($this->MergerOrDivision) ? null : $this->MergerOrDivision->toArray(),
-            'companies_coased' => is_null($this->CompaniesCoased) ? null : $this->CompaniesCoased->toArray(),
-            'legal_successors' => is_null($this->LegalSuccessors) ? null : $this->LegalSuccessors->toArray(),
-            'enterprise_sales' => is_null($this->EnterpriseSales) ? null : $this->EnterpriseSales->toArray(),
-            'liquidators' => is_null($this->Liquidators) ? null : $this->Liquidators->toArray(),
+            'registered_seat' => $this->RegisteredSeat instanceof VersionableGroup
+                ? $this->RegisteredSeat->toArray()
+                : null,
+            'business_name' => $this->BusinessName instanceof VersionableGroup ? $this->BusinessName->toArray() : null,
+            'legal_form' => $this->LegalForm instanceof VersionableGroup ? $this->LegalForm->toArray() : null,
+            'member_contributions' => $this->MemberContributions instanceof VersionableGroup
+                ? $this->MemberContributions->toArray()
+                : null,
+            'supervisory_board' => $this->SupervisoryBoard instanceof VersionableGroup
+                ? $this->SupervisoryBoard->toArray()
+                : null,
+            'acting_in_the_name' => $this->ActingInTheName instanceof VersionableGroup
+                ? $this->ActingInTheName->toArray()
+                : null,
+            'management_body' => $this->ManagementBody instanceof VersionableGroup
+                ? $this->ManagementBody->toArray()
+                : null,
+            'stockholders' => $this->Stockholders instanceof VersionableGroup ? $this->Stockholders->toArray() : null,
+            'procuration' => $this->Procuration instanceof VersionableGroup ? $this->Procuration->toArray() : null,
+            'procuration_facts' => $this->ProcurationFacts instanceof VersionableGroup
+                ? $this->ProcurationFacts->toArray()
+                : null,
+            'partners' => $this->Partners instanceof VersionableGroup ? $this->Partners->toArray() : null,
+            'capital' => $this->Capital instanceof VersionableGroup ? $this->Capital->toArray() : null,
+            'shares' => $this->Shares instanceof VersionableGroup ? $this->Shares->toArray() : null,
+            'other_legal_facts' => $this->OtherLegalFacts instanceof VersionableGroup
+                ? $this->OtherLegalFacts->toArray()
+                : null,
+            'company_objects' => $this->CompanyObjects instanceof VersionableGroup
+                ? $this->CompanyObjects->toArray()
+                : null,
+            'enterprise_branches' => $this->EnterpriseBranches instanceof VersionableGroup
+                ? $this->EnterpriseBranches->toArray()
+                : null,
+            'merger_of_division' => $this->MergerOrDivision instanceof VersionableGroup
+                ? $this->MergerOrDivision->toArray()
+                : null,
+            'companies_coased' => $this->CompaniesCoased instanceof VersionableGroup
+                ? $this->CompaniesCoased->toArray()
+                : null,
+            'legal_successors' => $this->LegalSuccessors instanceof VersionableGroup
+                ? $this->LegalSuccessors->toArray()
+                : null,
+            'enterprise_sales' => $this->EnterpriseSales instanceof VersionableGroup
+                ? $this->EnterpriseSales->toArray()
+                : null,
+            'liquidators' => $this->Liquidators instanceof VersionableGroup ? $this->Liquidators->toArray() : null,
             'entered_at' => DateHelper::formatYmd($this->EnteredAt),
             'updated_at' => DateHelper::formatYmd($this->UpdatedAt),
             'extracted_at' => DateHelper::formatYmd($this->ExtractedAt),
         ];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }
