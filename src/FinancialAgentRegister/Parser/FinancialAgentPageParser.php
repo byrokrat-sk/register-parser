@@ -142,8 +142,8 @@ class FinancialAgentPageParser
             $agentData['phone_number'],
             $agentData['residence_address'],
             $agentData['business_address'],
-            $agentData['registrations'] ? $agentData['registrations'] : null,
-            $agentData['contracts'] ? $agentData['contracts'] : null,
+            $agentData['registrations'] !== [] ? $agentData['registrations'] : null,
+            $agentData['contracts'] !== [] ? $agentData['contracts'] : null,
         );
     }
 

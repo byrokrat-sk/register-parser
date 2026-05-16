@@ -416,7 +416,7 @@ class BusinessSubjectPageParser
         // Filter out extra identification lines added by orsr.sk (e.g. "Iné identifikačné číslo: ...")
         $arrayAddress = array_values(array_filter(
             $arrayAddress,
-            static fn($line) => !isset($line[0]) || !str_starts_with($line[0], 'Iné identifikačné'),
+            static fn(array $line): bool => !isset($line[0]) || !str_starts_with($line[0], 'Iné identifikačné'),
         ));
 
         $linesCount = count($arrayAddress);
@@ -745,7 +745,6 @@ class BusinessSubjectPageParser
     private static function parseEnterpriseSaleRecord(array $record): EnterpriseSale
     {
         $header = null;
-        $text = null;
 
         $text = StringHelper::paragraphText($record['lines'][0][0]);
         if (1 < count($record['lines'])) {

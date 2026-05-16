@@ -53,7 +53,10 @@ class SearchResultPageParser
 
         $headerSkipped = false;
         foreach ($resultTable->childNodes as $row) {
-            if (!$row instanceof DOMElement || 'tr' !== $row->nodeName) {
+            if (!$row instanceof DOMElement) {
+                continue;
+            }
+            if ('tr' !== $row->nodeName) {
                 continue;
             }
             if (!$headerSkipped) {
@@ -75,7 +78,7 @@ class SearchResultPageParser
             }
 
             // cells[0] = row number, cells[1] = company name, cells[2] = listing links
-            $subjectName = trim((string) $cells[1]->textContent);
+            $subjectName = trim($cells[1]->textContent);
 
             $links = $cells[2]->getElementsByTagName('a');
             if ($links->length < 2) {

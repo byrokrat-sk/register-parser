@@ -25,22 +25,24 @@ class BusinessRegisterE2ETest extends TestCase
         $provider = new class implements PageProvider {
             public function getIdentificatorSearchPageHtml(string $identificator): string
             {
-                return self::curlFetch('https://orsr.sk/hladaj_ico.asp?ICO=' . rawurlencode($identificator) . '&SID=0');
+                return $this->curlFetch(
+                    'https://orsr.sk/hladaj_ico.asp?ICO=' . rawurlencode($identificator) . '&SID=0',
+                );
             }
 
             public function getNameSearchPageHtml(string $query): string
             {
-                return self::curlFetch(
+                return $this->curlFetch(
                     'https://orsr.sk/hladaj_subjekt.asp?lan=sk&OBMENO=' . rawurlencode($query) . '&PF=0&R=on',
                 );
             }
 
             public function getBusinessSubjectPageHtml(Listing $listing): string
             {
-                return self::curlFetch($listing->getUrl());
+                return $this->curlFetch($listing->getUrl());
             }
 
-            private static function curlFetch(string $url): string
+            private function curlFetch(string $url): string
             {
                 $tmp = (string) tempnam(sys_get_temp_dir(), 'orsr_');
                 exec('curl -kLs ' . escapeshellarg($url) . ' -o ' . escapeshellarg($tmp));
